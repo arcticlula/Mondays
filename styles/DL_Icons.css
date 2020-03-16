@@ -1,0 +1,938 @@
+/* Dot Logic 2.0.0 */
+
+@font-face {
+	font-family: 'DL_Icons';
+	src: url('../font/DL_Icons.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.dl {
+	display: inline-block;
+	font: normal normal normal 14px DL_Icons;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	vertical-align: middle;
+	line-height: 1.3;
+	padding: 0px !important;
+}
+
+.dl:hover {
+	text-decoration: none;
+}
+
+.dl-lg {
+	font-size: 1.33333333em;
+	line-height: 0.75em;
+	vertical-align: -15%;
+}
+
+.dl-2x {
+	font-size: 2em;
+}
+
+.dl-3x {
+	font-size: 3em;
+}
+
+.dl-4x {
+	font-size: 4em;
+}
+
+.dl-5x {
+	font-size: 5em;
+}
+
+.dl-fw {
+	width: 1.28571429em;
+	text-align: center;
+}
+
+.dl-ul {
+	padding-left: 0;
+	margin-left: 2.14285714em;
+	list-style-type: none;
+}
+
+.dl-ul > li {
+	position: relative;
+}
+
+.dl-li {
+	position: absolute;
+	left: -2.14285714em;
+	width: 2.14285714em;
+	top: 0.14285714em;
+	text-align: center;
+}
+
+.dl-li.dl-lg {
+	left: -1.85714286em;
+}
+
+.dl-border {
+	padding: .2em .25em .15em;
+	border: solid 0.08em #eeeeee;
+	border-radius: .1em;
+}
+
+.dl-pull-left {
+	float: left;
+}
+
+.dl-pull-right {
+	float: right;
+}
+
+.dl.dl-pull-left {
+	margin-right: .3em;
+}
+
+.dl.dl-pull-right {
+	margin-left: .3em;
+}
+
+/* Deprecated as of 4.4.0 */
+.pull-right {
+	float: right;
+}
+
+.pull-left {
+	float: left;
+}
+
+.dl.pull-left {
+	margin-right: .3em;
+}
+
+.dl.pull-right {
+	margin-left: .3em;
+}
+
+.dl-spin {
+	-webkit-animation: fa-spin 2s infinite linear;
+	animation: fa-spin 2s infinite linear;
+}
+
+.dl-pulse {
+	-webkit-animation: fa-spin 1s infinite steps(8);
+	animation: fa-spin 1s infinite steps(8);
+}
+
+@-webkit-keyframes fa-spin {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
+@keyframes fa-spin {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
+.dl-rotate-90 {
+	-ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
+	filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
+	-webkit-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	transform: rotate(90deg);
+}
+
+.dl-rotate-180 {
+	-ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+	filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+	-webkit-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+
+.dl-rotate-270 {
+	-ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
+	filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
+	-webkit-transform: rotate(270deg);
+	-ms-transform: rotate(270deg);
+	transform: rotate(270deg);
+}
+
+.dl-flip-horizontal {
+	-ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+	filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+	-webkit-transform: scale(-1, 1);
+	-ms-transform: scale(-1, 1);
+	transform: scale(-1, 1);
+}
+
+.dl-flip-vertical {
+	-ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+	filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+	-webkit-transform: scale(1, -1);
+	-ms-transform: scale(1, -1);
+	transform: scale(1, -1);
+}
+
+:root .dl-rotate-90,
+:root .dl-rotate-180,
+:root .dl-rotate-270,
+:root .dl-flip-horizontal,
+:root .dl-flip-vertical {
+	filter: none;
+}
+
+.dl-stack {
+	position: relative;
+	display: inline-block;
+	width: 2em;
+	height: 2em;
+	line-height: 2em;
+	vertical-align: middle;
+}
+
+.dl-stack-1x,
+.dl-stack-2x {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	text-align: center;
+}
+
+.dl-stack-1x {
+	line-height: inherit;
+}
+
+.dl-stack-2x {
+	font-size: 2em;
+}
+
+.dl-inverse {
+	color: #ffffff;
+}
+
+/* ICONS */
+
+.dl-cardio:before {
+	content: "\f000";
+}
+
+.dl-gastro:before {
+	content: "\f001";
+}
+
+.dl-pneumo:before {
+	content: "\f002";
+}
+
+.dl-anexo:before {
+	content: "\f003";
+}
+
+.dl-lupa:before {
+	content: "\f004";
+}
+
+.dl-print:before {
+	content: "\f005";
+}
+
+.dl-ok:before {
+	content: "\f006";
+}
+
+.dl-remove:before {
+	content: "\f007";
+}
+
+.dl-config:before {
+	content: "\f008";
+}
+
+.dl-eliminar:before {
+	content: "\f009";
+}
+
+.dl-printno:before {
+	content: "\f00A";
+}
+
+.dl-importar:before {
+	content: "\f00B"
+}
+
+.dl-imagem:before {
+	content: "\f00C"
+}
+
+.dl-ecg:before {
+	content: "\f00D"
+}
+
+.dl-clip:before {
+	content: "\f00E"
+}
+
+.dl-cardio-2:before {
+	content: "\f00F"
+}
+
+.dl-historico:before {
+	content: "\f010";
+}
+
+.dl-editar:before {
+	content: "\f011";
+}
+
+.dl-adicionar:before {
+	content: "\f012";
+}
+
+.dl-exame:before {
+	content: "\f013";
+}
+
+.dl-plus:before {
+	content: "\f014";
+}
+
+.dl-backward:before {
+	content: "\f015";
+}
+
+.dl-left:before {
+	content: "\f016";
+}
+
+.dl-right:before {
+	content: "\f017";
+}
+
+.dl-forward:before {
+	content: "\f018";
+}
+
+.dl-ban:before {
+	content: "\f019";
+}
+
+.dl-remover:before {
+	content: "\f01A";
+}
+
+.dl-pause:before {
+	content: "\f01B";
+}
+
+.dl-pc:before {
+	content: "\f01C";
+}
+
+.dl-fatias:before {
+	content: "\f01D";
+}
+
+.dl-ferramenta:before {
+	content: "\f01E";
+}
+
+.dl-tabela:before {
+	content: "\f01F";
+}
+
+.dl-guardar:before {
+	content: "\f020";
+}
+
+.dl-grafico:before {
+	content: "\f021";
+}
+
+.dl-adicionar2:before {
+	content: "\f022";
+}
+
+.dl-datepicker:before {
+	content: "\f023";
+}
+
+.dl-baixo:before {
+	content: "\f024";
+}
+
+.dl-cima:before {
+	content: "\f025";
+}
+
+.dl-standby:before {
+	content: "\f026";
+}
+
+.dl-cardio-3:before {
+	content: "\f027";
+}
+
+.dl-feminino:before {
+	content: "\f028";
+}
+
+.dl-masculino:before {
+	content: "\f029";
+}
+
+.dl-orderdesc:before {
+	content: "\f02A";
+}
+
+.dl-orderasc:before {
+	content: "\f02B";
+}
+
+.dl-lupamais:before {
+	content: "\f02C";
+}
+
+.dl-lupamenos:before {
+	content: "\f02D";
+}
+
+.dl-lupa-2:before {
+	content: "\f02E";
+}
+
+.dl-dot:before {
+	content: "\f02F";
+}
+
+.dl-folder:before {
+	content: "\f030";
+	font-size: 20px;
+}
+
+.dl-warning:before {
+	content: "\f031";
+}
+
+.dl-info:before {
+	content: "\f032";
+}
+
+.dl-page:before {
+	content: "\f033";
+}
+
+.dl-grid-1:before {
+	content: "\f034";
+}
+
+.dl-grid-2:before {
+	content: "\f035";
+}
+
+.dl-grid-3:before {
+	content: "\f036";
+}
+
+.dl-recicle:before {
+	content: "\f037";
+}
+
+.dl-recicle-2:before {
+	content: "\f038";
+}
+
+.dl-recicle-3:before {
+	content: "\f039";
+}
+
+.dl-in:before {
+	content: "\f03A";
+}
+
+.dl-out:before {
+	content: "\f03B";
+}
+
+.dl-copy:before {
+	content: "\f03C";
+}
+
+.dl-paste:before {
+	content: "\f03D";
+}
+
+.dl-copy-2:before {
+	content: "\f03E";
+}
+
+.dl-in-2:before {
+	content: "\f03F";
+}
+
+.dl-backward-2:before {
+	content: "\f040";
+}
+
+.dl-forward-2:before {
+	content: "\f041";
+}
+
+.dl-forward-3:before {
+	content: "\f042";
+}
+
+.dl-backward-3:before {
+	content: "\f043";
+}
+
+.dl-backwards-10:before {
+	content: "\f044";
+}
+
+.dl-forward-10:before {
+	content: "\f045";
+}
+
+.dl-forward-grid:before {
+	content: "\f046";
+}
+
+.dl-backwards-grid:before {
+	content: "\f047";
+}
+
+.dl-forward-4:before {
+	content: "\f048";
+}
+
+.dl-backward-4:before {
+	content: "\f049";
+}
+
+.dl-cloud-out:before {
+	content: "\f04A";
+}
+
+.dl-cloud-in:before {
+	content: "\f04B";
+}
+
+.dl-r:before {
+	content: "\f04C";
+}
+
+.dl-c:before {
+	content: "\f04D";
+}
+
+.dl-contrast:before {
+	content: "\f04E";
+}
+
+.dl-camera:before {
+	content: "\f04F";
+}
+
+.dl-config-2:before {
+	content: "\f050";
+}
+
+.dl-pin:before {
+	content: "\f051";
+}
+
+.dl-phone:before {
+	content: "\f052";
+}
+
+.dl-creditcard:before {
+	content: "\f053";
+}
+
+.dl-mail:before {
+	content: "\f054";
+}
+
+.dl-info-2:before {
+	content: "\f055";
+}
+
+.dl-medic:before {
+	content: "\f056";
+}
+
+.dl-medic-2:before {
+	content: "\f057";
+}
+
+.dl-bell:before {
+	content: "\f058";
+}
+
+.dl-hospital:before {
+	content: "\f059";
+}
+
+.dl-savevalidate:before {
+	content: "\f05B";
+}
+
+.dl-saveerror:before {
+	content: "\f05C";
+}
+
+.dl-saveout:before {
+	content: "\f05D";
+}
+
+.dl-savein:before {
+	content: "\f05E";
+}
+
+.dl-barcode:before {
+	content: "\f05F";
+}
+
+.dl-hospital-2:before {
+	content: "\f060";
+}
+
+.dl-hospital-3:before {
+	content: "\f061";
+}
+
+.dl-hospital-4:before {
+	content: "\f062";
+}
+
+.dl-desktop:before {
+	content: "\f063";
+}
+
+.dl-mobile:before {
+	content: "\f064";
+}
+
+.dl-happy:before {
+	content: "\f065";
+}
+
+.dl-sad:before {
+	content: "\f066";
+}
+
+.dl-neutral:before {
+	content: "\f067";
+}
+
+.dl-question:before {
+	content: "\f0608";
+}
+
+.dl-unlock:before {
+	content: "\f069";
+}
+
+.dl-import:before {
+	content: "\f06A";
+}
+
+.dl-export:before {
+	content: "\f06B";
+}
+
+.dl-exportvalid:before {
+	content: "\f06C";
+}
+
+.dl-show:before {
+	content: "\f06D";
+}
+
+.dl-hide:before {
+	content: "\f06E";
+}
+
+.dl-qrcode:before {
+	content: "\f06F";
+}
+
+.dl-pencil:before {
+	content: "\f070";
+}
+
+.dl-like:before {
+	content: "\f071";
+}
+
+.dl-dislike:before {
+	content: "\f072";
+}
+
+.dl-wrong-square:before {
+	content: "\f073";
+}
+
+.dl-player:before {
+	content: "\f074";
+}
+
+.dl-lock:before {
+	content: "\f075";
+}
+
+.dl-spot:before {
+	content: "\f076";
+}
+
+.dl-visible:before {
+	content: "\f077";
+}
+
+.dl-hiddenk:before {
+	content: "\f078";
+}
+
+.dl-folder-2:before {
+	content: "\f079";
+}
+
+.dl-motilidade:before {
+	content: "\f07A";
+}
+
+.dl-doppler:before {
+	content: "\f07B";
+}
+
+.dl-circle-error:before {
+	content: "\f07C";
+}
+
+.dl-circle-validate:before {
+	content: "\f07D";
+}
+
+.dl-circle-question:before {
+	content: "\f07E";
+}
+
+.dl-circle-info:before {
+	content: "\f07F";
+}
+
+.dl-mais:before {
+	content: "\f081";
+}
+
+.dl-menos:before {
+	content: "\f082";
+}
+
+.dl-esquerda:before {
+	content: "\f083";
+}
+
+.dl-direita:before {
+	content: "\f084";
+}
+
+.dl-up:before {
+	content: "\f085";
+}
+
+.dl-down:before {
+	content: "\f086";
+}
+
+.dl-drag:before {
+	content: "\f087";
+}
+
+.dl-grafico2:before {
+	content: "\f088";
+}
+
+.dl-grafico3:before {
+	content: "\f089";
+}
+
+.dl-req:before {
+	content: "\f08A";
+}
+
+.dl-zoomOut:before {
+	content: "\f08B";
+}
+
+.dl-zoomIn:before {
+	content: "\f08C";
+}
+
+.dl-grid-4:before {
+	content: "\f08D";
+}
+
+.dl-grid-5:before {
+	content: "\f08E";
+}
+
+.dl-grid-6:before {
+	content: "\f08F";
+}
+
+.dl-ruler-1:before {
+	content: "\f090";
+}
+
+.dl-ruler-2:before {
+	content: "\f091";
+}
+
+.dl-ruler-3:before {
+	content: "\f092";
+}
+
+.dl-ruler-4:before {
+	content: "\f093";
+}
+
+.dl-ruler-5:before {
+	content: "\f094";
+}
+
+.dl-ruler-6:before {
+	content: "\f095";
+}
+
+.dl-ruler-7:before {
+	content: "\f096";
+}
+
+.dl-ruler-8:before {
+	content: "\f097";
+}
+
+.dl-ruler-9:before {
+	content: "\f098";
+}
+
+.dl-ruler-10:before {
+	content: "\f099";
+}
+
+.dl-ruler-11:before {
+	content: "\f09A";
+}
+
+.dl-pdf:before {
+	content: "\f09B";
+}
+
+.dl-money:before {
+	content: "\f09C";
+}
+
+.dl-talk:before {
+	content: "\f09D";
+}
+
+.dl-diamond:before {
+	content: "\f09E";
+}
+
+.dl-user:before {
+	content: "\f09F";
+}
+
+.dl-calendarPlus:before {
+	content: "\f0A0";
+}
+
+.dl-calendarMinus:before {
+	content: "\f0A1";
+}
+
+.dl-calendarCancel:before {
+	content: "\f0A2";
+}
+
+.dl-calendarOk:before {
+	content: "\f0A3";
+}
+
+.dl-calendar:before {
+	content: "\f0A4";
+}
+
+.dl-videoFile:before {
+	content: "\f0A5";
+}
+
+.dl-bola:before {
+	content: "\f0A6";
+}
+
+.dl-ass:before {
+	content: "\f0A7";
+}
+
+.dl-sun:before {
+	content: "\f0A8";
+}
+
+.dl-moon:before {
+	content: "\f0A9";
+}
+/* ICONS */
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+	position: static;
+	width: auto;
+	height: auto;
+	margin: 0;
+	overflow: visible;
+	clip: auto;
+}
+
+/* EDITABLE DATATABLE CSS | dotLOGIC */
+	#datatable-editable .dl.dl-eliminar, #datatable-editable .dl.dl-remove {
+		color: #f7531f;
+	}
+
+	table.dataTable thead th.sorting_asc:after {
+		font: normal normal normal 16px DL_Icons;
+		content: "\f025";
+	}
+
+	table.dataTable thead th.sorting_desc:after {
+		font: normal normal normal 16px DL_Icons;
+		content: "\f024";
+	}
+
+	table.dataTable thead th.sorting:after {
+		font: normal normal normal 16px DL_Icons;
+		content: "\f026";
+	}
+/* EDITABLE DATATABLE CSS | dotLOGIC */
