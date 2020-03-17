@@ -13,35 +13,16 @@
           <li class="nav-item mr-2">
             <b-input-group prepend="Mês">
               <b-form-select
+                :options="monthArray"
                 v-model="navbar.month"
-                @input="getMatchesByDate()"
+                @input="getMatches()"
                 :disabled="monthDisabled"
-              >
-                <option value="0">Todos</option>
-                <option value="9">Setembro</option>
-                <option value="10">Outubro</option>
-                <option value="11">Novembro</option>
-                <option value="12">Dezembro</option>
-                <option value="13">Janeiro</option>
-                <option value="14">Fevereiro</option>
-                <option value="15">Março</option>
-                <option value="16">Abril</option>
-                <option value="17">Maio</option>
-                <option value="18">Junho</option>
-                <option value="19">Julho</option>
-                <option value="20">Agosto</option>
-              </b-form-select>
+              />
             </b-input-group>
           </li>
           <li class="nav-item ml-2">
             <b-input-group prepend="Ano">
-              <b-form-select :options="yearArray" v-model="navbar.year" @input="getMatchesByDate()">
-                <!-- <option
-                  v-for="date in yearArray"
-                  :key="date.value"
-                  :value="date.value"
-                >{{ date.text }}</option>-->
-              </b-form-select>
+              <b-form-select :options="yearArray" v-model="navbar.year" @input="getMatches()" />
             </b-input-group>
           </li>
         </ul>
@@ -128,6 +109,21 @@ export default {
   data() {
     return {
       monthDisabled: false,
+      monthArray: [
+        { value: '0', text: 'Todos' },
+        { value: '9', text: 'Setembro' },
+        { value: '10', text: 'Outubro' },
+        { value: '11', text: 'Novembro' },
+        { value: '12', text: 'Dezembro' },
+        { value: '13', text: 'Janeiro' },
+        { value: '14', text: 'Fevereiro' },
+        { value: '15', text: 'Março' },
+        { value: '16', text: 'Abril' },
+        { value: '17', text: 'Maio' },
+        { value: '18', text: 'Junho' },
+        { value: '19', text: 'Julho' },
+        { value: '20', text: 'Agosto' }
+      ],
       yearArray: []
     }
   },
@@ -140,14 +136,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getMatches']),
+    ...mapActions(['getMatchesByDate']),
     ...mapMutations(['setMonth']),
-    async getMatchesByDate() {
+    async getMatches() {
       if (this.yearHigh == moment().format('YYYY-MM-DD')) {
         this.setMonth()
         this.monthDisabled = true
       } else this.monthDisabled = false
-      // this.getMatches()
+      this.getMatchesByDate()
     },
     rotate() {
       document.body.classList.toggle('enlarged')

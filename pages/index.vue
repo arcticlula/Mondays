@@ -54,7 +54,6 @@ export default {
     } catch (e) {
       console.error(e)
     }
-    console.log(this.Matches, this.Teams, this.Players, this.Goals)
   },
   methods: {
     ...mapMutations(['changeCount']),

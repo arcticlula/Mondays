@@ -1,30 +1,47 @@
 <template>
-  <b-card>
-    <b-card no-body class="overflow-hidden" style="max-width: 540px;">
-      <b-row no-gutters>
-        <b-col md="6">
-          <b-card-img src="https://picsum.photos/400/400/?image=20" class="rounded-0"></b-card-img>
-        </b-col>
-        <b-col md="6">
-          <b-card-body title="Horizontal Card">
-            <b-card-text>
-              This is a wider card with supporting text as a natural lead-in to additional content.
-              This content is a little bit longer.
-            </b-card-text>
-          </b-card-body>
-        </b-col>
-      </b-row>
+  <div>
+    <b-card v-for="player in players" v-bind:key="player.id">
+      <b-card no-body class="overflow-hidden" style="max-width: 540px;">
+        <b-row no-gutters>
+          <b-col md="6">
+            <b-card-img :src="require(`../assets/players/${player.id}.jpg`)" class="rounded-0"></b-card-img>
+          </b-col>
+          <b-col md="6">
+            <b-card-body :title="player.name">
+              <b-card-text>{{player.nickname}}</b-card-text>
+            </b-card-body>
+          </b-col>
+        </b-row>
+      </b-card>
     </b-card>
-  </b-card>
+  </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: 'login',
+  name: 'choosePlayer',
+  computed: {
+    ...mapState(['players'])
+  },
   methods: {
-    ...mapActions(['googleSignIn'])
+    ...mapActions(['getPlayers'])
+  },
+  async fetch({ store }) {
+    try {
+      await store.dispatch('getPlayers')
+    } catch (e) {
+      console.error(e)
+    }
+  },
+  async mounted() {
+    try {
+      await this.getPlayers()
+    } catch (e) {
+      console.error(e)
+    }
+    console.log(this.players)
   }
 }
 </script>

@@ -1,3 +1,4 @@
+import moment from 'moment'
 export default {
   count(state) {
     return state.countDocument.count
@@ -10,7 +11,7 @@ export default {
     }
     else return moment(date.year).set('month', date.month).format("YYYY-MM-DD");
   },
-  anoLow(state) {
+  yearLow(state) {
     let date = state.navbar;
     if (date.year == moment().format("YYYY-MM-DD")) return moment(state.firstYear).format('YYYY-MM-DD');
     else if (date.month == "0") {
