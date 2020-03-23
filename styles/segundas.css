@@ -993,6 +993,7 @@ label.empate::after {
 
 .matchCard {
 	max-height: 84px;
+	/* max-height: 120px; */
 }
 
 @media (min-width: 992px) {

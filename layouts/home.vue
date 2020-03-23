@@ -136,8 +136,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getMatchesByDate']),
     ...mapMutations(['setMonth']),
+    ...mapActions('matches', ['getMatchesByDate']),
     async getMatches() {
       if (this.yearHigh == moment().format('YYYY-MM-DD')) {
         this.setMonth()

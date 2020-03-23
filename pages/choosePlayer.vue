@@ -1,6 +1,7 @@
 <template>
   <div>
     <b-card v-for="player in players" v-bind:key="player.id">
+      {{player}}
       <b-card no-body class="overflow-hidden" style="max-width: 540px;">
         <b-row no-gutters>
           <b-col md="6">
@@ -23,10 +24,10 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: 'choosePlayer',
   computed: {
-    ...mapState(['players'])
+    ...mapState('players', ['players'])
   },
   methods: {
-    ...mapActions(['getPlayers'])
+    ...mapActions('players', ['getPlayers'])
   },
   async fetch({ store }) {
     try {
@@ -34,6 +35,7 @@ export default {
     } catch (e) {
       console.error(e)
     }
+    console.log(store.state.players)
   },
   async mounted() {
     try {

@@ -63,7 +63,7 @@
         <b-col cols="12" class="mt-2 reset-p">
           <b-card border-variant="primary" style="height: 100%;" no-body class="gameInfo">
             <b-tabs card>
-              <!-- <b-tab title="Resumo" active>
+              <b-tab title="Resumo" active>
                 <b-card-text>
                   <b-col cols="12">
                     <div v-for="jogo in jogoInfo" v-bind:jogo="jogo" v-bind:key="jogo.idGolo">
@@ -116,7 +116,7 @@
                     </div>
                   </b-col>
                 </b-card-text>
-              </b-tab>-->
+              </b-tab>
               <b-tab class="formacoes px-0" title="Formações">
                 <b-card-text>
                   <b-col cols="12" class="p-0 bg-dark">
@@ -186,7 +186,7 @@ export default {
     highscore
   },
   computed: {
-    ...mapState(['match']),
+    ...mapState('matches', ['match']),
     matchDate() {
       return this.match.beginTime.seconds
     },
@@ -210,7 +210,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getMatchById'])
+    ...mapActions('matches', ['getMatchById'])
   },
   async fetch({ store, route }) {
     try {

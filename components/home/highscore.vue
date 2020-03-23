@@ -138,7 +138,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['players'])
+    ...mapState('players', ['players'])
   },
   created() {
     // this.getMarcadoresTop()

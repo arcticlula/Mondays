@@ -14,7 +14,7 @@
   "dependencies": {
     "@nuxtjs/svg": "^0.1.6",
     "bootstrap": "^4.4.1",
-    "bootstrap-vue": "^2.6.1",
+    "bootstrap-vue": "^2.7.0",
     "core-js": "^2.6.11",
     "firebase": "^7.5.2",
     "moment": "^2.24.0",
@@ -22,6 +22,7 @@
     "nuxt": "^2.11.0",
     "nuxt-fire": "^3.5.1",
     "underscore": "^1.9.2",
+    "vue": "^2.6.11",
     "vue-moment": "^4.1.0",
     "vuexfire": "^3.2.0"
   },

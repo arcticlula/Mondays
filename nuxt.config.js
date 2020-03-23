@@ -1,4 +1,5 @@
 import config from "./config"
+const path = require('path')
 export default {
   mode: 'universal',
   /*
@@ -31,11 +32,14 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vue-moment.js'],
+  plugins: ['~/plugins/vue-moment.js', '~/plugins/bootstrap-vue.js'],
+
   /*
    ** Nuxt.js modules
+   
    */
-  modules: ['@nuxtjs/svg', 'bootstrap-vue/nuxt',
+  modules: ['@nuxtjs/svg',
+    'bootstrap-vue/nuxt',
     [
       'nuxt-fire',
       {
@@ -45,5 +49,12 @@ export default {
         }
       }
     ]
-  ]
+  ],
+  bootstrapVue: {
+    bootstrapCSS: false, // here you can disable automatic bootstrapCSS in case you are loading it yourself using sass
+    bootstrapVueCSS: false, // CSS that is specific to bootstrapVue components can also be disabled. That way you won't load css for modules that you don't use
+    componentPlugins: [], // Here you can specify which components you want to load and use
+    directivePlugins: [], // Here you can specify which directives you want to load and use. Look into official docs to get a list of what's available
+    components: ['BIconPlus', 'BIconDash']
+  },
 }

@@ -7,7 +7,7 @@
         v-bind:match="match"
         v-bind:key="match.id"
       ></match-card>
-      <highscore />
+      <!-- <highscore /> -->
     </div>
   </div>
 </template>
@@ -24,14 +24,14 @@ export default {
   computed: {
     ...mapState(['navbar', 'matches']),
     ...mapState('login', ['user']),
-    ...mapGetters(['anoLow', 'yearHigh'])
+    ...mapGetters(['yearLow', 'yearHigh'])
   },
   components: {
     matchCard,
     highscore
   },
   methods: {
-    ...mapActions(['getMatchesByDate']),
+    ...mapActions('matches', ['getMatchesByDate']),
     openMatch(id) {
       console.log(id)
       this.$router.push({ name: 'match', query: { id: id } })
