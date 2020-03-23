@@ -110,11 +110,11 @@ export default {
 	},
 	methods: {
 		...mapActions('teams', ['getTeams']),
-		...mapActions('matches', ['getMatches', 'setMatchTemp']),
+		...mapActions('matches', ['getMatches', 'setMatch']),
 
 		async onSubmit(evt) {
 			evt.preventDefault()
-			await this.setMatchTemp(this.form)
+			await this.setMatch(this.form)
 		},
 		onReset(evt) {
 			evt.preventDefault()

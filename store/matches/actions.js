@@ -1,10 +1,23 @@
 import { firestoreAction } from 'vuexfire'
+import hydrate from "../../utils/hydrate"
 
 export default {
 	getMatchById: firestoreAction(async function ({ bindFirestoreRef }, id) {
 		const db = this.$fireStore.collection('Matches').doc(id);
 		await bindFirestoreRef('match', db, { wait: true })
 	}),
+	async getMatchByIdStatic(context, id) {
+		return this.$fireStore.collection('Matches').doc(id).get()
+			.then(async documentSnapshot => {
+				const data = documentSnapshot.data()
+				console.log(data, hydrate)
+				await hydrate(data, ['teamA', 'teamB'])
+				await hydrate(data.teamA, ['players'])
+				await hydrate(data.teamB, ['players'])
+				console.log(data.teamA)
+				return data
+			})
+	},
 	getMatches: firestoreAction(async function ({ bindFirestoreRef }) {
 		const db = this.$fireStore.collection('Matches')
 		await bindFirestoreRef('matches', db, { wait: true })
@@ -76,8 +89,8 @@ export default {
 		if (uid == null) return
 		let Timestamp = this.$fireStoreObj.Timestamp;
 		let Users = this.$fireStore.collection('Users');
-		let beginTime = Timestamp.fromDate(new Date('2019-04-22T22:00:00Z'));
-		let endTime = Timestamp.fromDate(new Date('2019-04-22T23:00:00Z'));
+		let beginTime = Timestamp.fromDate(new Date('2019-04-22T22:00:00.000Z'));
+		let endTime = Timestamp.fromDate(new Date('2019-04-22T23:00:00.000Z'));
 		let Match = this.$fireStore.collection('Matches').doc(
 			'uVcMX348dTAEBeCjtmFg'
 		)

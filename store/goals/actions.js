@@ -9,7 +9,7 @@ export default {
 	getGoalsFromMatch: firestoreAction(async function ({ bindFirestoreRef }, id) {
 		let Goals = this.$fireStore.collection('Goals');
 		let Match = this.$fireStore.collection('Matches').doc(id);
-		const db = Goals.where("match", "==", Match)
+		const db = Goals.where("match", "==", Match).orderBy('timeMin')
 		await bindFirestoreRef('goals', db, { wait: true })
 	}),
 	setGoal: firestoreAction(async function (context, data) {
@@ -18,8 +18,8 @@ export default {
 		let Users = this.$fireStore.collection('Users');
 		let Players = this.$fireStore.collection('Players');
 		let Teams = this.$fireStore.collection('Teams');
-		let Match = this.$fireStore.collection('Matches').doc(obj.match);
-		let MatchData = await Match.get();
+		let Matches = this.$fireStore.collection('Matches');
+		let Match = await Matches.doc(obj.match).get();
 		let Goal = this.$fireStore.collection('Goals').doc()
 		let timeModified = Timestamp.fromDate(new Date());
 		let userModified = Users.doc(this.$fireStore._credentials.currentUser.uid);
@@ -29,14 +29,11 @@ export default {
 			obj.props.dateModified = timeModified
 			obj.props.userCreated = userModified
 			obj.props.userModified = userModified
-			let date = moment(MatchData.data().beginTime.toDate())
+			let date = moment(Match.data().beginTime.toDate())
 			let dateGoal = new Date(date.format('YYYY-MM-DD') + 'T' + obj.time + 'Z');
 			obj.time = Timestamp.fromDate(dateGoal);
 			obj.timeMin = moment(dateGoal).diff(date, 'minute');
-			obj.match = Match;
-			obj.team = Teams.doc(obj.team);
-			obj.goal = !!obj.goal ? Players.doc(obj.goal) : null;
-			obj.assist = !!obj.assist ? Players.doc(obj.assist) : null;
+
 			switch (obj.type) {
 				case "O":
 					obj.isOwnGoal = true;
@@ -53,29 +50,35 @@ export default {
 			}
 			delete obj.type;
 			console.log(obj)
-			/**						Teams					**/
-			// batch.update(obj.teamA, {
-			// 	"props.dateModified": timeModified, "props.userModified": userModified, "match": Matches.doc(Match.id)
-			// })
-			// batch.update(obj.teamB, {
-			// 	"props.dateModified": timeModified, "props.userModified": userModified, "match": Matches.doc(Match.id)
-			// })
 			// /**						Players					**/
-			// for (let i = 0; i < playersFromTeam.length; i++) {
-			// 	const player = Players.doc(playersFromTeam[i].id)
-			// 	batch.update(player, {
-			// 		"props.dateModified": timeModified, "props.userModified": userModified, ['matches.' + [Match.id]]: true
-			// 	})
-			// }
-			// team = await obj.teamB.get();
-			// playersFromTeam = team.data().players;
-			// for (let i = 0; i < playersFromTeam.length; i++) {
-			// 	const player = Players.doc(playersFromTeam[i].id)
-			// 	batch.update(player, {
-			// 		"props.dateModified": timeModified, "props.userModified": userModified, ['matches.' + [Match.id]]: true
-			// 	})
-			// }
+			if (!!obj.goal) {
+				obj.goal = Players.doc(obj.goal)
+				batch.update(obj.goal, {
+					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+				})
+			}
+			if (!!obj.assist) {
+				obj.assist = Players.doc(obj.assist)
+				batch.update(obj.assist, {
+					"props.dateModified": timeModified, "props.userModified": userModified, ['assists.' + [Goal.id]]: true
+				})
+			}
+			/**						Teams					**/
+			if (!!obj.team) {
+				obj.team = Teams.doc(obj.team);
+				batch.update(obj.team, {
+					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+				})
+			}
+
 			/** 					Match					**/
+			if (!!obj.match) {
+				obj.match = Matches.doc(obj.match);
+				batch.update(obj.match, {
+					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+				})
+			}
+			/** 					Goals					**/
 			batch.set(Goal, obj);
 			await batch.commit();
 		}
