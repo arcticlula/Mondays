@@ -19,40 +19,40 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import requiredLogin from '../mixins/requiredLogin'
 
 export default {
-  name: 'home',
-  layout: 'home',
-  computed: {
-    ...mapState(['navbar', 'matches']),
-    ...mapState('login', ['user']),
-    ...mapGetters(['yearLow', 'yearHigh'])
-  },
-  components: {
-    matchCard,
-    highscore
-  },
-  methods: {
-    ...mapActions('matches', ['getMatchesByDate']),
-    openMatch(id) {
-      console.log(id)
-      this.$router.push({ name: 'match', query: { id: id } })
-    }
-  },
-  async fetch({ store }) {
-    try {
-      await store.dispatch('getMatchesByDate')
-    } catch (e) {
-      console.error(e)
-    }
-  },
-  async mounted() {
-    try {
-      await this.getMatchesByDate()
-    } catch (e) {
-      console.error(e)
-    }
-    console.log(this.matches)
-  }
-  // mixins: [requiredLogin]
+	name: 'home',
+	layout: 'home',
+	computed: {
+		...mapState(['navbar']),
+		...mapState('matches', ['matches']),
+		...mapState('login', ['user']),
+		...mapGetters(['yearLow', 'yearHigh'])
+	},
+	components: {
+		matchCard,
+		highscore
+	},
+	methods: {
+		...mapActions('matches', ['getMatchesByDate']),
+		openMatch(id) {
+			console.log(id)
+			this.$router.push({ name: 'match', query: { id: id } })
+		}
+	},
+	async fetch({ store }) {
+		try {
+			await store.dispatch('matches/getMatchesByDate')
+		} catch (e) {
+			console.error(e)
+		}
+	},
+	async mounted() {
+		try {
+			await this.getMatchesByDate()
+		} catch (e) {
+			console.error(e)
+		}
+	}
+	// mixins: [requiredLogin]
 }
 </script>
 

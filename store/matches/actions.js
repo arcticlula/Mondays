@@ -11,8 +11,8 @@ export default {
 	}),
 	getMatchesByDate: firestoreAction(async function (context) {
 		let Timestamp = this.$fireStoreObj.Timestamp;
-		let beginDate = Timestamp.fromDate(new Date(context.getters.yearLow));
-		let endDate = Timestamp.fromDate(new Date(context.getters.yearHigh));
+		let beginDate = Timestamp.fromDate(new Date(context.rootGetters.yearLow));
+		let endDate = Timestamp.fromDate(new Date(context.rootGetters.yearHigh));
 		let bindFirestoreRef = context.bindFirestoreRef;
 		const db = this.$fireStore.collection('Matches').orderBy("beginTime").startAt(beginDate).endAt(endDate);
 		await bindFirestoreRef('matches', db, { wait: true })
@@ -65,6 +65,29 @@ export default {
 			}
 			/** 					Match					**/
 			batch.set(Match, obj);
+			await batch.commit();
+		}
+		catch (e) {
+			console.log(e);
+		}
+	}),
+	setMatchTemp: firestoreAction(async function (context, data) {
+		let uid = this.$fireStore._credentials.currentUser.uid;
+		if (uid == null) return
+		let Timestamp = this.$fireStoreObj.Timestamp;
+		let Users = this.$fireStore.collection('Users');
+		let beginTime = Timestamp.fromDate(new Date('2019-04-22T22:00:00Z'));
+		let endTime = Timestamp.fromDate(new Date('2019-04-22T23:00:00Z'));
+		let Match = this.$fireStore.collection('Matches').doc(
+			'uVcMX348dTAEBeCjtmFg'
+		)
+		let timeModified = Timestamp.fromDate(new Date());
+		let userModified = Users.doc(uid);
+		let batch = this.$fireStore.batch();
+		try {
+			batch.update(Match, {
+				"props.dateModified": timeModified, "props.userModified": userModified, "beginTime": beginTime, "endTime": endTime
+			})
 			await batch.commit();
 		}
 		catch (e) {
