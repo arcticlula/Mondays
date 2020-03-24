@@ -66,38 +66,38 @@
               <b-tab title="Resumo" active>
                 <b-card-text>
                   <b-col cols="12">
-                    <div v-for="jogo in jogoInfo" v-bind:jogo="jogo" v-bind:key="jogo.idGolo">
-                      <div v-if="jogo.tipo!='O'">
-                        <b-row v-if="jogo.casa===true" class="my-1">
+                    <div v-for="goal in goals" :key="goal.id">
+                      <div v-if="!goal.isOwnGoal">
+                        <b-row v-if="isSameTeam(goal,'A')" class="my-1">
                           <b-col cols="12">
-                            <label class="pr-1">{{jogo.tempo}}</label>
+                            <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola"></i>
                             <label class="pr-1">
-                              <b>{{jogo.marcador}}</b>
+                              <b>{{goal.goal.name}}</b>
                             </label>
-                            <label v-if="jogo.assister">({{jogo.assister}})</label>
-                            <label v-else-if="jogo.tipo==='P'">(Penalidade)</label>
+                            <label v-if="!!goal.assist">({{goal.assist.name}})</label>
+                            <label v-else-if="goal.isPenalty">(Penalidade)</label>
                           </b-col>
                         </b-row>
                         <b-row v-else class="my-1">
                           <b-col cols="12" class="text-right">
-                            <label v-if="jogo.assister" class="pr-1">({{jogo.assister}})</label>
-                            <label v-else-if="jogo.tipo==='P'">(Penalidade)</label>
+                            <label v-if="!!goal.assist" class="pr-1">({{goal.assist.name}})</label>
+                            <label v-else-if="goal.isPenalty">(Penalidade)</label>
                             <label class="pr-1">
-                              <b>{{jogo.marcador}}</b>
+                              <b>{{goal.goal.name}}</b>
                             </label>
                             <i class="dl dl-bola"></i>
-                            <label class="pl-1">{{jogo.tempo}}</label>
+                            <label class="pl-1">{{goal.timeMin}}</label>
                           </b-col>
                         </b-row>
                       </div>
                       <div v-else>
-                        <b-row v-if="jogo.casa===false" class="my-1">
+                        <b-row v-if="isSameTeam(goal,'B')" class="my-1">
                           <b-col cols="12">
-                            <label class="pr-1">{{jogo.tempo}}</label>
+                            <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola text-red"></i>
                             <label class="pr-1">
-                              <b>{{jogo.marcador}}</b>
+                              <b>{{goal.goal.name}}</b>
                             </label>
                             <label>(Auto-Golo)</label>
                           </b-col>
@@ -106,10 +106,10 @@
                           <b-col cols="12" class="text-right">
                             <label class="pr-1">(Auto-Golo)</label>
                             <label class="pr-1">
-                              <b>{{jogo.marcador}}</b>
+                              <b>{{goal.goal.name}}</b>
                             </label>
                             <i class="dl dl-bola text-red"></i>
-                            <label class="pl-1">{{jogo.tempo}}</label>
+                            <label class="pl-1">{{goal.timeMin}}</label>
                           </b-col>
                         </b-row>
                       </div>
@@ -179,54 +179,66 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import court from '../components/match/court'
 import highscore from '../components/match/highscore'
 export default {
-  name: 'match',
-  layout: 'simple',
-  components: {
-    court,
-    highscore
-  },
-  computed: {
-    ...mapState('matches', ['match']),
-    matchDate() {
-      return this.match.beginTime.seconds
-    },
-    playersHome() {
-      return this.match.teamA.players
-    },
-    playersAway() {
-      return this.match.teamB.players
-    },
-    goalsHome() {
-      return Object.keys(this.match.teamA.goals).length
-    },
-    goalsAway() {
-      return Object.keys(this.match.teamB.goals).length
-    },
-    routerPath() {
-      return this.$nuxt.$route.name
-    },
-    routerQuery() {
-      return this.$nuxt.$route.query
-    }
-  },
-  methods: {
-    ...mapActions('matches', ['getMatchById'])
-  },
-  async fetch({ store, route }) {
-    try {
-      await store.dispatch('getMatchById', route.query.id)
-    } catch (e) {
-      console.error(e)
-    }
-  },
-  async mounted() {
-    try {
-      await this.getMatchById(this.routerQuery.id)
-    } catch (e) {
-      console.error(e)
-    }
-    console.log(this.match)
-  }
+	name: 'match',
+	layout: 'simple',
+	components: {
+		court,
+		highscore
+	},
+	computed: {
+		...mapState('matches', ['match']),
+		...mapState('goals', ['goals']),
+
+		matchDate() {
+			return this.match.beginTime.seconds
+		},
+		playersHome() {
+			return this.match.teamA.players
+		},
+		playersAway() {
+			return this.match.teamB.players
+		},
+		goalsHome() {
+			return Object.keys(this.match.teamA.goals).length
+		},
+		goalsAway() {
+			return Object.keys(this.match.teamB.goals).length
+		},
+		routerPath() {
+			return this.$nuxt.$route.name
+		},
+		routerQuery() {
+			return this.$nuxt.$route.query
+		}
+	},
+	methods: {
+		...mapActions('matches', ['getMatchById']),
+		...mapActions('goals', ['getGoalsFromMatch']),
+		isSameTeam(goal, letter) {
+			let goalId = goal.team ? goal.team.id : null
+			let matchId = this.match['team' + letter]
+				? this.match['team' + letter].id
+				: null
+			return goalId == matchId
+		}
+	},
+	async fetch({ store, route }) {
+		try {
+			await store.dispatch('matches/getMatchById', route.query.match)
+			await store.dispatch('goals/getGoalsFromMatch', route.query.match)
+		} catch (e) {
+			console.error(e)
+		}
+	},
+	async mounted() {
+		try {
+			await this.getMatchById(this.routerQuery.match)
+			await this.getGoalsFromMatch(this.routerQuery.match)
+		} catch (e) {
+			console.error(e)
+		}
+		console.log(this.match)
+	}
 }
 </script>
 

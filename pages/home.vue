@@ -35,7 +35,7 @@ export default {
 		...mapActions('matches', ['getMatchesByDate']),
 		openMatch(id) {
 			console.log(id)
-			this.$router.push({ name: 'match', query: { id: id } })
+			this.$router.push({ name: 'match', query: { match: id } })
 		}
 	},
 	async fetch({ store }) {
