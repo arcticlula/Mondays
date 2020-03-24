@@ -527,7 +527,7 @@ select:focus {
 }
 
 .card-body {
-	padding: 0rem 0.2rem;
+	padding: 0rem 0.2rem !important;
 	font-size: 0.8rem;
 }
 
