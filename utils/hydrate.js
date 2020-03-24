@@ -1,11 +1,11 @@
-import { get, set, fill } from 'lodash'
+import { get, set } from 'lodash'
 
 const getReference = async documentReference => {
     const res = await documentReference.get()
     const data = res.data()
 
     if (data && documentReference.id) {
-        data.uid = documentReference.id
+        data.id = documentReference.id
     }
 
     return data
@@ -18,13 +18,14 @@ export default async (document, paths = []) => Promise.all(
             for (let i = 0; i < documentField.length; i++) {
                 const documentReference = documentField[i];
                 if (!documentReference || !documentReference.path) {
-                    return console.warn(
+                    console.warn(
                         `Error hydrating documentReference for path "${path}": Not found or invalid reference`
                     )
                 }
-                const result = await getReference(documentReference)
-                console.log(result)
-                fill(documentField, result, i)
+                else {
+                    const result = await getReference(documentReference)
+                    documentField[i] = result;
+                }
             }
         }
         else {

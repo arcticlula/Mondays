@@ -1,6 +1,6 @@
 import moment from 'moment'
 
 export default () => ({
-  match: {},
+  match: { teamA: { players: [] }, teamB: { players: [] } },
   matches: {},
 })

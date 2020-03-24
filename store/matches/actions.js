@@ -7,15 +7,14 @@ export default {
 		await bindFirestoreRef('match', db, { wait: true })
 	}),
 	async getMatchByIdStatic(context, id) {
-		return this.$fireStore.collection('Matches').doc(id).get()
+		return await this.$fireStore.collection('Matches').doc(id).get()
 			.then(async documentSnapshot => {
 				const data = documentSnapshot.data()
-				console.log(data, hydrate)
 				await hydrate(data, ['teamA', 'teamB'])
 				await hydrate(data.teamA, ['players'])
 				await hydrate(data.teamB, ['players'])
-				console.log(data.teamA)
-				return data
+				data.id = id;
+				context.commit("setMatch", data)
 			})
 	},
 	getMatches: firestoreAction(async function ({ bindFirestoreRef }) {
