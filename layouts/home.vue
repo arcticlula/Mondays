@@ -7,7 +7,6 @@
       <a class="d-none d-sm-none d-md-none d-lg-block navbar-brand">
         <img width="35px" src="../assets/logo_login.png" />
       </a>
-      <span @click="rotate" class="navbar-toggler-icon rotate-90"></span>
       <div class="pl-2" id="navbarText" style="margin: 0 auto;">
         <ul class="navbar-nav">
           <li class="nav-item mr-2">
@@ -48,7 +47,7 @@
           </li>
         </ul>
       </div>
-      <client-only>
+      <!-- <client-only>
         <div class="navbar-vertical-dl">
           <nuxt-link to="home">
             <ul v-bind:class="{ active: routerPath == 'home' }">
@@ -94,7 +93,7 @@
             </ul>
           </nuxt-link>
         </div>
-      </client-only>
+      </client-only>-->
     </nav>
     <nuxt />
   </div>
@@ -105,75 +104,70 @@
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import moment from 'moment'
 export default {
-  name: 'home',
-  data() {
-    return {
-      monthDisabled: false,
-      monthArray: [
-        { value: '0', text: 'Todos' },
-        { value: '9', text: 'Setembro' },
-        { value: '10', text: 'Outubro' },
-        { value: '11', text: 'Novembro' },
-        { value: '12', text: 'Dezembro' },
-        { value: '13', text: 'Janeiro' },
-        { value: '14', text: 'Fevereiro' },
-        { value: '15', text: 'Março' },
-        { value: '16', text: 'Abril' },
-        { value: '17', text: 'Maio' },
-        { value: '18', text: 'Junho' },
-        { value: '19', text: 'Julho' },
-        { value: '20', text: 'Agosto' }
-      ],
-      yearArray: []
-    }
-  },
-  computed: {
-    ...mapState(['navbar', 'firstYear', 'nightMode']),
-    ...mapState('login', ['user']),
-    ...mapGetters(['yearHigh', 'yearLow']),
-    routerPath() {
-      return this.$nuxt.$route.name
-    }
-  },
-  methods: {
-    ...mapMutations(['setMonth']),
-    ...mapActions('matches', ['getMatchesByDate']),
-    async getMatches() {
-      if (this.yearHigh == moment().format('YYYY-MM-DD')) {
-        this.setMonth()
-        this.monthDisabled = true
-      } else this.monthDisabled = false
-      this.getMatchesByDate()
-    },
-    rotate() {
-      document.body.classList.toggle('enlarged')
-      document
-        .querySelector('.navbar-toggler-icon')
-        .classList.toggle('rotate-90')
-    }
-  },
-  beforeMount() {
-    let firstYear = moment(this.firstYear)
-    let yearArray = []
-    let years = Math.ceil(moment().diff(firstYear, 'years', true)) + 1
-    for (let i = years; i > 0; i--) {
-      if (i == years) {
-        yearArray.push({
-          text: 'Todos',
-          value: moment().format('YYYY-MM-DD')
-        })
-      } else {
-        let currYear = firstYear.clone().add(i, 'years')
-        let lastYear = currYear.clone().subtract(1, 'years')
-        // console.log(lastYear.format("YYYY-MM-DD"));
-        yearArray.push({
-          text: lastYear.format('YYYY') + '/' + currYear.format('YYYY'),
-          value: lastYear.format('YYYY-MM-DD')
-        })
-      }
-    }
-    this.yearArray = yearArray
-  }
+	name: 'home',
+	data() {
+		return {
+			monthDisabled: false,
+			monthArray: [
+				{ value: '0', text: 'Todos' },
+				{ value: '9', text: 'Setembro' },
+				{ value: '10', text: 'Outubro' },
+				{ value: '11', text: 'Novembro' },
+				{ value: '12', text: 'Dezembro' },
+				{ value: '13', text: 'Janeiro' },
+				{ value: '14', text: 'Fevereiro' },
+				{ value: '15', text: 'Março' },
+				{ value: '16', text: 'Abril' },
+				{ value: '17', text: 'Maio' },
+				{ value: '18', text: 'Junho' },
+				{ value: '19', text: 'Julho' },
+				{ value: '20', text: 'Agosto' }
+			],
+			yearArray: []
+		}
+	},
+	computed: {
+		...mapState(['navbar', 'firstYear', 'nightMode']),
+		...mapState('login', ['user']),
+		...mapGetters(['yearHigh', 'yearLow']),
+		routerPath() {
+			return this.$nuxt.$route.name
+		}
+	},
+	methods: {
+		...mapMutations(['setMonth']),
+		...mapActions('matches', ['getMatchesByDate']),
+		async getMatches() {
+			if (this.yearHigh == moment().format('YYYY-MM-DD')) {
+				this.setMonth()
+				this.monthDisabled = true
+			} else this.monthDisabled = false
+			this.getMatchesByDate()
+		}
+	},
+	beforeMount() {
+		let firstYear = moment(this.firstYear)
+		let yearArray = []
+		let years = Math.ceil(moment().diff(firstYear, 'years', true)) + 1
+		for (let i = years; i > 0; i--) {
+			if (i == years) {
+				yearArray.push({
+					text: 'Todos',
+					value: moment().format('YYYY-MM-DD')
+				})
+			} else {
+				let currYear = firstYear.clone().add(i, 'years')
+				let lastYear = currYear.clone().subtract(1, 'years')
+				// console.log(lastYear.format("YYYY-MM-DD"));
+				yearArray.push({
+					text:
+						lastYear.format('YYYY') + '/' + currYear.format('YYYY'),
+					value: lastYear.format('YYYY-MM-DD')
+				})
+			}
+		}
+		this.yearArray = yearArray
+	}
 }
 </script>
 

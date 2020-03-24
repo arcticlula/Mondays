@@ -1,8 +1,7 @@
 /* Base */
 
 body {
-	background: rgb(240, 240, 240);
-	height: 100%;
+	background: rgb(240, 240, 240) !important;
 }
 
 footer {
@@ -45,10 +44,6 @@ a {
 
 ul.exame-login {
 	list-style-type: none;
-}
-
-.enlarged #login-ok {
-	margin-left: 0px;
 }
 
 #login img {
@@ -202,33 +197,6 @@ span.navbar-toggler-icon.rotate-90 {
 	transform: rotate(90deg);
 }
 
-body.enlarged .navbar-vertical-dl ul li{
-	text-align: center !important;
-}
-
-body.enlarged .navbar-vertical-dl ul{
-	padding-left: 0px !important;
-}
-
-body.enlarged .content-page {
-	margin-top: 60px;
-	margin-left: 60px;
-	overflow: hidden;
-}
-
-body.enlarged #login.content-page {
-	margin-left: 0px;
-	margin-top: 0px;
-}
-
-body.enlarged .navbar-vertical-dl {
-	width:60px;
-}
-
-body.enlarged .hidding {
-	display: none;
-}
-
 .form-control:focus {
 	box-shadow: 0 4px 2px -2px rgba(0,123,255,.25);
 	background: rgba(0,123,255,.05);
@@ -246,7 +214,6 @@ body.enlarged .hidding {
 
 .content-page {
 	margin-top: 60px;
-	margin-left: 100px;
 	overflow: hidden;
 	padding: 0.5% 1%;
 	-webkit-transition-property:	margin;
@@ -759,23 +726,8 @@ ul#navbarUser a.dropdown-item:active {
 		top: 42px !important;
 	}
 
-	body.enlarged .navbar-vertical-dl {
-		width: 42px;
-	}
-
-	body.enlarged .content-page {
-		margin-top: 42px;
-		margin-left: 34px;
-	}
-
 	.content-page {
 		margin-top: 42px;
-		margin-left: 100px;
-	}
-
-	.enlarged .navbar-vertical-dl ul {
-		padding-top: 6px;
-		padding-bottom: 6px;
 	}
 
 	.navbar-vertical-dl ul {
@@ -847,16 +799,8 @@ label.custom-control-label {
 	display: inherit;
 }
 
-.enlarged .mesHide {
-	display: none;
-}
-
 .mesShow {
 	display: none;
-}
-
-.enlarged .mesShow {
-	display: inherit;
 }
 
 .resultado {
@@ -1028,10 +972,6 @@ label.empate::after {
 
 	.navbar-vertical-dl {
 		width: 100px !important;
-	}
-
-	body.enlarged .navbar-vertical-dl {
-		width: 34px !important;
 	}
 
 	ul.logout {

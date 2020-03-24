@@ -47,22 +47,14 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  name: 'simple',
-  computed: {
-    ...mapState(['nightMode']),
-    ...mapState('login', ['user']),
-    routerPath() {
-      return this.$nuxt.$route.name
-    }
-  },
-  methods: {
-    rotate() {
-      document.body.classList.toggle('enlarged')
-      document
-        .querySelector('.navbar-toggler-icon')
-        .classList.toggle('rotate-90')
-    }
-  }
+	name: 'simple',
+	computed: {
+		...mapState(['nightMode']),
+		...mapState('login', ['user']),
+		routerPath() {
+			return this.$nuxt.$route.name
+		}
+	}
 }
 </script>
 
