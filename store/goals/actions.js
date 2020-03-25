@@ -1,29 +1,29 @@
 import { firestoreAction } from 'vuexfire'
+import { firestore, Timestamp } from '../../plugins/firebase'
 import moment from 'moment';
 
 export default {
 	getGoals: firestoreAction(async function ({ bindFirestoreRef }) {
-		const db = this.$fireStore.collection('Goals')
+		const db = firestore.collection('Goals')
 		await bindFirestoreRef('goals', db, { wait: true })
 	}),
 	getGoalsFromMatch: firestoreAction(async function ({ bindFirestoreRef }, id) {
-		let Goals = this.$fireStore.collection('Goals');
-		let Match = this.$fireStore.collection('Matches').doc(id);
+		let Goals = firestore.collection('Goals');
+		let Match = firestore.collection('Matches').doc(id);
 		const db = Goals.where("match", "==", Match).orderBy('timeMin')
 		await bindFirestoreRef('goals', db, { wait: true })
 	}),
 	setGoal: firestoreAction(async function (context, data) {
-		let Timestamp = this.$fireStoreObj.Timestamp;
 		let obj = JSON.parse(JSON.stringify(data))
-		let Users = this.$fireStore.collection('Users');
-		let Players = this.$fireStore.collection('Players');
-		let Teams = this.$fireStore.collection('Teams');
-		let Matches = this.$fireStore.collection('Matches');
+		let Users = firestore.collection('Users');
+		let Players = firestore.collection('Players');
+		let Teams = firestore.collection('Teams');
+		let Matches = firestore.collection('Matches');
 		let Match = await Matches.doc(obj.match).get();
-		let Goal = this.$fireStore.collection('Goals').doc()
+		let Goal = firestore.collection('Goals').doc()
 		let timeModified = Timestamp.fromDate(new Date());
-		let userModified = Users.doc(this.$fireStore._credentials.currentUser.uid);
-		let batch = this.$fireStore.batch();
+		let userModified = Users.doc(firestore._credentials.currentUser.uid);
+		let batch = firestore.batch();
 		try {
 			obj.props.dateCreated = timeModified
 			obj.props.dateModified = timeModified

@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "segundas-93d0c"
+  },
+  "targets": {
+    "segundas-93d0c": {
+      "hosting": {
+        "segundas-prod": [
+          "segundas"
+        ],
+        "segundas-dev": [
+          "segundas-93d0c"
+        ]
+      }
+    }
+  }
+}

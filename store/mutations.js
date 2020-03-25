@@ -11,5 +11,5 @@ export default {
 	},
 	setMonth(state) {
 		state.navbar.month = "0";
-	}
+	},
 }

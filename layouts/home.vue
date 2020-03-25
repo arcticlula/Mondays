@@ -7,7 +7,7 @@
       <a class="d-none d-sm-none d-md-none d-lg-block navbar-brand">
         <img width="35px" src="../assets/logo_login.png" />
       </a>
-      <span @click="rotate" class="navbar-toggler-icon rotate-90"></span>
+      <span class="navbar-toggler-icon rotate-90"></span>
       <div class="pl-2" id="navbarText" style="margin: 0 auto;">
         <ul class="navbar-nav">
           <li class="nav-item mr-2">
@@ -29,7 +29,7 @@
       </div>
       <div style="text-align: right;">
         <ul id="navbarUser">
-          <li class="btn-pages user_name">{{user}}</li>
+          <li class="btn-pages user_name">{{user.profile.name}}</li>
           <li class="collapse-dl btn-pages">
             <client-only>
               <b-dropdown right variant="outline-secondary" size="sm">
@@ -144,15 +144,10 @@ export default {
         this.monthDisabled = true
       } else this.monthDisabled = false
       this.getMatchesByDate()
-    },
-    rotate() {
-      document.body.classList.toggle('enlarged')
-      document
-        .querySelector('.navbar-toggler-icon')
-        .classList.toggle('rotate-90')
     }
   },
   beforeMount() {
+    console.log(this.user)
     let firstYear = moment(this.firstYear)
     let yearArray = []
     let years = Math.ceil(moment().diff(firstYear, 'years', true)) + 1
