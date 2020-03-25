@@ -29,6 +29,7 @@
       </div>
       <div style="text-align: right;">
         <ul id="navbarUser">
+          <b-avatar v-if="activeUser.displayName" :src="activeUser.photoURL"></b-avatar>
           <li class="btn-pages user_name">{{activeUser.displayName}}</li>
           <li class="collapse-dl btn-pages">
             <client-only>
