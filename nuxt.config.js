@@ -32,13 +32,18 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vue-moment.js', '~/plugins/firebase.js', { src: '~/plugins/localStorage.js', ssr: false }],
+
+  router: {
+    middleware: 'router-auth'
+  },
+  plugins: ['~/plugins/vue-moment.js', '~/plugins/fireauth.js'],
 
   /*
    ** Nuxt.js modules
    
    */
-  modules: ['@nuxtjs/svg',
+  modules: ['@nuxtjs/pwa',
+    '@nuxtjs/svg',
     'bootstrap-vue/nuxt'
   ]
 }

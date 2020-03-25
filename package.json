@@ -12,6 +12,7 @@
     "deploy": "npm run generate && firebase deploy --only hosting --project nuxt-fire-vuexfire"
   },
   "dependencies": {
+    "@nuxtjs/pwa": "^3.0.0-beta.20",
     "@nuxtjs/svg": "^0.1.6",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.8.0",

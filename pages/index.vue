@@ -25,10 +25,10 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: 'login',
-  methods: {
-    ...mapActions('login', ['googleSignIn'])
-  }
+	name: 'login',
+	methods: {
+		...mapActions(['googleSignIn'])
+	}
 }
 </script>
 
