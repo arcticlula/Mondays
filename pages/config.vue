@@ -44,23 +44,24 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import { mapFields } from 'vuex-map-fields'
 export default {
-  name: 'config',
-  layout: 'home',
-  computed: {
-    ...mapState(['nightMode']),
-    nightModeVar: {
-      get: function() {
-        return this.nightMode
-      },
-      set: function(data) {
-        return this.setNightMode(data)
-      }
-    }
-  },
-  methods: {
-    ...mapMutations(['setNightMode'])
-  }
+	name: 'config',
+	layout: 'home',
+	computed: {
+		...mapState(['nightMode']),
+		nightModeVar: {
+			get: function() {
+				return this.nightMode
+			},
+			set: function(data) {
+				return this.setNightMode(data)
+			}
+		}
+	},
+	methods: {
+		...mapMutations(['setNightMode'])
+	}
 }
 </script>
 

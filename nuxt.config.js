@@ -36,7 +36,7 @@ export default {
   router: {
     middleware: 'router-auth'
   },
-  plugins: ['~/plugins/vue-moment.js', '~/plugins/fireauth.js'],
+  plugins: ['~/plugins/vue-moment.js', '~/plugins/fireauth.js', { src: '~/plugins/localStorage.js', ssr: false }],
 
   /*
    ** Nuxt.js modules
