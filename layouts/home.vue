@@ -7,7 +7,6 @@
       <a class="d-none d-sm-none d-md-none d-lg-block navbar-brand">
         <img width="35px" src="../assets/icon.png" />
       </a>
-      <span class="navbar-toggler-icon rotate-90"></span>
       <div class="pl-2" id="navbarText" style="margin: 0 auto;">
         <ul class="navbar-nav">
           <li class="nav-item mr-2">
@@ -49,7 +48,7 @@
           </li>
         </ul>
       </div>
-      <client-only>
+      <!-- <client-only>
         <div class="navbar-vertical-dl">
           <nuxt-link to="home">
             <ul v-bind:class="{ active: routerPath == 'home' }">
@@ -93,9 +92,39 @@
             </li>
           </ul>
         </div>
-      </client-only>
+      </client-only>-->
     </nav>
     <nuxt />
+    <!-- Menu Horizonal -->
+    <b-row>
+      <b-col cols="12" class="footerDl px-0">
+        <nuxt-link to="config">
+          <b-button
+            size="sm"
+            class="mondaysIcon icon1"
+            variant="outline-primary"
+            v-bind:class="{ active: routerPath == 'config' }"
+          >
+            <span class="dl dl dl-config"></span>
+          </b-button>
+        </nuxt-link>
+        <nuxt-link to="home">
+          <b-button
+            size="sm"
+            class="mondaysIcon icon2"
+            variant="outline-primary"
+            v-bind:class="{ active: routerPath == 'home' }"
+          >
+            <span class="dl dl-req"></span>
+          </b-button>
+        </nuxt-link>
+        <nuxt-link to="home">
+          <b-button size="sm" class="mondaysIcon icon3" variant="outline-primary">
+            <span class="dl dl-player"></span>
+          </b-button>
+        </nuxt-link>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
