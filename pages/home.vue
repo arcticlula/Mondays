@@ -16,7 +16,6 @@
 import matchCard from '../components/home/matchCard'
 import highscore from '../components/home/highscore'
 import { mapState, mapGetters, mapActions } from 'vuex'
-import requiredLogin from '../mixins/requiredLogin'
 
 export default {
 	name: 'home',
@@ -24,7 +23,6 @@ export default {
 	computed: {
 		...mapState(['navbar']),
 		...mapState('matches', ['matches']),
-		...mapState('login', ['user']),
 		...mapGetters(['yearLow', 'yearHigh'])
 	},
 	components: {
@@ -52,7 +50,6 @@ export default {
 			console.error(e)
 		}
 	}
-	// mixins: [requiredLogin]
 }
 </script>
 

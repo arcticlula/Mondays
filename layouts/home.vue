@@ -28,7 +28,8 @@
       </div>
       <div style="text-align: right;">
         <ul id="navbarUser">
-          <li class="btn-pages user_name">{{user}}</li>
+          <b-avatar v-if="activeUser.displayName" :src="activeUser.photoURL"></b-avatar>
+          <li class="btn-pages user_name">{{activeUser.displayName}}</li>
           <li class="collapse-dl btn-pages">
             <client-only>
               <b-dropdown right variant="outline-secondary" size="sm">
@@ -40,7 +41,7 @@
                 </b-dropdown-item>
                 <b-dropdown-divider></b-dropdown-divider>
                 <b-dropdown-item>
-                  <nuxt-link to="login">Log out</nuxt-link>
+                  <span @click="signOut">Log out</span>
                 </b-dropdown-item>
               </b-dropdown>
             </client-only>
@@ -82,16 +83,14 @@
             </ul>
           </nuxt-link>
           <hr class="hr_menu" />
-          <nuxt-link to="login">
-            <ul class="logout" v-bind:class="{ active: routerPath == 'login' }">
-              <li class="nav-item">
-                <a class="nav-link p-none">
-                  <span class="dl dl-remove"></span>
-                  <span class="hidding pl-1">Logout</span>
-                </a>
-              </li>
-            </ul>
-          </nuxt-link>
+          <ul @click="signOut" class="logout">
+            <li class="nav-item">
+              <a class="nav-link p-none">
+                <span class="dl dl-remove"></span>
+                <span class="hidding pl-1">Logout</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </client-only>-->
     </nav>
@@ -128,14 +127,14 @@ export default {
 	},
 	computed: {
 		...mapState(['navbar', 'firstYear', 'nightMode']),
-		...mapState('login', ['user']),
-		...mapGetters(['yearHigh', 'yearLow']),
+		...mapGetters(['activeUser', 'yearHigh', 'yearLow']),
 		routerPath() {
 			return this.$nuxt.$route.name
 		}
 	},
 	methods: {
 		...mapMutations(['setMonth']),
+		...mapActions(['signOut']),
 		...mapActions('matches', ['getMatchesByDate']),
 		async getMatches() {
 			if (this.yearHigh == moment().format('YYYY-MM-DD')) {
@@ -146,6 +145,7 @@ export default {
 		}
 	},
 	beforeMount() {
+		console.log(this.activeUser)
 		let firstYear = moment(this.firstYear)
 		let yearArray = []
 		let years = Math.ceil(moment().diff(firstYear, 'years', true)) + 1

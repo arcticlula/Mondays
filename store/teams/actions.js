@@ -2,18 +2,17 @@ import { firestoreAction } from 'vuexfire'
 
 export default {
 	getTeams: firestoreAction(async function ({ bindFirestoreRef }) {
-		const db = this.$fireStore.collection('Teams')
+		const db = firestore.collection('Teams')
 		await bindFirestoreRef('teams', db, { wait: true })
 	}),
 	setTeam: firestoreAction(async function (context, data) {
-		let Timestamp = this.$fireStoreObj.Timestamp;
 		let obj = JSON.parse(JSON.stringify(data))
-		let Users = this.$fireStore.collection('Users');
-		let Players = this.$fireStore.collection('Players')
-		let Team = this.$fireStore.collection('Teams').doc()
+		let Users = firestore.collection('Users');
+		let Players = firestore.collection('Players')
+		let Team = firestore.collection('Teams').doc()
 		let timeModified = Timestamp.fromDate(new Date());
-		let userModified = Users.doc(this.$fireStore._credentials.currentUser.uid);
-		let batch = this.$fireStore.batch();
+		let userModified = Users.doc(firestore._credentials.currentUser.uid);
+		let batch = firestore.batch();
 		try {
 			obj.props.dateCreated = timeModified
 			obj.props.dateModified = timeModified

@@ -7,13 +7,14 @@
       <a class="d-none d-sm-none d-md-none d-lg-block navbar-brand">
         <img width="35px" src="../assets/logo_login.png" />
       </a>
-      <span @click="rotate" class="navbar-toggler-icon rotate-90"></span>
+      <span class="navbar-toggler-icon rotate-90"></span>
       <div class="pl-2" id="navbarText" style="margin: 0 auto;">
         <ul class="navbar-nav"></ul>
       </div>
       <div style="text-align: right;">
         <ul id="navbarUser">
-          <li class="btn-pages user_name">{{user}}</li>
+          <b-avatar variant="info" src="https://placekitten.com/300/300"></b-avatar>
+          <li class="btn-pages user_name">{{activeUser.displayName}}</li>
           <!-- <li class="btn-pages">
 					<b-button variant="danger" size="sm">
 						<b>-20</b>
@@ -45,12 +46,12 @@
 
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
 	name: 'simple',
 	computed: {
 		...mapState(['nightMode']),
-		...mapState('login', ['user']),
+		...mapGetters(['activeUser']),
 		routerPath() {
 			return this.$nuxt.$route.name
 		}

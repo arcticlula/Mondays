@@ -1,5 +1,8 @@
 import moment from 'moment'
 export default {
+  activeUser: (state) => {
+    return state.user
+  },
   yearHigh(state) {
     let date = state.navbar;
     if (date.year == moment().format("YYYY-MM-DD")) return date.year;

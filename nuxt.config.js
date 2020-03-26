@@ -1,7 +1,7 @@
 import config from "./config"
 const path = require('path')
 export default {
-  mode: 'universal',
+  mode: 'spa',
   /*
    ** Headers of the page
    */
@@ -29,22 +29,18 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vue-moment.js'],
+
+  router: {
+    middleware: 'router-auth'
+  },
+  plugins: ['~/plugins/vue-moment.js', '~/plugins/fireauth.js'],
 
   /*
    ** Nuxt.js modules
    
    */
-  modules: ['@nuxtjs/svg',
-    'bootstrap-vue/nuxt',
-    [
-      'nuxt-fire',
-      {
-        config: config,
-        services: {
-          firestore: true
-        }
-      }
-    ]
+  modules: ['@nuxtjs/pwa',
+    '@nuxtjs/svg',
+    'bootstrap-vue/nuxt'
   ]
 }
