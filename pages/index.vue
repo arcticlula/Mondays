@@ -6,7 +6,7 @@
           <div class="card py-3 px-4">
             <div class="row">
               <div class="col-12 mt-1 mb-4 text-center">
-                <img src="../assets/logo_login.png" />
+                <img src="../assets/icon.png" />
               </div>
             </div>
             <div class="row">

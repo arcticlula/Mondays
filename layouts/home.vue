@@ -5,7 +5,7 @@
       v-bind:class="[{ 'navbar-dark':nightMode }, 'navbar-light']"
     >
       <a class="d-none d-sm-none d-md-none d-lg-block navbar-brand">
-        <img width="35px" src="../assets/logo_login.png" />
+        <img width="35px" src="../assets/icon.png" />
       </a>
       <span class="navbar-toggler-icon rotate-90"></span>
       <div class="pl-2" id="navbarText" style="margin: 0 auto;">

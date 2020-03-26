@@ -151,9 +151,7 @@
             label-text-align="right"
             label-for="input-5"
           >
-            <b-btn type="submit" size="sm" variant="outline-primary">
-              <b-icon-plus />
-            </b-btn>
+            <b-btn type="submit" size="sm" variant="outline-primary">+</b-btn>
           </b-form-group>
         </b-row>
       </b-card>
@@ -182,95 +180,95 @@ import { mapState, mapActions } from 'vuex'
 import isTimestamp from '../utils/isTimestamp'
 
 export default {
-  name: 'addGoal',
-  layout: 'dev-add',
-  computed: {
-    ...mapState('matches', ['match', 'matches']),
-    ...mapState('goals', ['goals']),
-    routerQuery() {
-      return this.$nuxt.$route.query
-    },
-    playersScore() {
-      // return []
-      return this.match['team' + this.teamLetter].players
-    },
-    playersAssist() {
-      // return []
-      return this.match['team' + this.teamLetter].players.filter((s) => {
-        return s.id != this.form.goal
-      })
-    }
-  },
-  data() {
-    return {
-      teamLetter: 'A',
-      form: {
-        assist: null,
-        goal: null,
-        match: null,
-        team: null,
-        time: '',
-        timeMin: 0,
-        type: 'N',
-        props: {}
-      },
-      show: true
-    }
-  },
-  methods: {
-    ...mapActions('matches', ['getMatchByIdStatic']),
-    ...mapActions('goals', ['getGoalsFromMatch', 'setGoal']),
-    isSameTeam(goal, letter) {
-      // console.log(goal, this.match)
-      let goalId = goal.team ? goal.team.id : null
-      let matchId = this.match['team' + letter]
-        ? this.match['team' + letter].id
-        : null
-      return goalId == matchId
-      // return (letter = 'A' ? true : false)
-    },
-    setTeamId() {
-      this.$nextTick(() => {
-        this.form.team = this.match['team' + this.teamLetter].id
-      })
-    },
-    async onSubmit(evt) {
-      evt.preventDefault()
-      await this.setGoal(this.form)
-      this.form.assist = null
-      this.form.goal = null
-      this.form.type = 'N'
-      this.form.props = {}
-      this.show = false
-      this.$nextTick(() => {
-        this.show = true
-      })
-    },
-    async onReset(evt) {
-      evt.preventDefault()
-    }
-  },
-  async fetch({ store, route }) {
-    try {
-      await store.dispatch('goals/getGoalsFromMatch', route.query.match)
-      // await store.dispatch('matches/getMatchByIdStatic', route.query.match)
-    } catch (e) {
-      console.error(e)
-    }
-  },
-  async mounted() {
-    try {
-      await this.getMatchByIdStatic(this.routerQuery.match)
-      await this.getGoalsFromMatch(this.routerQuery.match)
-      console.log(this.match)
-      this.form.time = this.match.beginTime
-        .toDate()
-        .toLocaleTimeString('pt-PT', { timeZone: 'UTC' })
-      this.form.match = this.match.id
-      this.form.team = this.match.teamA.id
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'addGoal',
+	layout: 'dev-add',
+	computed: {
+		...mapState('matches', ['match', 'matches']),
+		...mapState('goals', ['goals']),
+		routerQuery() {
+			return this.$nuxt.$route.query
+		},
+		playersScore() {
+			// return []
+			return this.match['team' + this.teamLetter].players
+		},
+		playersAssist() {
+			// return []
+			return this.match['team' + this.teamLetter].players.filter((s) => {
+				return s.id != this.form.goal
+			})
+		}
+	},
+	data() {
+		return {
+			teamLetter: 'A',
+			form: {
+				assist: null,
+				goal: null,
+				match: null,
+				team: null,
+				time: '',
+				timeMin: 0,
+				type: 'N',
+				props: {}
+			},
+			show: true
+		}
+	},
+	methods: {
+		...mapActions('matches', ['getMatchByIdStatic']),
+		...mapActions('goals', ['getGoalsFromMatch', 'setGoal']),
+		isSameTeam(goal, letter) {
+			// console.log(goal, this.match)
+			let goalId = goal.team ? goal.team.id : null
+			let matchId = this.match['team' + letter]
+				? this.match['team' + letter].id
+				: null
+			return goalId == matchId
+			// return (letter = 'A' ? true : false)
+		},
+		setTeamId() {
+			this.$nextTick(() => {
+				this.form.team = this.match['team' + this.teamLetter].id
+			})
+		},
+		async onSubmit(evt) {
+			evt.preventDefault()
+			await this.setGoal(this.form)
+			this.form.assist = null
+			this.form.goal = null
+			this.form.type = 'N'
+			this.form.props = {}
+			this.show = false
+			this.$nextTick(() => {
+				this.show = true
+			})
+		},
+		async onReset(evt) {
+			evt.preventDefault()
+		}
+	},
+	async fetch({ store, route }) {
+		try {
+			await store.dispatch('goals/getGoalsFromMatch', route.query.match)
+			// await store.dispatch('matches/getMatchByIdStatic', route.query.match)
+		} catch (e) {
+			console.error(e)
+		}
+	},
+	async mounted() {
+		try {
+			await this.getMatchByIdStatic(this.routerQuery.match)
+			await this.getGoalsFromMatch(this.routerQuery.match)
+			console.log(this.match)
+			this.form.time = this.match.beginTime
+				.toDate()
+				.toLocaleTimeString('pt-PT', { timeZone: 'UTC' })
+			this.form.match = this.match.id
+			this.form.team = this.match.teamA.id
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>

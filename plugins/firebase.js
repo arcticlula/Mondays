@@ -4,6 +4,7 @@ import 'firebase/firestore'
 import config from '../config'
 
 !firebase.apps.length ? firebase.initializeApp(config) : ''
+console.log("hello")
 
 export const Timestamp = firebase.firestore.Timestamp
 export const auth = firebase.auth()

@@ -1,4 +1,5 @@
 import { firestoreAction } from 'vuexfire'
+import { firestore, Timestamp } from '../../plugins/firebase'
 
 export default {
 	getTeams: firestoreAction(async function ({ bindFirestoreRef }) {

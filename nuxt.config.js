@@ -45,5 +45,14 @@ export default {
   modules: ['@nuxtjs/pwa',
     '@nuxtjs/svg',
     'bootstrap-vue/nuxt'
-  ]
+  ],
+  pwa: {
+    manifest: {
+      "name": "Segundas",
+      "display": "fullscreen",
+      "orientation": "portrait",
+      "scope": "/",
+      "start_url": "/"
+    }
+  }
 }

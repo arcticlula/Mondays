@@ -85,5 +85,56 @@ export default {
 		catch (e) {
 			console.log(e);
 		}
+	}),
+	delGoal: firestoreAction(async function (context, id) {
+		let obj = JSON.parse(JSON.stringify(data))
+		let Users = firestore.collection('Users');
+		let Players = firestore.collection('Players');
+		let Teams = firestore.collection('Teams');
+		let Matches = firestore.collection('Matches');
+		let Match = await Matches.doc(obj.match).get();
+		let Goal = firestore.collection('Goals').doc(id)
+		let timeModified = Timestamp.fromDate(new Date());
+		let userModified = Users.doc(firestore._credentials.currentUser.uid);
+		let lastOperation = 'Delete Goal';
+		let batch = firestore.batch();
+		try {
+			/**						Goal					**/
+			batch.delete(Goal)
+			/**						Players					**/
+			if (!!obj.goal) {
+				obj.goal = Players.doc(obj.goal)
+				batch.update(obj.goal, {
+					"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": lastOperation
+				})
+				batch.delete(obj.goal['goals.' + [Goal.id]])
+			}
+			if (!!obj.assist) {
+				obj.assist = Players.doc(obj.assist)
+				batch.update(obj.assist, {
+					"props.dateModified": timeModified, "props.userModified": userModified, ['assists.' + [Goal.id]]: true
+				})
+			}
+			/**						Teams					**/
+			if (!!obj.team) {
+				obj.team = Teams.doc(obj.team);
+				batch.update(obj.team, {
+					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+				})
+			}
+
+			/** 					Match					**/
+			if (!!obj.match) {
+				obj.match = Matches.doc(obj.match);
+				batch.update(obj.match, {
+					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+				})
+			}
+			/** 					Goals					**/
+			// await batch.commit();
+		}
+		catch (e) {
+			console.log(e);
+		}
 	})
 }
