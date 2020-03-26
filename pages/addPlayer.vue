@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <b-card class="m-3">
+  <div class="px-3">
+    <b-card>
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
         <b-form-group id="input-group-1" label="Nome:" label-for="input-1">
           <b-form-input id="input-2" v-model="form.name" required placeholder="Enter name"></b-form-input>
@@ -40,68 +40,68 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: 'addPlayer',
-  layout: 'dev-add',
-  computed: {
-    ...mapState('players', ['players'])
-  },
-  data() {
-    return {
-      form: {
-        assists: {},
-        goals: {},
-        matches: {},
-        teams: {},
-        dob: '',
-        name: '',
-        nickname: '',
-        props: {}
-      },
-      show: true
-    }
-  },
-  methods: {
-    ...mapActions('players', ['getPlayers', 'setPlayer']),
-    onSubmit(evt) {
-      evt.preventDefault()
-      // Timestamp.fromDate(new Date()),
-      this.setPlayer(this.form)
-      // alert(JSON.stringify(this.form))
-    },
-    onReset(evt) {
-      evt.preventDefault()
-      // Reset our form values
-      this.form.assists = {}
-      this.form.goals = {}
-      this.form.matches = {}
-      this.form.teams = {}
-      this.form.dob = ''
-      this.form.name = ''
-      this.form.nickname = ''
+	name: 'addPlayer',
+	layout: 'dev-add',
+	computed: {
+		...mapState('players', ['players'])
+	},
+	data() {
+		return {
+			form: {
+				assists: {},
+				goals: {},
+				matches: {},
+				teams: {},
+				dob: '',
+				name: '',
+				nickname: '',
+				props: {}
+			},
+			show: true
+		}
+	},
+	methods: {
+		...mapActions('players', ['getPlayers', 'setPlayer']),
+		onSubmit(evt) {
+			evt.preventDefault()
+			// Timestamp.fromDate(new Date()),
+			this.setPlayer(this.form)
+			// alert(JSON.stringify(this.form))
+		},
+		onReset(evt) {
+			evt.preventDefault()
+			// Reset our form values
+			this.form.assists = {}
+			this.form.goals = {}
+			this.form.matches = {}
+			this.form.teams = {}
+			this.form.dob = ''
+			this.form.name = ''
+			this.form.nickname = ''
 
-      // Trick to reset/clear native browser form validation state
-      this.show = false
-      this.$nextTick(() => {
-        this.show = true
-      })
-    }
-  },
-  async fetch({ store }) {
-    try {
-      await store.dispatch('players/getPlayers')
-    } catch (e) {
-      console.error(e)
-    }
-    console.log(store.state.players)
-  },
-  async mounted() {
-    try {
-      await this.getPlayers()
-    } catch (e) {
-      console.error(e)
-    }
-    console.log(this.players)
-  }
+			// Trick to reset/clear native browser form validation state
+			this.show = false
+			this.$nextTick(() => {
+				this.show = true
+			})
+		}
+	},
+	async fetch({ store }) {
+		try {
+			await store.dispatch('players/getPlayers')
+		} catch (e) {
+			console.error(e)
+		}
+		console.log(store.state.players)
+	},
+	async mounted() {
+		try {
+			await this.getPlayers()
+		} catch (e) {
+			console.error(e)
+		}
+		console.log(this.players)
+	}
 }
 </script>
 

@@ -220,6 +220,7 @@ span.navbar-toggler-icon.rotate-90 {
 	-webkit-transition-duration: 0.5s;
 	transition-property: margin;
 	transition-duration: 0.5s;
+	margin-bottom: 60px;
 }
 
 .icon-link {
@@ -501,6 +502,10 @@ a.nav-item.nav-link {
 
 .custom-select {
 	height: 33px;
+	background: #fff !important;
+		-moz-appearance: inner-spin-button !important;
+		 -webkit-appearance: inner-spin-button !important;
+		 appearance: inner-spin-button !important;
 }
 
 select:focus {
@@ -553,8 +558,13 @@ select:focus {
 ul#navbarUser {
 	display: inline-block !important;
 	list-style-type: none;
-	padding-inline-start: 0px;
 	margin-bottom: 0px;
+	margin-block-start: 0px !important;
+    margin-block-end:  0px !important;
+    margin-inline-start: 0px !important;
+    margin-inline-end: 0px !important;
+	padding-inline-start: 0px !important;
+	padding-left: 0px !important;
 }
 
 ul#navbarUser li {
@@ -612,63 +622,7 @@ ul#navbarUser a.dropdown-item:active {
 
 }
 
-@media (max-width: 992px) {
 
-	#login .card {
-		margin: 15% auto;
-		width: 100%;
-	}
-
-	#login-ok .card {
-		margin: 15% auto;
-		width: 100%;
-	}
-
-	.nav-tabs {
-		display: block;
-	}
-
-	.nav-tabs .nav-item.show .nav-link,
-	.nav-tabs .nav-link.active {
-		border-color: #007bff;
-		border-radius: .25rem;
-	}
-
-	.dl-subtopic span {
-		float: none;
-		text-align: left;
-	}
-
-	.ml-none-sm {
-		margin-left: 0px !important;
-	}
-
-	#tabsnav .card-header {
-		padding: 0px !important;
-		border-bottom: 0px !important;
-	}
-
-	#tabsnav .nav-tabs .nav-item.show .nav-link {
-		border-radius: 0px !important;
-	}
-
-	#tabsnav .nav-tabs .nav-link.active {
-		border-radius: 0px !important;
-	}
-
-	#tabsnav .nav-tabs .nav-link:hover {
-		border-radius: 0px !important;
-	}
-
-}
-
-@media (max-width: 760px) {
-
-	h6 {
-		font-size: 10px;
-	}
-
-}
 
 /* Navbar */
 .navbar .input-group-text {
@@ -693,6 +647,7 @@ ul#navbarUser a.dropdown-item:active {
 
 .navbar {
 	font-size: 0.8rem !important;
+	align-content: center;
 }
 
 .navbar .input-group-text {
@@ -1314,3 +1269,182 @@ body.moon input:autofill {
   .slider.round:before {
 	border-radius: 50%;
   }
+
+
+  @media (max-width: 992px) {
+
+	#login .card {
+		margin: 15% auto;
+		width: 100%;
+	}
+
+	#login-ok .card {
+		margin: 15% auto;
+		width: 100%;
+	}
+
+	.nav-tabs {
+		display: block;
+	}
+
+	.nav-tabs .nav-item.show .nav-link,
+	.nav-tabs .nav-link.active {
+		border-color: #007bff;
+		border-radius: .25rem;
+	}
+
+	.dl-subtopic span {
+		float: none;
+		text-align: left;
+	}
+
+	.ml-none-sm {
+		margin-left: 0px !important;
+	}
+
+	#tabsnav .card-header {
+		padding: 0px !important;
+		border-bottom: 0px !important;
+	}
+
+	#tabsnav .nav-tabs .nav-item.show .nav-link {
+		border-radius: 0px !important;
+	}
+
+	#tabsnav .nav-tabs .nav-link.active {
+		border-radius: 0px !important;
+	}
+
+	#tabsnav .nav-tabs .nav-link:hover {
+		border-radius: 0px !important;
+	}
+
+	ul#navbarUser li.btn-pages.user_name {
+		display: none;
+	}
+
+}
+
+@media (max-width: 760px) {
+
+	h6 {
+		font-size: 10px;
+	}
+
+}
+
+/* Menu horizontal */
+/* Day */
+button:focus {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.mondaysIcon {
+	width: 62px;
+	height: 50px;
+	border: none !important;
+	color: rgb(0, 172, 211);
+	font-size: 15px;
+	line-height: 1.2 !important;
+	text-align: center;
+	outline: none !important;
+}
+
+.mondaysIcon.btn-outline-primary:not(:disabled):not(.disabled):active,
+.mondaysIcon.btn-outline-primary:not(:disabled):not(.disabled).active,
+.show > .mondaysIcon.btn-outline-primary.dropdown-toggle {
+	background: rgb(0, 172, 211);
+	border-radius: 0px;
+}
+
+.mondaysIcon:hover {
+	border-radius: 0px !important;
+	background: rgb(0, 172, 211);
+	color: white;
+	outline: none !important;
+}
+
+.mondaysIcon:focus {
+	border-radius: 0px !important;
+	background: rgb(0, 172, 211) !important;
+	color: white;
+	outline: none !important;
+}
+
+.mondaysIcon:active {
+	border-radius: 0px !important;
+	background: rgb(0, 172, 211) !important;
+	color: white;
+	outline: none !important;
+}
+
+.mondaysIcon:after {
+	text-align: center !important;
+	display: block;
+	font-size: 10px;
+}
+
+.icon1:after {
+	content: "Config.";
+}
+
+.icon2:after {
+	content: "Home";
+}
+
+.icon3:after {
+	content: "Perfil";
+}
+.footerDl {
+	position: fixed !important;
+	display: block;
+	text-align: center;
+	background: #fcfcfc;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 50px;
+	border-top: 1px solid rgb(226, 226, 226);
+	-webkit-box-shadow: 0px -1px 6px 0px rgba(0, 0, 0, 0.1);
+	-moz-box-shadow: 0px -1px 6px 0px rgba(0, 0, 0, 0.1);
+	box-shadow: 0px -1px 6px 0px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	margin: 0 auto;
+	max-width: 100% !important;
+	min-width: 100% !important;
+	width: 100% !important;
+}
+/* Night */
+
+body.moon .mondaysIcon {
+	color: white;
+	background: none !important;
+}
+
+body.moon .mondaysIcon.btn-outline-primary:not(:disabled):not(.disabled):active,
+body.moon .mondaysIcon.btn-outline-primary:not(:disabled):not(.disabled).active {
+	background: rgb(34, 34, 34) !important;
+}
+
+/* body.moon .show > body.moon .mondaysIcon.btn-outline-primary.dropdown-toggle {
+	background: rgb(34, 34, 34) !important;
+} */
+
+body.moon .mondaysIcon:hover {
+	background: rgb(34, 34, 34) !important;
+}
+
+body.moon .mondaysIcon:focus {
+	background: rgb(34, 34, 34) !important;
+	color: white !important;
+}
+
+body.moon .mondaysIcon:active {
+	background: rgb(34, 34, 34) !important;
+}
+
+body.moon .footerDl {
+	background: rgb(58, 58, 58) !important;
+	border-color: rgb(58, 58, 58) !important;
+}

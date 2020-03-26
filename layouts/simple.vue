@@ -13,7 +13,7 @@
       </div>
       <div style="text-align: right;">
         <ul id="navbarUser">
-          <b-avatar variant="info" src="https://placekitten.com/300/300"></b-avatar>
+          <b-avatar v-if="activeUser.displayName" :src="activeUser.photoURL"></b-avatar>
           <li class="btn-pages user_name">{{activeUser.displayName}}</li>
           <!-- <li class="btn-pages">
 					<b-button variant="danger" size="sm">

@@ -14,7 +14,7 @@
           <b-card-body class="p-2">
             <b-row>
               <b-col cols="12 player">
-                <b-badge variant="info">Casa:</b-badge>&nbsp;
+                <b-badge variant="info">Casa</b-badge>&nbsp;
                 <label
                   v-for="player in playersHome"
                   v-bind:key="player.id"
@@ -23,7 +23,7 @@
             </b-row>
             <b-row>
               <b-col cols="12 player">
-                <b-badge variant="danger">Fora:</b-badge>&nbsp;
+                <b-badge variant="danger">Fora</b-badge>&nbsp;
                 <label
                   v-for="player in playersAway"
                   v-bind:key="player.id"
@@ -101,38 +101,38 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: 'matchCard',
-  props: { match: Object },
-  methods: {
-    // ...mapActions(["getJogadoresJogo"])
-  },
-  computed: {
-    // ...mapState(["jogadoresJogo"]),
-    matchDate() {
-      return this.match.beginTime.seconds
-    },
-    playersHome() {
-      return this.match.teamA.players
-    },
-    playersAway() {
-      return this.match.teamB.players
-    },
-    goalsHome() {
-      return Object.keys(this.match.teamA.goals).length
-    },
-    goalsAway() {
-      return Object.keys(this.match.teamB.goals).length
-    }
-  },
-  beforeMount() {
-    // this.getJogadoresJogo({
-    // 	idJogo: this.jogo.idJogo
-    // })
-    // 	.then(res => {
-    // 		this.currJogo = this.jogadoresJogo;
-    // 	})
-    // 	.catch(err => console.log(err));
-  }
+	name: 'matchCard',
+	props: { match: Object },
+	methods: {
+		// ...mapActions(["getJogadoresJogo"])
+	},
+	computed: {
+		// ...mapState(["jogadoresJogo"]),
+		matchDate() {
+			return this.match.beginTime.seconds
+		},
+		playersHome() {
+			return this.match.teamA.players
+		},
+		playersAway() {
+			return this.match.teamB.players
+		},
+		goalsHome() {
+			return Object.keys(this.match.teamA.goals).length
+		},
+		goalsAway() {
+			return Object.keys(this.match.teamB.goals).length
+		}
+	},
+	beforeMount() {
+		// this.getJogadoresJogo({
+		// 	idJogo: this.jogo.idJogo
+		// })
+		// 	.then(res => {
+		// 		this.currJogo = this.jogadoresJogo;
+		// 	})
+		// 	.catch(err => console.log(err));
+	}
 }
 </script>
 

@@ -95,6 +95,36 @@
       </client-only>-->
     </nav>
     <nuxt />
+    <!-- Menu Horizonal -->
+    <b-row>
+      <b-col cols="12" class="footerDl px-0">
+        <nuxt-link to="config">
+          <b-button
+            size="sm"
+            class="mondaysIcon icon1"
+            variant="outline-primary"
+            v-bind:class="{ active: routerPath == 'config' }"
+          >
+            <span class="dl dl dl-config"></span>
+          </b-button>
+        </nuxt-link>
+        <nuxt-link to="home">
+          <b-button
+            size="sm"
+            class="mondaysIcon icon2"
+            variant="outline-primary"
+            v-bind:class="{ active: routerPath == 'home' }"
+          >
+            <span class="dl dl-req"></span>
+          </b-button>
+        </nuxt-link>
+        <nuxt-link to="home">
+          <b-button size="sm" class="mondaysIcon icon3" variant="outline-primary">
+            <span class="dl dl-player"></span>
+          </b-button>
+        </nuxt-link>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
