@@ -1,5 +1,5 @@
 import { firestoreAction } from 'vuexfire'
-import { firestore, Timestamp } from '../../plugins/firebase'
+import { firestore, Timestamp, increment } from '../../plugins/firebase'
 import hydrate from "../../utils/hydrate"
 
 export default {
@@ -19,17 +19,16 @@ export default {
 			})
 	},
 	getMatches: firestoreAction(async function ({ bindFirestoreRef }) {
-		const db = firestore.collection('Matches')
+		const db = firestore.collection('Matches').orderBy("beginTime")
 		await bindFirestoreRef('matches', db, { wait: true })
 	}),
 	getMatchesByDate: firestoreAction(async function (context) {
 		let beginDate = Timestamp.fromDate(new Date(context.rootGetters.yearLow));
 		let endDate = Timestamp.fromDate(new Date(context.rootGetters.yearHigh));
-		let bindFirestoreRef = context.bindFirestoreRef;
 		const db = firestore.collection('Matches').orderBy("beginTime").startAt(beginDate).endAt(endDate);
-		await bindFirestoreRef('matches', db, { wait: true })
+		await context.bindFirestoreRef('matches', db, { wait: true })
 	}),
-	setMatch: firestoreAction(async function (context, data) {
+	async setMatch(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		obj.beginTime = Timestamp.fromDate(new Date(obj.date + 'T' + obj.beginTime + 'Z'));
 		obj.endTime = Timestamp.fromDate(new Date(obj.date + 'T' + obj.endTime + 'Z'));
@@ -42,38 +41,35 @@ export default {
 		let timeModified = Timestamp.fromDate(new Date());
 		let userModified = Users.doc(firestore._credentials.currentUser.uid);
 		let batch = firestore.batch();
+		let props = {
+			"props.dateModified": timeModified, "props.userModified": userModified
+		};
 		try {
-			obj.props.dateCreated = timeModified
-			obj.props.dateModified = timeModified
-			obj.props.userCreated = userModified
-			obj.props.userModified = userModified
+			obj.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified }
 			obj.teamA = Teams.doc(obj.teamA);
 			obj.teamB = Teams.doc(obj.teamB);
 			let team = await obj.teamA.get();
 			let playersFromTeam = team.data().players;
-
-			/**						Teams					**/
-			batch.update(obj.teamA, {
-				"props.dateModified": timeModified, "props.userModified": userModified, "match": Matches.doc(Match.id)
-			})
-			batch.update(obj.teamB, {
-				"props.dateModified": timeModified, "props.userModified": userModified, "match": Matches.doc(Match.id)
-			})
+			let playersUP = {
+				...props, "counter.matches.total": increment, ['matches.' + [Match.id]]: true
+			};
+			let teamsUP = {
+				...props, "match": Matches.doc(Match.id)
+			};
 			/**						Players					**/
 			for (let i = 0; i < playersFromTeam.length; i++) {
 				const player = Players.doc(playersFromTeam[i].id)
-				batch.update(player, {
-					"props.dateModified": timeModified, "props.userModified": userModified, ['matches.' + [Match.id]]: true
-				})
+				batch.update(player, playersUP)
 			}
 			team = await obj.teamB.get();
 			playersFromTeam = team.data().players;
 			for (let i = 0; i < playersFromTeam.length; i++) {
 				const player = Players.doc(playersFromTeam[i].id)
-				batch.update(player, {
-					"props.dateModified": timeModified, "props.userModified": userModified, ['matches.' + [Match.id]]: true
-				})
+				batch.update(player, playersUP)
 			}
+			/**						Teams					**/
+			batch.update(obj.teamA, teamsUP)
+			batch.update(obj.teamB, teamsUP)
 			/** 					Match					**/
 			batch.set(Match, obj);
 			await batch.commit();
@@ -81,5 +77,5 @@ export default {
 		catch (e) {
 			console.log(e);
 		}
-	})
+	}
 }

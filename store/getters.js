@@ -1,6 +1,6 @@
 import moment from 'moment'
 export default {
-  activeUser: (state) => {
+  activeUser(state) {
     return state.user
   },
   yearHigh(state) {

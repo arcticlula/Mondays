@@ -26,7 +26,7 @@
                 <b-badge variant="danger">Fora</b-badge>&nbsp;
                 <label
                   v-for="player in playersAway"
-                  v-bind:key="player.id"
+                  :key="player.id"
                 >&nbsp;{{ player.nickname }}&nbsp;</label>
               </b-col>
             </b-row>
@@ -101,38 +101,26 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
-	name: 'matchCard',
-	props: { match: Object },
-	methods: {
-		// ...mapActions(["getJogadoresJogo"])
-	},
-	computed: {
-		// ...mapState(["jogadoresJogo"]),
-		matchDate() {
-			return this.match.beginTime.seconds
-		},
-		playersHome() {
-			return this.match.teamA.players
-		},
-		playersAway() {
-			return this.match.teamB.players
-		},
-		goalsHome() {
-			return Object.keys(this.match.teamA.goals).length
-		},
-		goalsAway() {
-			return Object.keys(this.match.teamB.goals).length
-		}
-	},
-	beforeMount() {
-		// this.getJogadoresJogo({
-		// 	idJogo: this.jogo.idJogo
-		// })
-		// 	.then(res => {
-		// 		this.currJogo = this.jogadoresJogo;
-		// 	})
-		// 	.catch(err => console.log(err));
-	}
+  name: 'matchCard',
+  props: { match: Object },
+  methods: {},
+  computed: {
+    matchDate() {
+      return this.match.beginTime.seconds
+    },
+    playersHome() {
+      return this.match.teamA ? this.match.teamA.players : []
+    },
+    playersAway() {
+      return this.match.teamB ? this.match.teamB.players : []
+    },
+    goalsHome() {
+      return this.match.teamA ? Object.keys(this.match.teamA.goals).length : 0
+    },
+    goalsAway() {
+      return this.match.teamB ? Object.keys(this.match.teamB.goals).length : 0
+    }
+  }
 }
 </script>
 

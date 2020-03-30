@@ -21,22 +21,20 @@
 						<i class="dl dl-money"></i>
 					</b-button>
           </li>-->
-          <client-only>
-            <li class="collapse-dl btn-pages">
-              <b-dropdown right variant="outline-secondary" size="sm">
-                <span slot="text">
-                  <i class="dl dl-config"></i>
-                </span>
-                <b-dropdown-item>
-                  <router-link to="/config">Configurações</router-link>
-                </b-dropdown-item>
-                <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item>
-                  <router-link to="/">Log out</router-link>
-                </b-dropdown-item>
-              </b-dropdown>
-            </li>
-          </client-only>
+          <li class="collapse-dl btn-pages">
+            <b-dropdown right variant="outline-secondary" size="sm">
+              <span slot="text">
+                <i class="dl dl-config"></i>
+              </span>
+              <b-dropdown-item>
+                <router-link to="/config">Configurações</router-link>
+              </b-dropdown-item>
+              <b-dropdown-divider></b-dropdown-divider>
+              <b-dropdown-item>
+                <router-link to="/">Log out</router-link>
+              </b-dropdown-item>
+            </b-dropdown>
+          </li>
         </ul>
       </div>
     </nav>
@@ -48,14 +46,14 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 export default {
-	name: 'simple',
-	computed: {
-		...mapState(['nightMode']),
-		...mapGetters(['activeUser']),
-		routerPath() {
-			return this.$nuxt.$route.name
-		}
-	}
+  name: 'simple',
+  computed: {
+    ...mapState(['nightMode']),
+    ...mapGetters(['activeUser']),
+    routerPath() {
+      return this.$nuxt.$route.name
+    }
+  }
 }
 </script>
 

@@ -2,6 +2,14 @@ import { firestoreAction } from 'vuexfire'
 import { firestore, Timestamp } from '../../plugins/firebase'
 
 export default {
+	getPlayer: firestoreAction(async function ({ bindFirestoreRef }) {
+		const db = firestore.collection('Players').doc('gj0FqLu415vpu59nBSZA');
+		await bindFirestoreRef('player', db, { wait: true })
+	}),
+	getPlayerUser: firestoreAction(async function ({ bindFirestoreRef }) {
+		const db = firestore.collection('Players').doc('gj0FqLu415vpu59nBSZA');
+		await bindFirestoreRef('playerUser', db, { wait: true })
+	}),
 	getPlayers: firestoreAction(async function ({ bindFirestoreRef }) {
 		const db = firestore.collection('Players').orderBy('name');
 		await bindFirestoreRef('players', db, { wait: true })
@@ -16,7 +24,7 @@ export default {
 			})
 		});
 	},
-	setPlayer: firestoreAction(async function (context, data) {
+	async setPlayer(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');
 		let Players = firestore.collection('Players')
@@ -25,15 +33,12 @@ export default {
 		try {
 			if (obj.dob) obj.dob = Timestamp.fromDate(new Date(obj.dob));
 			else obj.dob = Timestamp.fromDate(new Date('2000-01-01'))
-			obj.props.dateCreated = timeModified
-			obj.props.dateModified = timeModified
-			obj.props.userCreated = userModified
-			obj.props.userModified = userModified
+			obj.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified }
 			console.log(context, this)
 			Players.add(obj);
 		}
 		catch (e) {
 			console.log(e);
 		}
-	})
+	}
 }

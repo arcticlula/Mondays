@@ -5,7 +5,7 @@
         <b-table
           striped
           hover
-          :items="marcadoresJogo"
+          :items="highscoreTable"
           :fields="fields"
           @row-clicked="goToProfile"
           ref="table"
@@ -16,44 +16,45 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
-	name: 'highscore',
-	data() {
-		return {
-			marcadoresJogo: null,
-			fields: [
-				{
-					key: 'name',
-					label: 'Nome',
-					sortable: true
-				},
-				{
-					key: 'goals',
-					label: 'G',
-					sortDirection: 'desc',
-					sortable: true
-				},
-				{
-					key: 'assists',
-					label: 'A',
-					sortDirection: 'desc',
-					sortable: true
-				}
-			]
-		}
-	},
-	computed: {},
-	methods: {
-		goToProfile(row) {
-			// console.log(row);
-			// console.log(row.idJogador);
-			this.$router.push({
-				name: 'Profile',
-				query: { id: row.idJogador }
-			})
-		}
-	}
+  name: 'highscore',
+  data() {
+    return {
+      fields: [
+        {
+          key: 'name',
+          label: 'Nome',
+          sortable: true
+        },
+        {
+          key: 'goals',
+          label: 'G',
+          sortDirection: 'desc',
+          sortable: true
+        },
+        {
+          key: 'assists',
+          label: 'A',
+          sortDirection: 'desc',
+          sortable: true
+        }
+      ]
+    }
+  },
+  computed: {
+    ...mapGetters('matches', ['highscoreTable'])
+  },
+  methods: {
+    goToProfile(row) {
+      // console.log(row);
+      // console.log(row.idJogador);
+      this.$router.push({
+        name: 'profile',
+        query: { id: row.idJogador }
+      })
+    }
+  }
 }
 </script>
 

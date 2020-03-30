@@ -18,38 +18,31 @@ import highscore from '../components/home/highscore'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
-	name: 'home',
-	layout: 'home',
-	computed: {
-		...mapState(['navbar']),
-		...mapState('matches', ['matches']),
-		...mapGetters(['yearLow', 'yearHigh'])
-	},
-	components: {
-		matchCard,
-		highscore
-	},
-	methods: {
-		...mapActions('matches', ['getMatchesByDate']),
-		openMatch(id) {
-			console.log(id)
-			this.$router.push({ name: 'match', query: { match: id } })
-		}
-	},
-	async fetch({ store }) {
-		try {
-			await store.dispatch('matches/getMatchesByDate')
-		} catch (e) {
-			console.error(e)
-		}
-	},
-	async mounted() {
-		try {
-			await this.getMatchesByDate()
-		} catch (e) {
-			console.error(e)
-		}
-	}
+  name: 'home',
+  layout: 'home',
+  computed: {
+    ...mapState(['navbar']),
+    ...mapState('matches', ['matches']),
+    ...mapGetters(['yearLow', 'yearHigh'])
+  },
+  components: {
+    matchCard,
+    highscore
+  },
+  methods: {
+    ...mapActions('matches', ['getMatchesByDate']),
+    openMatch(id) {
+      console.log(id)
+      this.$router.push({ name: 'match', query: { match: id } })
+    }
+  },
+  async fetch({ store }) {
+    try {
+      await store.dispatch('matches/getMatchesByDate')
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>
 

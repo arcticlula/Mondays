@@ -53,21 +53,19 @@
         </b-row>
       </b-card>
     </b-form>
-    <client-only>
-      <b-row class="m-3">
-        <b-card class="mt-3" header="Equipa A">
-          <pre class="m-0">{{ formA }}</pre>
-        </b-card>
-        <b-card class="mt-3" header="Equipa B">
-          <pre class="m-0">{{ formB }}</pre>
-        </b-card>
-      </b-row>
-      <b-row class="m-3">
-        <b-card class="mr-2" v-for="team in teams" :key="team.id" :header="team.id">
-          <pre class="m-0">{{ team }}</pre>
-        </b-card>
-      </b-row>
-    </client-only>
+    <b-row class="m-3">
+      <b-card class="mt-3" header="Equipa A">
+        <pre class="m-0">{{ formA }}</pre>
+      </b-card>
+      <b-card class="mt-3" header="Equipa B">
+        <pre class="m-0">{{ formB }}</pre>
+      </b-card>
+    </b-row>
+    <b-row class="m-3">
+      <b-card class="mr-2" v-for="team in teams" :key="team.id" :header="team.id">
+        <pre class="m-0">{{ team }}</pre>
+      </b-card>
+    </b-row>
   </div>
 </template>
 
@@ -75,102 +73,110 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-	name: 'addTeam',
-	layout: 'dev-add',
-	computed: {
-		...mapState('teams', ['teams']),
-		playersSelected() {
-			return this.players.filter(function(s) {
-				return s.selected
-			})
-		},
-		playersUnselected() {
-			return this.players.filter(function(s) {
-				return !s.selected
-			})
-		}
-	},
-	data() {
-		return {
-			players: [],
-			teamLetter: 'A',
-			formA: {
-				goals: {},
-				match: null,
-				players: [],
-				props: {}
-			},
-			formB: {
-				goals: {},
-				match: null,
-				players: [],
-				props: {}
-			},
-			show: true
-			// createMatch: false
-		}
-	},
-	methods: {
-		...mapActions('players', ['getPlayersStatic']),
-		...mapActions('teams', ['getTeams', 'setTeam']),
-		addPlayerToTeam(player) {
-			this['form' + this.teamLetter].players.push({
-				id: player.id,
-				name: player.name
-			})
-			player.selected = true
-		},
-		delPlayerFromTeam(player) {
-			let i = this['form' + this.teamLetter].players.indexOf(player) // find index of your object
-			this['form' + this.teamLetter].players.splice(i, 1)
-			this.players.find(
-				(element) => element.id == player.id
-			).selected = false
-		},
-		async onSubmit(evt) {
-			evt.preventDefault()
-			await this.setTeam(this.formA)
-			await this.setTeam(this.formB)
-			// if (createMatch) await this.setMatch()
-		},
-		onReset(evt) {
-			evt.preventDefault()
-			// Reset our form values
-			this.formA.goals = {}
-			this.formA.match = null
-			this.formA.players = []
-			this.formA.props = {}
+  name: 'addTeam',
+  layout: 'dev-add',
+  computed: {
+    ...mapState('teams', ['teams']),
+    playersSelected() {
+      return this.players.filter(function(s) {
+        return s.selected
+      })
+    },
+    playersUnselected() {
+      return this.players.filter(function(s) {
+        return !s.selected
+      })
+    }
+  },
+  data() {
+    return {
+      players: [],
+      teamLetter: 'A',
+      formA: {
+        goals: {},
+        match: null,
+        players: [],
+        local: 'home',
+        props: {},
+        counter: {
+          goals: { total: 0, penalties: 0, ownGoals: 0 },
+          assists: { total: 0 }
+        }
+      },
+      formB: {
+        goals: {},
+        match: null,
+        players: [],
+        local: 'away',
+        props: {},
+        counter: {
+          goals: { total: 0, penalties: 0, ownGoals: 0 },
+          assists: { total: 0 }
+        }
+      },
+      show: true
+      // createMatch: false
+    }
+  },
+  methods: {
+    ...mapActions('players', ['getPlayersStatic']),
+    ...mapActions('teams', ['getTeams', 'setTeam']),
+    addPlayerToTeam(player) {
+      this['form' + this.teamLetter].players.push({
+        id: player.id,
+        name: player.name
+      })
+      player.selected = true
+    },
+    delPlayerFromTeam(player) {
+      let i = this['form' + this.teamLetter].players.indexOf(player) // find index of your object
+      this['form' + this.teamLetter].players.splice(i, 1)
+      this.players.find((element) => element.id == player.id).selected = false
+    },
+    async onSubmit(evt) {
+      evt.preventDefault()
+      await this.setTeam(this.formA)
+      await this.setTeam(this.formB)
+      // if (createMatch) await this.setMatch()
+    },
+    onReset(evt) {
+      evt.preventDefault()
+      // Reset our form values
+      this.formA.goals = {}
+      this.formA.match = null
+      this.formA.players = []
+      this.formA.props = {}
 
-			this.formB.goals = {}
-			this.formB.match = null
-			this.formB.players = []
-			this.formB.props = {}
+      this.formB.goals = {}
+      this.formB.match = null
+      this.formB.players = []
+      this.formB.props = {}
 
-			// Trick to reset/clear native browser form validation state
-			this.show = false
-			this.$nextTick(() => {
-				this.show = true
-			})
-		}
-	},
-	async fetch({ store }) {
-		try {
-			this.players = await store.dispatch('players/getPlayersStatic')
-			await store.dispatch('teams/getTeams')
-		} catch (e) {
-			console.error(e)
-		}
-		console.log(store.state.teams)
-	},
-	async mounted() {
-		try {
-			this.players = await this.getPlayersStatic()
-			await this.getTeams()
-		} catch (e) {
-			console.error(e)
-		}
-		console.log(this.teams)
-	}
+      // Trick to reset/clear native browser form validation state
+      this.show = false
+      this.$nextTick(() => {
+        this.show = true
+      })
+    }
+  },
+  async fetch({ store }) {
+    try {
+      this.players = await store.dispatch('players/getPlayersStatic')
+      await store.dispatch('teams/getTeams')
+    } catch (e) {
+      console.error(e)
+    }
+    console.log(store.state.teams)
+  },
+  async mounted() {
+    try {
+      this.players = await this.getPlayersStatic()
+      await this.getTeams()
+    } catch (e) {
+      console.error(e)
+    }
+    console.log(this.teams)
+  }
 }
 </script>
 
@@ -182,25 +188,25 @@ table.my-table-scroll > tbody,
 table.my-table-scroll > tfoot,
 table.my-table-scroll > tbody > tr,
 table.my-table-scroll > thead > tr {
-	width: 100%;
-	display: block;
+  width: 100%;
+  display: block;
 }
 
 table.my-table-scroll > thead,
 table.my-table-scroll > tbody,
 table.my-table-scroll > tfoot {
-	display: block;
-	width: 100%;
-	overflow-y: scroll;
+  display: block;
+  width: 100%;
+  overflow-y: scroll;
 }
 
 table.my-table-scroll > thead,
 table.my-table-scroll > tfoot {
-	height: auto;
+  height: auto;
 }
 
 table.my-table-scroll > tbody {
-	max-height: 300px;
+  max-height: 300px;
 }
 
 table.my-table-scroll > thead > tr > th,
@@ -209,7 +215,7 @@ table.my-table-scroll > tbody > tr > th,
 table.my-table-scroll > tbody > tr > td,
 table.my-table-scroll > tfoot > tr > th,
 table.my-table-scroll > tfoot > tr > td {
-	display: inline-block;
-	width: 50%;
+  display: inline-block;
+  width: 50%;
 }
 </style>

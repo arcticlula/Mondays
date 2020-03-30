@@ -57,13 +57,11 @@
         <pre class="m-0">{{ form }}</pre>
       </b-card>
     </b-row>
-    <client-only>
-      <b-row class="m-3">
-        <b-card class="mr-2" v-for="match in matches" :key="match.id" :header="match.id">
-          <pre class="m-0">{{ match }}</pre>
-        </b-card>
-      </b-row>
-    </client-only>
+    <b-row class="m-3">
+      <b-card class="mr-2" v-for="match in matches" :key="match.id" :header="match.id">
+        <pre class="m-0">{{ match }}</pre>
+      </b-card>
+    </b-row>
   </div>
 </template>
 
@@ -71,84 +69,87 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-	name: 'addMatch',
-	layout: 'dev-add',
-	computed: {
-		...mapState('teams', ['teams']),
-		...mapState('matches', ['matches']),
-		teamsUnselected() {
-			return this.teams.filter((s) => {
-				return !s.match
-			})
-		},
-		teamPlayersA() {
-			return this.form.teamA == ''
-				? []
-				: this.teams.find((element) => element.id == this.form.teamA)
-						.players
-		},
-		teamPlayersB() {
-			return this.form.teamB == ''
-				? []
-				: this.teams.find((element) => element.id == this.form.teamB)
-						.players
-		}
-	},
-	data() {
-		return {
-			form: {
-				date: null,
-				beginTime: '22:00:00',
-				endTime: '23:00:00',
-				goals: {},
-				teamA: '',
-				teamB: '',
-				props: {}
-			},
-			show: true
-		}
-	},
-	methods: {
-		...mapActions('teams', ['getTeams']),
-		...mapActions('matches', ['getMatches', 'setMatch']),
+  name: 'addMatch',
+  layout: 'dev-add',
+  computed: {
+    ...mapState('teams', ['teams']),
+    ...mapState('matches', ['matches']),
+    teamsUnselected() {
+      return this.teams.filter((s) => {
+        return !s.match
+      })
+    },
+    teamPlayersA() {
+      return this.form.teamA == ''
+        ? []
+        : this.teams.find((element) => element.id == this.form.teamA).players
+    },
+    teamPlayersB() {
+      return this.form.teamB == ''
+        ? []
+        : this.teams.find((element) => element.id == this.form.teamB).players
+    }
+  },
+  data() {
+    return {
+      form: {
+        date: null,
+        beginTime: '22:00:00',
+        endTime: '23:00:00',
+        goals: {},
+        teamA: '',
+        teamB: '',
+        players: {},
+        props: {},
+        counter: {
+          goals: { home: 0, away: 0, total: 0, penalties: 0, ownGoals: 0 },
+          assists: { home: 0, away: 0, total: 0 }
+        }
+      },
+      show: true
+    }
+  },
+  methods: {
+    ...mapActions('teams', ['getTeams']),
+    ...mapActions('matches', ['getMatches', 'setMatch']),
 
-		async onSubmit(evt) {
-			evt.preventDefault()
-			await this.setMatch(this.form)
-		},
-		onReset(evt) {
-			evt.preventDefault()
-			// Reset our form values
-			this.form.date = null
-			this.form.beginTime = '22:00:00'
-			this.form.endTime = '23:00:00'
-			this.form.goals = {}
-			this.form.teamA = null
-			this.form.teamB = null
-			this.form.props = {}
+    async onSubmit(evt) {
+      evt.preventDefault()
+      await this.setMatch(this.form)
+    },
+    onReset(evt) {
+      evt.preventDefault()
+      // Reset our form values
+      this.form.date = null
+      this.form.beginTime = '22:00:00'
+      this.form.endTime = '23:00:00'
+      this.form.goals = {}
+      this.form.teamA = null
+      this.form.teamB = null
+      this.form.props = {}
 
-			// Trick to reset/clear native browser form validation state
-			this.show = false
-			this.$nextTick(() => {
-				this.show = true
-			})
-		}
-	},
-	async fetch({ store }) {
-		try {
-			await store.dispatch('teams/getTeams')
-			await store.dispatch('matches/getMatches')
-		} catch (e) {
-			console.error(e)
-		}
-	},
-	async mounted() {
-		try {
-			await this.getTeams()
-			await this.getMatches()
-		} catch (e) {
-			console.error(e)
-		}
-	}
+      // Trick to reset/clear native browser form validation state
+      this.show = false
+      this.$nextTick(() => {
+        this.show = true
+      })
+    }
+  },
+  async fetch({ store }) {
+    try {
+      await store.dispatch('teams/getTeams')
+      await store.dispatch('matches/getMatches')
+    } catch (e) {
+      console.error(e)
+    }
+  },
+  async mounted() {
+    try {
+      await this.getTeams()
+      await this.getMatches()
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>

@@ -9,5 +9,7 @@ console.log("hello")
 export const Timestamp = firebase.firestore.Timestamp
 export const auth = firebase.auth()
 export const firestore = firebase.firestore()
+export const increment = firebase.firestore.FieldValue.increment(1);
+export const decrement = firebase.firestore.FieldValue.increment(-1);
 export const google = new firebase.auth.GoogleAuthProvider()
 export default firebase

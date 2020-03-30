@@ -1,5 +1,5 @@
 import { firestoreAction } from 'vuexfire'
-import { firestore, Timestamp } from '../../plugins/firebase'
+import { firestore, Timestamp, increment } from '../../plugins/firebase'
 import moment from 'moment';
 
 export default {
@@ -13,7 +13,14 @@ export default {
 		const db = Goals.where("match", "==", Match).orderBy('timeMin')
 		await bindFirestoreRef('goals', db, { wait: true })
 	}),
-	setGoal: firestoreAction(async function (context, data) {
+	getGoalsByPlayer: firestoreAction(async function ({ bindFirestoreRef }, id) {
+		let Player = firestore.collection('Players').doc(id);
+		let Goals = firestore.collection('Goals');
+		// let Match = firestore.collection('Matches').doc(id);
+		const db = Goals.where("goal", '==', Player);
+		await bindFirestoreRef('goals', db, { wait: true })
+	}),
+	async setGoal(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');
 		let Players = firestore.collection('Players');
@@ -24,58 +31,81 @@ export default {
 		let timeModified = Timestamp.fromDate(new Date());
 		let userModified = Users.doc(firestore._credentials.currentUser.uid);
 		let batch = firestore.batch();
+		let props = {
+			"props.dateModified": timeModified, "props.userModified": userModified
+		};
+		let counterPlayer = {}, counterTeam = {}, counterOtherTeam = {}, counterMatch = {};
 		try {
-			obj.props.dateCreated = timeModified
-			obj.props.dateModified = timeModified
-			obj.props.userCreated = userModified
-			obj.props.userModified = userModified
+			obj.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified }
 			let date = moment(Match.data().beginTime.toDate())
 			let dateGoal = new Date(date.format('YYYY-MM-DD') + 'T' + obj.time + 'Z');
 			obj.time = Timestamp.fromDate(dateGoal);
 			obj.timeMin = moment(dateGoal).diff(date, 'minute');
-
+			obj.local = obj.local == 'A' ? 'home' : 'away';
+			let localOwnGoal = obj.local == 'B' ? 'home' : 'away';
 			switch (obj.type) {
 				case "O":
+					counterPlayer = { "counter.goals.ownGoals": increment }
+					counterTeam = counterPlayer
+					counterOtherTeam = { "counter.goals.total": increment }
+					counterMatch = { ...counterTeam, ...counterOtherTeam, ["counter.goals." + [localOwnGoal]]: increment }
 					obj.isOwnGoal = true;
 					obj.isPenalty = false;
 					break;
 				case "P":
+					counterTeam = { "counter.goals.total": increment, "counter.goals.penalties": increment }
+					counterPlayer = { ["counter.goals." + [obj.local]]: increment, ...counterTeam }
+					counterMatch = counterPlayer;
 					obj.isOwnGoal = false;
 					obj.isPenalty = true;
 					break;
 				default:
+					counterTeam = { "counter.goals.total": increment }
+					counterPlayer = { ["counter.goals." + [obj.local]]: increment, ...counterTeam }
+					counterMatch = counterPlayer;
 					obj.isOwnGoal = false;
 					obj.isPenalty = false;
 					break;
 			}
 			delete obj.type;
-			console.log(obj)
+
 			// /**						Players					**/
 			if (!!obj.goal) {
 				obj.goal = Players.doc(obj.goal)
 				batch.update(obj.goal, {
-					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+					...props, ...counterPlayer, ['goals.' + [Goal.id]]: true
 				})
 			}
 			if (!!obj.assist) {
 				obj.assist = Players.doc(obj.assist)
+				counterPlayer = { 'counter.assists.total': increment, ["counter.assists." + [obj.local]]: increment }
+				counterTeam = { ...counterTeam, 'counter.assists.total': increment }
+				counterMatch = { ...counterMatch, 'counter.assists.total': increment, ["counter.assists." + [obj.local]]: increment }
 				batch.update(obj.assist, {
-					"props.dateModified": timeModified, "props.userModified": userModified, ['assists.' + [Goal.id]]: true
+					...props, ...counterPlayer, ['assists.' + [Goal.id]]: true
 				})
 			}
 			/**						Teams					**/
 			if (!!obj.team) {
 				obj.team = Teams.doc(obj.team);
 				batch.update(obj.team, {
-					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
-				})
+					...props, ...counterTeam, ['goals.' + [Goal.id]]: true
+				});
 			}
+
+			if (!!counterOtherTeam) {
+				obj.otherTeam = Teams.doc(obj.otherTeam);
+				batch.update(obj.otherTeam, {
+					...props, ...counterOtherTeam
+				});
+			}
+			delete obj.otherTeam;
 
 			/** 					Match					**/
 			if (!!obj.match) {
 				obj.match = Matches.doc(obj.match);
 				batch.update(obj.match, {
-					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+					...props, ...counterMatch, ['goals.' + [Goal.id]]: true
 				})
 			}
 			/** 					Goals					**/
@@ -85,7 +115,97 @@ export default {
 		catch (e) {
 			console.log(e);
 		}
-	}),
+	},
+	// setGoal: firestoreAction(async function (context, data) {
+	// 	let obj = JSON.parse(JSON.stringify(data))
+	// 	let Users = firestore.collection('Users');
+	// 	let Players = firestore.collection('Players');
+	// 	let Teams = firestore.collection('Teams');
+	// 	let Matches = firestore.collection('Matches');
+	// 	let Match = await Matches.doc(obj.match).get();
+	// 	let Goal = firestore.collection('Goals').doc()
+	// 	let timeModified = Timestamp.fromDate(new Date());
+	// 	let userModified = Users.doc(firestore._credentials.currentUser.uid);
+	// 	return firestore.runTransaction(db => {
+	// 		// This code may get re-run multiple times if there are conflicts.
+	// 		return db.get(obj.match).then(function(sfDoc) {
+	// 			if (!match.exists) {
+	// 				throw "Document does not exist!";
+	// 			}
+
+	// 			// Add one person to the city population.
+	// 			// Note: this could be done without a transaction
+	// 			//       by updating the population using FieldValue.increment()
+	// 			var newPopulation = sfDoc.data().population + 1;
+	// 			transaction.update(sfDocRef, { population: newPopulation });
+	// 		});
+	// 	}).then(function() {
+	// 		console.log("Transaction successfully committed!");
+	// 	}).catch(function(error) {
+	// 		console.log("Transaction failed: ", error);
+	// 	});
+	// 	try {
+	// 		obj.props.dateCreated = timeModified
+	// 		obj.props.dateModified = timeModified
+	// 		obj.props.userCreated = userModified
+	// 		obj.props.userModified = userModified
+	// 		let date = moment(Match.data().beginTime.toDate())
+	// 		let dateGoal = new Date(date.format('YYYY-MM-DD') + 'T' + obj.time + 'Z');
+	// 		obj.time = Timestamp.fromDate(dateGoal);
+	// 		obj.timeMin = moment(dateGoal).diff(date, 'minute');
+
+	// 		switch (obj.type) {
+	// 			case "O":
+	// 				obj.isOwnGoal = true;
+	// 				obj.isPenalty = false;
+	// 				break;
+	// 			case "P":
+	// 				obj.isOwnGoal = false;
+	// 				obj.isPenalty = true;
+	// 				break;
+	// 			default:
+	// 				obj.isOwnGoal = false;
+	// 				obj.isPenalty = false;
+	// 				break;
+	// 		}
+	// 		delete obj.type;
+	// 		console.log(obj)
+	// 		// /**						Players					**/
+	// 		if (!!obj.goal) {
+	// 			obj.goal = Players.doc(obj.goal)
+	// 			batch.update(obj.goal, {
+	// 				"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+	// 			})
+	// 		}
+	// 		if (!!obj.assist) {
+	// 			obj.assist = Players.doc(obj.assist)
+	// 			batch.update(obj.assist, {
+	// 				"props.dateModified": timeModified, "props.userModified": userModified, ['assists.' + [Goal.id]]: true
+	// 			})
+	// 		}
+	// 		/**						Teams					**/
+	// 		if (!!obj.team) {
+	// 			obj.team = Teams.doc(obj.team);
+	// 			batch.update(obj.team, {
+	// 				"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+	// 			})
+	// 		}
+
+	// 		/** 					Match					**/
+	// 		if (!!obj.match) {
+	// 			obj.match = Matches.doc(obj.match);
+	// 			batch.update(obj.match, {
+	// 				"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+	// 			})
+	// 		}
+	// 		/** 					Goals					**/
+	// 		batch.set(Goal, obj);
+	// 		await batch.commit();
+	// 	}
+	// 	catch (e) {
+	// 		console.log(e);
+	// 	}
+	// }),
 	delGoal: firestoreAction(async function (context, id) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');

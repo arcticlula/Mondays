@@ -26,13 +26,11 @@
         <pre class="m-0">{{ form }}</pre>
       </b-card>
     </b-card>
-    <client-only>
-      <b-row class="m-3">
-        <b-card class="mr-2" v-for="player in players" :key="player.id" :header="player.name">
-          <pre class="m-0">{{ player }}</pre>
-        </b-card>
-      </b-row>
-    </client-only>
+    <b-row class="m-3">
+      <b-card class="mr-2" v-for="player in players" :key="player.id" :header="player.name">
+        <pre class="m-0">{{ player }}</pre>
+      </b-card>
+    </b-row>
   </div>
 </template>
 
@@ -40,68 +38,74 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-	name: 'addPlayer',
-	layout: 'dev-add',
-	computed: {
-		...mapState('players', ['players'])
-	},
-	data() {
-		return {
-			form: {
-				assists: {},
-				goals: {},
-				matches: {},
-				teams: {},
-				dob: '',
-				name: '',
-				nickname: '',
-				props: {}
-			},
-			show: true
-		}
-	},
-	methods: {
-		...mapActions('players', ['getPlayers', 'setPlayer']),
-		onSubmit(evt) {
-			evt.preventDefault()
-			// Timestamp.fromDate(new Date()),
-			this.setPlayer(this.form)
-			// alert(JSON.stringify(this.form))
-		},
-		onReset(evt) {
-			evt.preventDefault()
-			// Reset our form values
-			this.form.assists = {}
-			this.form.goals = {}
-			this.form.matches = {}
-			this.form.teams = {}
-			this.form.dob = ''
-			this.form.name = ''
-			this.form.nickname = ''
+  name: 'addPlayer',
+  layout: 'dev-add',
+  computed: {
+    ...mapState('players', ['players'])
+  },
+  data() {
+    return {
+      form: {
+        assists: {},
+        goals: {},
+        matches: {},
+        teams: {},
+        dob: '',
+        name: '',
+        nickname: '',
+        counter: {
+          goals: { home: 0, away: 0, total: 0, penalties: 0, ownGoals: 0 },
+          assists: { home: 0, away: 0, total: 0 },
+          teams: { home: 0, away: 0 },
+          matches: { total: 0 }
+        },
+        props: {}
+      },
+      show: true
+    }
+  },
+  methods: {
+    ...mapActions('players', ['getPlayers', 'setPlayer']),
+    onSubmit(evt) {
+      evt.preventDefault()
+      // Timestamp.fromDate(new Date()),
+      this.setPlayer(this.form)
+      // alert(JSON.stringify(this.form))
+    },
+    onReset(evt) {
+      evt.preventDefault()
+      // Reset our form values
+      this.form.assists = {}
+      this.form.goals = {}
+      this.form.matches = {}
+      this.form.teams = {}
+      this.form.dob = ''
+      this.form.name = ''
+      this.form.nickname = ''
 
-			// Trick to reset/clear native browser form validation state
-			this.show = false
-			this.$nextTick(() => {
-				this.show = true
-			})
-		}
-	},
-	async fetch({ store }) {
-		try {
-			await store.dispatch('players/getPlayers')
-		} catch (e) {
-			console.error(e)
-		}
-		console.log(store.state.players)
-	},
-	async mounted() {
-		try {
-			await this.getPlayers()
-		} catch (e) {
-			console.error(e)
-		}
-		console.log(this.players)
-	}
+      // Trick to reset/clear native browser form validation state
+      this.show = false
+      this.$nextTick(() => {
+        this.show = true
+      })
+    }
+  },
+  async fetch({ store }) {
+    try {
+      await store.dispatch('players/getPlayers')
+    } catch (e) {
+      console.error(e)
+    }
+    console.log(store.state.players)
+  },
+  async mounted() {
+    try {
+      await this.getPlayers()
+    } catch (e) {
+      console.error(e)
+    }
+    console.log(this.players)
+  }
 }
 </script>
 
