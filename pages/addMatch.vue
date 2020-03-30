@@ -15,7 +15,6 @@
             </b-form-group>
             <b-form-group class="mb-3" id="input-group-4" label="Equipa Casa:" label-for="input-4">
               <b-form-select
-                @change="addTeamToMatch('A')"
                 :options="teamsUnselected"
                 value-field="id"
                 text-field="id"
@@ -25,7 +24,6 @@
             </b-form-group>
             <b-form-group class="mb-3" id="input-group-5" label="Equipa Fora" label-for="input-5">
               <b-form-select
-                @change="addTeamToMatch('B')"
                 :options="teamsUnselected"
                 value-field="id"
                 text-field="id"

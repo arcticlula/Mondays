@@ -44,34 +44,32 @@ export default {
 		let props = {
 			"props.dateModified": timeModified, "props.userModified": userModified
 		};
+		let init = { goals: 0, assists: 0, ownGoals: 0, penalties: 0 }
+		let highscores = {}
 		try {
 			obj.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified }
 			obj.teamA = Teams.doc(obj.teamA);
 			obj.teamB = Teams.doc(obj.teamB);
-			let team = await obj.teamA.get();
-			let playersFromTeam = team.data().players;
-			let playersUP = {
-				...props, "counter.matches.total": increment, ['matches.' + [Match.id]]: true
-			};
-			let teamsUP = {
-				...props, "match": Matches.doc(Match.id)
-			};
+			let playersFromTeam = (await obj.teamA.get()).data().players;
 			/**						Players					**/
 			for (let i = 0; i < playersFromTeam.length; i++) {
 				const player = Players.doc(playersFromTeam[i].id)
-				batch.update(player, playersUP)
+				const playerData = (await player.get()).data();
+				highscores[playersFromTeam[i].id] = { "name": playerData.name, "nickname": playerData.nickname, ...init }
+				batch.update(player, { ...props, "counter.matches.total": increment, ['matches.' + [Match.id]]: true })
 			}
-			team = await obj.teamB.get();
-			playersFromTeam = team.data().players;
+			playersFromTeam = (await obj.teamB.get()).data().players;
 			for (let i = 0; i < playersFromTeam.length; i++) {
 				const player = Players.doc(playersFromTeam[i].id)
-				batch.update(player, playersUP)
+				const playerData = (await player.get()).data();
+				highscores[playersFromTeam[i].id] = { "name": playerData.name, "nickname": playerData.nickname, ...init }
+				batch.update(player, { ...props, "counter.matches.total": increment, ['matches.' + [Match.id]]: true })
 			}
 			/**						Teams					**/
-			batch.update(obj.teamA, teamsUP)
-			batch.update(obj.teamB, teamsUP)
+			batch.update(obj.teamA, { ...props, "match": Matches.doc(Match.id) })
+			batch.update(obj.teamB, { ...props, "match": Matches.doc(Match.id) })
 			/** 					Match					**/
-			batch.set(Match, obj);
+			batch.set(Match, { ...obj, players: { ...highscores } });
 			await batch.commit();
 		}
 		catch (e) {
