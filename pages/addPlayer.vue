@@ -65,11 +65,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions('players', ['getPlayers', 'setPlayer']),
+    ...mapActions('players', ['getPlayers', 'addPlayer']),
     onSubmit(evt) {
       evt.preventDefault()
       // Timestamp.fromDate(new Date()),
-      this.setPlayer(this.form)
+      this.addPlayer(this.form)
       // alert(JSON.stringify(this.form))
     },
     onReset(evt) {

@@ -45,7 +45,7 @@
                   <b-col cols="12">
                     <div v-for="goal in goals" :key="goal.id">
                       <div v-if="!goal.isOwnGoal">
-                        <b-row v-if="isSameTeam(goal,'A')" class="my-1">
+                        <b-row v-if="goal.local=='home'" class="my-1">
                           <b-col cols="12">
                             <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola"></i>
@@ -54,10 +54,12 @@
                             </label>
                             <label v-if="!!goal.assist">({{goal.assist.name}})</label>
                             <label v-else-if="goal.isPenalty">(Penalidade)</label>
+                            <span @click="delGoal(goal)">x</span>
                           </b-col>
                         </b-row>
                         <b-row v-else class="my-1">
                           <b-col cols="12" class="text-right">
+                            <span @click="delGoal(goal)">x</span>
                             <label v-if="!!goal.assist" class="pr-1">({{goal.assist.name}})</label>
                             <label v-else-if="goal.isPenalty">(Penalidade)</label>
                             <label class="pr-1">
@@ -69,7 +71,7 @@
                         </b-row>
                       </div>
                       <div v-else>
-                        <b-row v-if="isSameTeam(goal,'B')" class="my-1">
+                        <b-row v-if="goal.local=='away'" class="my-1">
                           <b-col cols="12">
                             <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola text-red"></i>
@@ -77,10 +79,12 @@
                               <b>{{goal.goal.name}}</b>
                             </label>
                             <label>(Auto-Golo)</label>
+                            <span @click="delGoal(goal)">x</span>
                           </b-col>
                         </b-row>
                         <b-row v-else class="my-1">
                           <b-col cols="12" class="text-right">
+                            <span @click="delGoal(goal)">x</span>
                             <label class="pr-1">(Auto-Golo)</label>
                             <label class="pr-1">
                               <b>{{goal.goal.name}}</b>
@@ -278,16 +282,7 @@ export default {
   },
   methods: {
     ...mapActions('matches', ['getMatchByIdStatic']),
-    ...mapActions('goals', ['getGoalsFromMatch', 'setGoal']),
-    isSameTeam(goal, letter) {
-      // console.log(goal, this.match)
-      let goalId = goal.team ? goal.team.id : null
-      let matchId = this.match['team' + letter]
-        ? this.match['team' + letter].id
-        : null
-      return goalId == matchId
-      // return (letter = 'A' ? true : false)
-    },
+    ...mapActions('goals', ['getGoalsFromMatch', 'addGoal', 'delGoal']),
     setTeamId() {
       this.$nextTick(() => {
         let localOwnGoal = this.form.local == 'A' ? 'B' : 'A'
@@ -303,7 +298,7 @@ export default {
     },
     async onSubmit(evt) {
       evt.preventDefault()
-      await this.setGoal(this.form)
+      await this.addGoal(this.form)
       this.form.assist = null
       this.form.goal = null
       this.form.type = 'N'

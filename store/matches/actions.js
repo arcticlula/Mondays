@@ -28,7 +28,7 @@ export default {
 		const db = firestore.collection('Matches').orderBy("beginTime").startAt(beginDate).endAt(endDate);
 		await context.bindFirestoreRef('matches', db, { wait: true })
 	}),
-	async setMatch(context, data) {
+	async addMatch(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		obj.beginTime = Timestamp.fromDate(new Date(obj.date + 'T' + obj.beginTime + 'Z'));
 		obj.endTime = Timestamp.fromDate(new Date(obj.date + 'T' + obj.endTime + 'Z'));
@@ -42,7 +42,7 @@ export default {
 		let userModified = Users.doc(firestore._credentials.currentUser.uid);
 		let batch = firestore.batch();
 		let props = {
-			"props.dateModified": timeModified, "props.userModified": userModified
+			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Add Match"
 		};
 		let init = { goals: 0, assists: 0, ownGoals: 0, penalties: 0 }
 		let highscores = {}

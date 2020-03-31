@@ -1,5 +1,5 @@
 import { firestoreAction } from 'vuexfire'
-import { firestore, Timestamp, increment } from '../../plugins/firebase'
+import { firestore, userID, Timestamp, increment, decrement, deleteField } from '../../plugins/firebase'
 import moment from 'moment';
 
 export default {
@@ -11,6 +11,7 @@ export default {
 		let Goals = firestore.collection('Goals');
 		let Match = firestore.collection('Matches').doc(id);
 		const db = Goals.where("match", "==", Match).orderBy('timeMin')
+		console.log(userID)
 		await bindFirestoreRef('goals', db, { wait: true })
 	}),
 	getGoalsByPlayer: firestoreAction(async function ({ bindFirestoreRef }, id) {
@@ -20,7 +21,7 @@ export default {
 		const db = Goals.where("goal", '==', Player);
 		await bindFirestoreRef('goals', db, { wait: true })
 	}),
-	async setGoal(context, data) {
+	async addGoal(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');
 		let Players = firestore.collection('Players');
@@ -31,8 +32,9 @@ export default {
 		let timeModified = Timestamp.fromDate(new Date());
 		let userModified = Users.doc(firestore._credentials.currentUser.uid);
 		let batch = firestore.batch();
+		let highscores = {}
 		let props = {
-			"props.dateModified": timeModified, "props.userModified": userModified
+			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Add Goal"
 		};
 		let counterPlayer = {}, counterTeam = {}, counterOtherTeam = {}, counterMatch = {};
 		try {
@@ -42,13 +44,14 @@ export default {
 			obj.time = Timestamp.fromDate(dateGoal);
 			obj.timeMin = moment(dateGoal).diff(date, 'minute');
 			obj.local = obj.local == 'A' ? 'home' : 'away';
-			let localOwnGoal = obj.local == 'B' ? 'home' : 'away';
 			switch (obj.type) {
 				case "O":
+					obj.local = obj.local == 'home' ? 'away' : 'home';
 					counterPlayer = { "counter.goals.ownGoals": increment }
 					counterTeam = counterPlayer
 					counterOtherTeam = { "counter.goals.total": increment }
-					counterMatch = { ...counterTeam, ...counterOtherTeam, ["counter.goals." + [localOwnGoal]]: increment }
+					counterMatch = { ...counterTeam, ...counterOtherTeam, ["counter.goals." + [obj.local]]: increment }
+					highscores = { ["players." + [obj.goal] + ".ownGoals"]: increment }
 					obj.isOwnGoal = true;
 					obj.isPenalty = false;
 					break;
@@ -56,6 +59,7 @@ export default {
 					counterTeam = { "counter.goals.total": increment, "counter.goals.penalties": increment }
 					counterPlayer = { ["counter.goals." + [obj.local]]: increment, ...counterTeam }
 					counterMatch = counterPlayer;
+					highscores = { ["players." + [obj.goal] + ".goals"]: increment, ["players." + [obj.goal] + ".penalties"]: increment }
 					obj.isOwnGoal = false;
 					obj.isPenalty = true;
 					break;
@@ -63,6 +67,7 @@ export default {
 					counterTeam = { "counter.goals.total": increment }
 					counterPlayer = { ["counter.goals." + [obj.local]]: increment, ...counterTeam }
 					counterMatch = counterPlayer;
+					highscores = { ["players." + [obj.goal] + ".goals"]: increment }
 					obj.isOwnGoal = false;
 					obj.isPenalty = false;
 					break;
@@ -77,10 +82,11 @@ export default {
 				})
 			}
 			if (!!obj.assist) {
-				obj.assist = Players.doc(obj.assist)
 				counterPlayer = { 'counter.assists.total': increment, ["counter.assists." + [obj.local]]: increment }
 				counterTeam = { ...counterTeam, 'counter.assists.total': increment }
 				counterMatch = { ...counterMatch, 'counter.assists.total': increment, ["counter.assists." + [obj.local]]: increment }
+				highscores = { ["players." + [obj.assist] + ".assists"]: increment }
+				obj.assist = Players.doc(obj.assist)
 				batch.update(obj.assist, {
 					...props, ...counterPlayer, ['assists.' + [Goal.id]]: true
 				})
@@ -105,7 +111,7 @@ export default {
 			if (!!obj.match) {
 				obj.match = Matches.doc(obj.match);
 				batch.update(obj.match, {
-					...props, ...counterMatch, ['goals.' + [Goal.id]]: true
+					...props, ...counterMatch, ...highscores, ['goals.' + [Goal.id]]: true
 				})
 			}
 			/** 					Goals					**/
@@ -116,145 +122,87 @@ export default {
 			console.log(e);
 		}
 	},
-	// setGoal: firestoreAction(async function (context, data) {
-	// 	let obj = JSON.parse(JSON.stringify(data))
-	// 	let Users = firestore.collection('Users');
-	// 	let Players = firestore.collection('Players');
-	// 	let Teams = firestore.collection('Teams');
-	// 	let Matches = firestore.collection('Matches');
-	// 	let Match = await Matches.doc(obj.match).get();
-	// 	let Goal = firestore.collection('Goals').doc()
-	// 	let timeModified = Timestamp.fromDate(new Date());
-	// 	let userModified = Users.doc(firestore._credentials.currentUser.uid);
-	// 	return firestore.runTransaction(db => {
-	// 		// This code may get re-run multiple times if there are conflicts.
-	// 		return db.get(obj.match).then(function(sfDoc) {
-	// 			if (!match.exists) {
-	// 				throw "Document does not exist!";
-	// 			}
-
-	// 			// Add one person to the city population.
-	// 			// Note: this could be done without a transaction
-	// 			//       by updating the population using FieldValue.increment()
-	// 			var newPopulation = sfDoc.data().population + 1;
-	// 			transaction.update(sfDocRef, { population: newPopulation });
-	// 		});
-	// 	}).then(function() {
-	// 		console.log("Transaction successfully committed!");
-	// 	}).catch(function(error) {
-	// 		console.log("Transaction failed: ", error);
-	// 	});
-	// 	try {
-	// 		obj.props.dateCreated = timeModified
-	// 		obj.props.dateModified = timeModified
-	// 		obj.props.userCreated = userModified
-	// 		obj.props.userModified = userModified
-	// 		let date = moment(Match.data().beginTime.toDate())
-	// 		let dateGoal = new Date(date.format('YYYY-MM-DD') + 'T' + obj.time + 'Z');
-	// 		obj.time = Timestamp.fromDate(dateGoal);
-	// 		obj.timeMin = moment(dateGoal).diff(date, 'minute');
-
-	// 		switch (obj.type) {
-	// 			case "O":
-	// 				obj.isOwnGoal = true;
-	// 				obj.isPenalty = false;
-	// 				break;
-	// 			case "P":
-	// 				obj.isOwnGoal = false;
-	// 				obj.isPenalty = true;
-	// 				break;
-	// 			default:
-	// 				obj.isOwnGoal = false;
-	// 				obj.isPenalty = false;
-	// 				break;
-	// 		}
-	// 		delete obj.type;
-	// 		console.log(obj)
-	// 		// /**						Players					**/
-	// 		if (!!obj.goal) {
-	// 			obj.goal = Players.doc(obj.goal)
-	// 			batch.update(obj.goal, {
-	// 				"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
-	// 			})
-	// 		}
-	// 		if (!!obj.assist) {
-	// 			obj.assist = Players.doc(obj.assist)
-	// 			batch.update(obj.assist, {
-	// 				"props.dateModified": timeModified, "props.userModified": userModified, ['assists.' + [Goal.id]]: true
-	// 			})
-	// 		}
-	// 		/**						Teams					**/
-	// 		if (!!obj.team) {
-	// 			obj.team = Teams.doc(obj.team);
-	// 			batch.update(obj.team, {
-	// 				"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
-	// 			})
-	// 		}
-
-	// 		/** 					Match					**/
-	// 		if (!!obj.match) {
-	// 			obj.match = Matches.doc(obj.match);
-	// 			batch.update(obj.match, {
-	// 				"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
-	// 			})
-	// 		}
-	// 		/** 					Goals					**/
-	// 		batch.set(Goal, obj);
-	// 		await batch.commit();
-	// 	}
-	// 	catch (e) {
-	// 		console.log(e);
-	// 	}
-	// }),
-	delGoal: firestoreAction(async function (context, id) {
-		let obj = JSON.parse(JSON.stringify(data))
+	async delGoal(context, obj) {
 		let Users = firestore.collection('Users');
 		let Players = firestore.collection('Players');
 		let Teams = firestore.collection('Teams');
 		let Matches = firestore.collection('Matches');
-		let Match = await Matches.doc(obj.match).get();
-		let Goal = firestore.collection('Goals').doc(id)
+		let Goals = firestore.collection('Goals');
+		let GoalPlayer = !!obj.goal ? Players.doc(obj.goal.id) : null;
+		let AssistPlayer = !!obj.assist ? Players.doc(obj.assist.id) : null
+		let Team = Teams.doc(obj.team.id);
+		let otherTeam = (obj.team.id == obj.match.teamA.id) ? Teams.doc(obj.match.teamB.id) : Teams.doc(obj.match.teamA.id)
+		let Match = Matches.doc(obj.match.id);
+		let Goal = Goals.doc(obj.id);
 		let timeModified = Timestamp.fromDate(new Date());
 		let userModified = Users.doc(firestore._credentials.currentUser.uid);
-		let lastOperation = 'Delete Goal';
 		let batch = firestore.batch();
+		let highscores = {}
+		let props = {
+			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Delete Goal"
+		};
+		let counterPlayer = {}, counterTeam = {}, counterOtherTeam = {}, counterMatch = {};
 		try {
-			/**						Goal					**/
-			batch.delete(Goal)
-			/**						Players					**/
-			if (!!obj.goal) {
-				obj.goal = Players.doc(obj.goal)
-				batch.update(obj.goal, {
-					"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": lastOperation
-				})
-				batch.delete(obj.goal['goals.' + [Goal.id]])
+			if (obj.isOwnGoal) {
+				counterPlayer = { "counter.goals.ownGoals": decrement }
+				counterTeam = counterPlayer
+				counterOtherTeam = { "counter.goals.total": decrement }
+				counterMatch = { ...counterTeam, ...counterOtherTeam, ["counter.goals." + [obj.local]]: decrement }
+				highscores = { ["players." + [obj.goal.id] + ".ownGoals"]: decrement }
+
 			}
-			if (!!obj.assist) {
-				obj.assist = Players.doc(obj.assist)
-				batch.update(obj.assist, {
-					"props.dateModified": timeModified, "props.userModified": userModified, ['assists.' + [Goal.id]]: true
+			else if (obj.isPenalty) {
+				counterTeam = { "counter.goals.total": decrement, "counter.goals.penalties": decrement }
+				counterPlayer = { ["counter.goals." + [obj.local]]: decrement, ...counterTeam }
+				counterMatch = counterPlayer;
+				highscores = { ["players." + [obj.goal.id] + ".goals"]: decrement, ["players." + [obj.goal] + ".penalties"]: decrement }
+			}
+			else {
+				counterTeam = { "counter.goals.total": decrement }
+				counterPlayer = { ["counter.goals." + [obj.local]]: decrement, ...counterTeam }
+				counterMatch = counterPlayer;
+				highscores = { ["players." + [obj.goal.id] + ".goals"]: decrement }
+			}
+			// /**						Players					**/
+			if (!!GoalPlayer) {
+				batch.update(GoalPlayer, {
+					...props, ...counterPlayer, ['goals.' + [obj.id]]: deleteField
+				})
+			}
+			if (!!AssistPlayer) {
+				counterPlayer = { 'counter.assists.total': decrement, ["counter.assists." + [obj.local]]: decrement }
+				counterTeam = { ...counterTeam, 'counter.assists.total': decrement }
+				counterMatch = { ...counterMatch, 'counter.assists.total': decrement, ["counter.assists." + [obj.local]]: decrement }
+				highscores = { ["players." + [obj.assist.id] + ".assists"]: decrement }
+				batch.update(AssistPlayer, {
+					...props, ...counterPlayer, ['assists.' + [obj.id]]: deleteField
 				})
 			}
 			/**						Teams					**/
-			if (!!obj.team) {
-				obj.team = Teams.doc(obj.team);
-				batch.update(obj.team, {
-					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
-				})
+			if (!!Team) {
+				batch.update(Team, {
+					...props, ...counterTeam, ['goals.' + [obj.id]]: deleteField
+				});
+			}
+
+			if (!!counterOtherTeam) {
+				batch.update(otherTeam, {
+					...props, ...counterOtherTeam
+				});
 			}
 
 			/** 					Match					**/
-			if (!!obj.match) {
-				obj.match = Matches.doc(obj.match);
-				batch.update(obj.match, {
-					"props.dateModified": timeModified, "props.userModified": userModified, ['goals.' + [Goal.id]]: true
+			if (!!Match) {
+				batch.update(Match, {
+					...props, ...counterMatch, ...highscores, ['goals.' + [obj.id]]: deleteField
 				})
 			}
 			/** 					Goals					**/
-			// await batch.commit();
+			batch.delete(Goal);
+			await batch.commit();
 		}
 		catch (e) {
 			console.log(e);
 		}
-	})
+	}
 }

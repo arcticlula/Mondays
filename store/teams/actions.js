@@ -6,7 +6,7 @@ export default {
 		const db = firestore.collection('Teams')
 		await bindFirestoreRef('teams', db, { wait: true })
 	}),
-	async setTeam(context, data) {
+	async addTeam(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');
 		let Players = firestore.collection('Players')
@@ -15,7 +15,7 @@ export default {
 		let userModified = Users.doc(firestore._credentials.currentUser.uid);
 		let batch = firestore.batch();
 		let props = {
-			"props.dateModified": timeModified, "props.userModified": userModified
+			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Add Team"
 		};
 		try {
 			obj.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified }

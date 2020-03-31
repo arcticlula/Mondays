@@ -109,11 +109,11 @@ export default {
   },
   methods: {
     ...mapActions('teams', ['getTeams']),
-    ...mapActions('matches', ['getMatches', 'setMatch']),
+    ...mapActions('matches', ['getMatches', 'addMatch']),
 
     async onSubmit(evt) {
       evt.preventDefault()
-      await this.setMatch(this.form)
+      await this.addMatch(this.form)
     },
     onReset(evt) {
       evt.preventDefault()

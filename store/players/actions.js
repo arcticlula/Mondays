@@ -24,7 +24,7 @@ export default {
 			})
 		});
 	},
-	async setPlayer(context, data) {
+	async addPlayer(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');
 		let Players = firestore.collection('Players')
@@ -33,7 +33,7 @@ export default {
 		try {
 			if (obj.dob) obj.dob = Timestamp.fromDate(new Date(obj.dob));
 			else obj.dob = Timestamp.fromDate(new Date('2000-01-01'))
-			obj.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified }
+			obj.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified, lastOperation: "Add Player" }
 			console.log(context, this)
 			Players.add(obj);
 		}

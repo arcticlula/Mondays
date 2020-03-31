@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     ...mapActions('players', ['getPlayersStatic']),
-    ...mapActions('teams', ['getTeams', 'setTeam']),
+    ...mapActions('teams', ['getTeams', 'addTeam']),
     addPlayerToTeam(player) {
       this['form' + this.teamLetter].players.push({
         id: player.id,
@@ -135,8 +135,8 @@ export default {
     },
     async onSubmit(evt) {
       evt.preventDefault()
-      await this.setTeam(this.formA)
-      await this.setTeam(this.formB)
+      await this.addTeam(this.formA)
+      await this.addTeam(this.formB)
       // if (createMatch) await this.setMatch()
     },
     onReset(evt) {
