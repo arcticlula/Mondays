@@ -68,7 +68,7 @@
                   <b-col cols="12">
                     <div v-for="goal in goals" :key="goal.id">
                       <div v-if="!goal.isOwnGoal">
-                        <b-row v-if="isSameTeam(goal,'A')" class="my-1">
+                        <b-row v-if="goal.local=='home'" class="my-1">
                           <b-col cols="12">
                             <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola"></i>
@@ -92,7 +92,7 @@
                         </b-row>
                       </div>
                       <div v-else>
-                        <b-row v-if="isSameTeam(goal,'B')" class="my-1">
+                        <b-row v-if="goal.local=='away'" class="my-1">
                           <b-col cols="12">
                             <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola text-red"></i>
@@ -179,46 +179,38 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import court from '../components/match/court'
 import highscore from '../components/match/highscore'
 export default {
-  name: 'match',
-  layout: 'simple',
-  components: {
-    court,
-    highscore
-  },
-  computed: {
-    ...mapState('matches', ['match']),
-    ...mapState('goals', ['goals']),
-    ...mapGetters('matches', [
-      'goalsHome',
-      'goalsAway',
-      'playersHome',
-      'playersAway',
-      'matchDate'
-    ]),
-    routerPath() {
-      return this.$nuxt.$route.name
-    },
-    routerQuery() {
-      return this.$nuxt.$route.query
-    }
-  },
-  methods: {
-    isSameTeam(goal, letter) {
-      let goalId = goal.team ? goal.team.id : null
-      let matchId = this.match['team' + letter]
-        ? this.match['team' + letter].id
-        : null
-      return goalId == matchId
-    }
-  },
-  async fetch({ store, route }) {
-    try {
-      await store.dispatch('matches/getMatchById', route.query.match)
-      await store.dispatch('goals/getGoalsFromMatch', route.query.match)
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'match',
+	layout: 'simple',
+	components: {
+		court,
+		highscore
+	},
+	computed: {
+		...mapState('matches', ['match']),
+		...mapState('goals', ['goals']),
+		...mapGetters('matches', [
+			'goalsHome',
+			'goalsAway',
+			'playersHome',
+			'playersAway',
+			'matchDate'
+		]),
+		routerPath() {
+			return this.$nuxt.$route.name
+		},
+		routerQuery() {
+			return this.$nuxt.$route.query
+		}
+	},
+	methods: {},
+	async fetch({ store, route }) {
+		try {
+			await store.dispatch('matches/getMatchById', route.query.match)
+			await store.dispatch('goals/getGoalsFromMatch', route.query.match)
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
 

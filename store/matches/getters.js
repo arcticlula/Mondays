@@ -1,10 +1,10 @@
 import moment from 'moment'
 export default {
     goalsHome(state) {
-        return !!state.match ? state.match.counter.goalsHome : 0;
+        return !!state.match ? state.match.counter.goals.home : 0;
     },
     goalsAway(state) {
-        return !!state.match ? state.match.counter.goalsAway : 0;
+        return !!state.match ? state.match.counter.goals.away : 0;
     },
     playersHome(state) {
         return !!state.match ? state.match.teamA.players : []
@@ -13,7 +13,7 @@ export default {
         return !!state.match ? state.match.teamB.players : []
     },
     matchDate(state) {
-        return !!state.match ? state.match.beginTime.toDate() : '';
+        return !!state.match ? state.match.beginTime.toDate().toLocaleString('pt-PT', { timeZone: 'UTC' }) : '';
     },
     highscoreTable(state) {
         let data = !!state.match ? state.match.players : {}

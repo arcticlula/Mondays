@@ -89,3 +89,6 @@ sw.*
 
 # credentials
 /config.js
+
+# The file containing environment variables 
+.env

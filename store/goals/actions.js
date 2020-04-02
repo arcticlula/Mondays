@@ -1,6 +1,8 @@
 import { firestoreAction } from 'vuexfire'
-import { firestore, userID, Timestamp, increment, decrement, deleteField } from '../../plugins/firebase'
+import { firestore, Timestamp, increment, decrement, deleteField } from '../../plugins/firebase'
 import moment from 'moment';
+import hydrate from "../../utils/hydrate"
+import asyncForEach from "../../utils/asyncForEach"
 
 export default {
 	getGoals: firestoreAction(async function ({ bindFirestoreRef }) {
@@ -11,9 +13,22 @@ export default {
 		let Goals = firestore.collection('Goals');
 		let Match = firestore.collection('Matches').doc(id);
 		const db = Goals.where("match", "==", Match).orderBy('timeMin')
-		console.log(userID)
 		await bindFirestoreRef('goals', db, { wait: true })
 	}),
+	async getGoalsFromMatchStatic(context, id) {
+		let Match = firestore.collection('Matches').doc(id);
+		return await firestore.collection('Goals').where("match", "==", Match).orderBy('timeMin').get()
+			.then(async querySnapshot => {
+				let goals = []
+				await asyncForEach(querySnapshot.docs, async doc => {
+					let data = doc.data()
+					await hydrate(data, ['goal', 'assist'])
+					data.id = doc.id;
+					goals.push(data);
+				})
+				context.commit('setGoals', goals)
+			});
+	},
 	getGoalsByPlayer: firestoreAction(async function ({ bindFirestoreRef }, id) {
 		let Player = firestore.collection('Players').doc(id);
 		let Goals = firestore.collection('Goals');
@@ -30,7 +45,7 @@ export default {
 		let Match = await Matches.doc(obj.match).get();
 		let Goal = firestore.collection('Goals').doc()
 		let timeModified = Timestamp.fromDate(new Date());
-		let userModified = Users.doc(firestore._credentials.currentUser.uid);
+		let userModified = Users.doc(context.rootState.user.uid);
 		let batch = firestore.batch();
 		let highscores = {}
 		let props = {
@@ -67,6 +82,7 @@ export default {
 					counterTeam = { "counter.goals.total": increment }
 					counterPlayer = { ["counter.goals." + [obj.local]]: increment, ...counterTeam }
 					counterMatch = counterPlayer;
+					console.log(obj.goal)
 					highscores = { ["players." + [obj.goal] + ".goals"]: increment }
 					obj.isOwnGoal = false;
 					obj.isPenalty = false;
@@ -85,7 +101,7 @@ export default {
 				counterPlayer = { 'counter.assists.total': increment, ["counter.assists." + [obj.local]]: increment }
 				counterTeam = { ...counterTeam, 'counter.assists.total': increment }
 				counterMatch = { ...counterMatch, 'counter.assists.total': increment, ["counter.assists." + [obj.local]]: increment }
-				highscores = { ["players." + [obj.assist] + ".assists"]: increment }
+				highscores = { ...highscores, ["players." + [obj.assist] + ".assists"]: increment }
 				obj.assist = Players.doc(obj.assist)
 				batch.update(obj.assist, {
 					...props, ...counterPlayer, ['assists.' + [Goal.id]]: true
@@ -116,13 +132,15 @@ export default {
 			}
 			/** 					Goals					**/
 			batch.set(Goal, obj);
-			await batch.commit();
+			console.log('1')
+			return await batch.commit();
 		}
 		catch (e) {
 			console.log(e);
 		}
 	},
 	async delGoal(context, obj) {
+		console.log(obj)
 		let Users = firestore.collection('Users');
 		let Players = firestore.collection('Players');
 		let Teams = firestore.collection('Teams');
@@ -131,11 +149,14 @@ export default {
 		let GoalPlayer = !!obj.goal ? Players.doc(obj.goal.id) : null;
 		let AssistPlayer = !!obj.assist ? Players.doc(obj.assist.id) : null
 		let Team = Teams.doc(obj.team.id);
+		const matchId = obj.match.id;
+		obj.match = (await obj.match.get()).data()
+		obj.match.id = matchId
 		let otherTeam = (obj.team.id == obj.match.teamA.id) ? Teams.doc(obj.match.teamB.id) : Teams.doc(obj.match.teamA.id)
 		let Match = Matches.doc(obj.match.id);
 		let Goal = Goals.doc(obj.id);
 		let timeModified = Timestamp.fromDate(new Date());
-		let userModified = Users.doc(firestore._credentials.currentUser.uid);
+		let userModified = Users.doc(context.rootState.user.uid);
 		let batch = firestore.batch();
 		let highscores = {}
 		let props = {
@@ -155,7 +176,7 @@ export default {
 				counterTeam = { "counter.goals.total": decrement, "counter.goals.penalties": decrement }
 				counterPlayer = { ["counter.goals." + [obj.local]]: decrement, ...counterTeam }
 				counterMatch = counterPlayer;
-				highscores = { ["players." + [obj.goal.id] + ".goals"]: decrement, ["players." + [obj.goal] + ".penalties"]: decrement }
+				highscores = { ["players." + [obj.goal.id] + ".goals"]: decrement, ["players." + [obj.goal.id] + ".penalties"]: decrement }
 			}
 			else {
 				counterTeam = { "counter.goals.total": decrement }
@@ -173,7 +194,7 @@ export default {
 				counterPlayer = { 'counter.assists.total': decrement, ["counter.assists." + [obj.local]]: decrement }
 				counterTeam = { ...counterTeam, 'counter.assists.total': decrement }
 				counterMatch = { ...counterMatch, 'counter.assists.total': decrement, ["counter.assists." + [obj.local]]: decrement }
-				highscores = { ["players." + [obj.assist.id] + ".assists"]: decrement }
+				highscores = { ...highscores, ["players." + [obj.assist.id] + ".assists"]: decrement }
 				batch.update(AssistPlayer, {
 					...props, ...counterPlayer, ['assists.' + [obj.id]]: deleteField
 				})

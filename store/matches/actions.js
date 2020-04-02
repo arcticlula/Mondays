@@ -15,6 +15,7 @@ export default {
 				await hydrate(data.teamA, ['players'])
 				await hydrate(data.teamB, ['players'])
 				data.id = id;
+				console.log(data)
 				context.commit("setMatch", data)
 			})
 	},
