@@ -91,4 +91,4 @@ sw.*
 /config.js
 
 # The file containing environment variables 
-.env
+*.local
