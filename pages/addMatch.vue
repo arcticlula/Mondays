@@ -55,11 +55,11 @@
         <pre class="m-0">{{ form }}</pre>
       </b-card>
     </b-row>
-    <b-row class="m-3">
+    <!-- <b-row class="m-3">
       <b-card class="mr-2" v-for="match in matches" :key="match.id" :header="match.id">
         <pre class="m-0">{{ match }}</pre>
       </b-card>
-    </b-row>
+    </b-row>-->
   </div>
 </template>
 
@@ -122,6 +122,7 @@ export default {
 		async onSubmit(evt) {
 			evt.preventDefault()
 			await this.addMatch(this.form)
+			this.$noty.success('Jogo Adicionado!')
 		},
 		onReset(evt) {
 			evt.preventDefault()
@@ -144,15 +145,7 @@ export default {
 	async fetch({ store }) {
 		try {
 			await store.dispatch('teams/getTeams')
-			await store.dispatch('matches/getMatches')
-		} catch (e) {
-			console.error(e)
-		}
-	},
-	async mounted() {
-		try {
-			await this.getTeams()
-			await this.getMatches()
+			// await store.dispatch('matches/getMatches')
 		} catch (e) {
 			console.error(e)
 		}

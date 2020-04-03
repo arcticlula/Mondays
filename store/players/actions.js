@@ -6,22 +6,17 @@ export default {
 		const db = firestore.collection('Players').doc('gj0FqLu415vpu59nBSZA');
 		await bindFirestoreRef('player', db, { wait: true })
 	}),
-	getPlayerUser: firestoreAction(async function ({ bindFirestoreRef }) {
-		const db = firestore.collection('Players').doc('gj0FqLu415vpu59nBSZA');
-		await bindFirestoreRef('playerUser', db, { wait: true })
-	}),
-	getPlayers: firestoreAction(async function ({ bindFirestoreRef }) {
-		const db = firestore.collection('Players').orderBy('name');
-		await bindFirestoreRef('players', db, { wait: true })
-	}),
-	getPlayersStatic() {
-		return firestore.collection('Players').orderBy('name').get().then(function (querySnapshot) {
-			return querySnapshot.docs.map(doc => {
-				let obj = doc.data()
-				obj.selected = false;
-				obj.id = doc.id;
-				return obj
+	async getPlayerUser(context, id) {
+		return await firestore.collection('Players').doc(id).onSnapshot(documentSnapshot => {
+			context.commit('setPlayerUser', documentSnapshot.data())
+		});
+	},
+	async getPlayers(context) {
+		return await firestore.collection('Players').orderBy("name").onSnapshot(querySnapshot => {
+			const players = querySnapshot.docs.map(doc => {
+				return { id: doc.id, selected: false, ...doc.data() };
 			})
+			context.commit('setPlayers', players)
 		});
 	},
 	async addPlayer(context, data) {

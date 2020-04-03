@@ -1,12 +1,14 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore, Timestamp, increment } from '../../plugins/firebase'
 import hydrate from "../../utils/hydrate"
+import asyncForEach from "../../utils/asyncForEach"
 
 export default {
-	getMatchById: firestoreAction(async function ({ bindFirestoreRef }, id) {
-		const db = firestore.collection('Matches').doc(id);
-		await bindFirestoreRef('match', db, { wait: true })
-	}),
+	async getMatchById(context, id) {
+		return await firestore.collection('Matches').doc(id).onSnapshot(documentSnapshot => {
+			context.commit('setMatch', documentSnapshot.data())
+		});
+	},
 	async getMatchByIdStatic(context, id) {
 		return await firestore.collection('Matches').doc(id).get()
 			.then(async documentSnapshot => {
@@ -15,20 +17,38 @@ export default {
 				await hydrate(data.teamA, ['players'])
 				await hydrate(data.teamB, ['players'])
 				data.id = id;
-				console.log(data)
 				context.commit("setMatch", data)
 			})
 	},
-	getMatches: firestoreAction(async function ({ bindFirestoreRef }) {
-		const db = firestore.collection('Matches').orderBy("beginTime")
-		await bindFirestoreRef('matches', db, { wait: true })
-	}),
-	getMatchesByDate: firestoreAction(async function (context) {
+	async getMatches(context) {
+		return await firestore.collection('Matches').orderBy("beginTime", "desc").onSnapshot(querySnapshot => {
+			const matches = querySnapshot.docs.map(doc => {
+				return { id: doc.id, ...doc.data() };
+			})
+			context.commit('setMatches', matches)
+		});
+	},
+	async getMatchesByDate(context) {
 		let beginDate = Timestamp.fromDate(new Date(context.rootGetters.yearLow));
 		let endDate = Timestamp.fromDate(new Date(context.rootGetters.yearHigh));
-		const db = firestore.collection('Matches').orderBy("beginTime").startAt(beginDate).endAt(endDate);
-		await context.bindFirestoreRef('matches', db, { wait: true })
-	}),
+		return await firestore.collection('Matches').orderBy("beginTime").startAt(beginDate).endAt(endDate).onSnapshot(querySnapshot => {
+			const matches = querySnapshot.docs.map(doc => {
+				return { id: doc.id, ...doc.data() };
+			})
+			context.commit('setMatches', matches)
+		});
+	},
+	// async getMatchesByDateFromPlayer(context, id) {
+	// 	let beginDate = Timestamp.fromDate(new Date(context.rootGetters.yearLow));
+	// 	let endDate = Timestamp.fromDate(new Date(context.rootGetters.yearHigh));
+
+	// 	return await firestore.collection('Matches').onSnapshot(querySnapshot => {
+	// 		// const matches = querySnapshot.docs.map(doc => {
+	// 		// 	return { id: doc.id, ...doc.data() };
+	// 		// })
+	// 		// context.commit('setMatches', matches)
+	// 	});
+	// },
 	async addMatch(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		obj.beginTime = Timestamp.fromDate(new Date(obj.date + 'T' + obj.beginTime + 'Z'));
@@ -56,14 +76,14 @@ export default {
 			for (let i = 0; i < playersFromTeam.length; i++) {
 				const player = Players.doc(playersFromTeam[i].id)
 				const playerData = (await player.get()).data();
-				highscores[playersFromTeam[i].id] = { "name": playerData.name, "nickname": playerData.nickname, ...init }
+				highscores[playersFromTeam[i].id] = { "name": playerData.name, "nickname": playerData.nickname, "local": "home", ...init }
 				batch.update(player, { ...props, "counter.matches.total": increment, ['matches.' + [Match.id]]: true })
 			}
 			playersFromTeam = (await obj.teamB.get()).data().players;
 			for (let i = 0; i < playersFromTeam.length; i++) {
 				const player = Players.doc(playersFromTeam[i].id)
 				const playerData = (await player.get()).data();
-				highscores[playersFromTeam[i].id] = { "name": playerData.name, "nickname": playerData.nickname, ...init }
+				highscores[playersFromTeam[i].id] = { "name": playerData.name, "nickname": playerData.nickname, "local": "away", ...init }
 				batch.update(player, { ...props, "counter.matches.total": increment, ['matches.' + [Match.id]]: true })
 			}
 			/**						Teams					**/

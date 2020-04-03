@@ -143,6 +143,7 @@
                           label-for="input-2"
                         >
                           <b-form-select
+                            required
                             :options="playersScore"
                             value-field="id"
                             text-field="name"
@@ -300,6 +301,8 @@ export default {
 				let localOwnGoal = this.form.local == 'A' ? 'B' : 'A'
 				this.form.team = this.match['team' + this.form.local].id
 				this.form.otherTeam = this.match['team' + localOwnGoal].id
+				this.form.goal = null
+				this.form.assist = null
 			})
 		},
 		ownGoalToggle() {

@@ -1,7 +1,8 @@
 import moment from 'moment'
 export default {
   activeUser(state) {
-    return state.user
+    console.log(state)
+    return !!state.userDB ? state.userDB : {}
   },
   yearHigh(state) {
     let date = state.navbar;

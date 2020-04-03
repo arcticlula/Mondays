@@ -16,7 +16,7 @@
                 <b-table
                   striped
                   hover
-                  :items="marcadoresTop"
+                  :items="highscore"
                   :fields="fields"
                   @row-clicked="goToProfile"
                   ref="table"
@@ -68,81 +68,80 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
-  name: 'highscore',
-  data() {
-    return {
-      marcadoresTop: null,
-      fields: [
-        // {
-        //   key: 'row',
-        //   label: '#',
-        //   sortable: true
-        // },
-        {
-          key: 'nome',
-          label: 'Nome',
-          sortable: true
-        },
-        {
-          key: 'jogos',
-          label: 'Jogos',
-          sortDirection: 'desc',
-          sortable: true
-        },
-        {
-          key: 'vitorias',
-          label: 'V',
-          sortable: true,
-          sortDirection: 'desc'
-          // variant: "success"
-        },
-        {
-          key: 'empates',
-          label: 'E',
-          sortable: true,
-          sortDirection: 'desc'
-          // variant: "warning"
-        },
-        {
-          key: 'derrotas',
-          label: 'D',
-          sortable: true,
-          sortDirection: 'desc'
-          // variant: "danger"
-        },
-        {
-          key: 'golos',
-          label: 'G',
-          sortDirection: 'desc',
-          sortable: true
-        },
-        {
-          key: 'assistencias',
-          label: 'A',
-          sortDirection: 'desc',
-          sortable: true
-        }
-        // { key: "actions", label: "Actions" }
-      ]
-    }
-  },
-  methods: {
-    // ...mapActions(['getMarcadoresTop']),
-    goToProfile(row) {
-      console.log(row)
-      console.log(row.idJogador)
-      this.$router.push({
-        name: 'Profile',
-        query: { id: row.idJogador }
-      })
-    }
-  },
-  computed: {
-    ...mapState('players', ['players'])
-  },
-  created() {
-    // this.getMarcadoresTop()
-  }
+	name: 'highscore',
+	data() {
+		return {
+			marcadoresTop: null,
+			fields: [
+				// {
+				//   key: 'row',
+				//   label: '#',
+				//   sortable: true
+				// },
+				{
+					key: 'name',
+					label: 'Nome',
+					sortable: true
+				},
+				{
+					key: 'matches',
+					label: 'Jogos',
+					sortDirection: 'desc',
+					sortable: true
+				},
+				{
+					key: 'wins',
+					label: 'V',
+					sortable: true,
+					sortDirection: 'desc'
+					// variant: "success"
+				},
+				{
+					key: 'draws',
+					label: 'E',
+					sortable: true,
+					sortDirection: 'desc'
+					// variant: "warning"
+				},
+				{
+					key: 'losses',
+					label: 'D',
+					sortable: true,
+					sortDirection: 'desc'
+					// variant: "danger"
+				},
+				{
+					key: 'goals',
+					label: 'G',
+					sortDirection: 'desc',
+					sortable: true
+				},
+				{
+					key: 'assists',
+					label: 'A',
+					sortDirection: 'desc',
+					sortable: true
+				}
+				// { key: "actions", label: "Actions" }
+			]
+		}
+	},
+	methods: {
+		// ...mapActions(['getMarcadoresTop']),
+		goToProfile(row) {
+			this.$router.push({
+				name: 'profile',
+				query: { id: row.idJogador }
+			})
+		}
+	},
+	computed: {
+		...mapState('players', ['players']),
+		...mapGetters('matches', ['highscore'])
+	},
+	created() {
+		// this.getMarcadoresTop()
+	}
 }
 </script>
 

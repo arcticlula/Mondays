@@ -13,8 +13,8 @@
       </div>
       <div style="text-align: right;">
         <ul id="navbarUser">
-          <b-avatar v-if="activeUser.displayName" :src="activeUser.photoURL"></b-avatar>
-          <li class="btn-pages user_name">{{activeUser.displayName}}</li>
+          <b-avatar v-if="activeUser.name" :src="activeUser.picture"></b-avatar>
+          <li class="btn-pages user_name">{{activeUser.name}}</li>
           <!-- <li class="btn-pages">
 					<b-button variant="danger" size="sm">
 						<b>-20</b>
@@ -46,14 +46,14 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 export default {
-  name: 'simple',
-  computed: {
-    ...mapState(['nightMode']),
-    ...mapGetters(['activeUser']),
-    routerPath() {
-      return this.$nuxt.$route.name
-    }
-  }
+	name: 'simple',
+	computed: {
+		...mapState(['nightMode']),
+		...mapGetters(['activeUser']),
+		routerPath() {
+			return this.$nuxt.$route.name
+		}
+	}
 }
 </script>
 

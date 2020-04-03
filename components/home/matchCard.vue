@@ -17,7 +17,7 @@
                 <b-badge variant="info">Casa</b-badge>&nbsp;
                 <label
                   v-for="player in playersHome"
-                  v-bind:key="player.id"
+                  :key="player.id"
                 >&nbsp;{{ player.nickname }}&nbsp;</label>
               </b-col>
             </b-row>
@@ -35,7 +35,7 @@
       </b-col>
       <b-col cols="3" sm="3" md="2" lg="4" xl="2" class="pl-1 matchCard clicker">
         <b-card
-          v-if="goalsHome>goalsAway"
+          v-if="getResult>0"
           border-variant="success"
           header="Vitória"
           header-bg-variant="success"
@@ -50,7 +50,7 @@
           </b-card-body>
         </b-card>
         <b-card
-          v-else-if="goalsHome<goalsAway"
+          v-else-if="getResult<0"
           border-variant="danger"
           header="Derrota"
           header-bg-variant="danger"
@@ -65,7 +65,7 @@
           </b-card-body>
         </b-card>
         <b-card
-          v-else-if="goalsHome==goalsAway"
+          v-else-if="getResult==0"
           border-variant="warning"
           header="Empate"
           header-bg-variant="warning"
@@ -99,28 +99,50 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
+import moment from 'moment'
 
 export default {
-  name: 'matchCard',
-  props: { match: Object },
-  methods: {},
-  computed: {
-    matchDate() {
-      return this.match.beginTime.seconds
-    },
-    playersHome() {
-      return this.match.teamA ? this.match.teamA.players : []
-    },
-    playersAway() {
-      return this.match.teamB ? this.match.teamB.players : []
-    },
-    goalsHome() {
-      return this.match.teamA ? Object.keys(this.match.teamA.goals).length : 0
-    },
-    goalsAway() {
-      return this.match.teamB ? Object.keys(this.match.teamB.goals).length : 0
-    }
-  }
+	name: 'matchCard',
+	props: { match: Object },
+	methods: {},
+	computed: {
+		matchDate() {
+			return !!this.match ? this.match.beginTime.toDate() : ''
+		},
+		playersHome() {
+			let data = !!this.match ? this.match.players : {}
+			return Object.keys(data).reduce((filtered, s) => {
+				if (data[s].local == 'home') {
+					filtered.push({ id: s, nickname: data[s].nickname })
+				}
+				return filtered
+			}, [])
+		},
+		playersAway() {
+			let data = !!this.match ? this.match.players : {}
+			return Object.keys(data).reduce((filtered, s) => {
+				if (data[s].local == 'away') {
+					filtered.push({ id: s, nickname: data[s].nickname })
+				}
+				return filtered
+			}, [])
+		},
+		goalsHome() {
+			return this.match ? this.match.counter.goals.home : 0
+		},
+		goalsAway() {
+			return this.match ? this.match.counter.goals.away : 0
+		},
+		getResult() {
+			return this.match
+				? this.match.players['elyrj3N10aTYtecXRNEJ'].local == 'home'
+					? this.match.counter.goals.home -
+					  this.match.counter.goals.away
+					: this.match.counter.goals.away -
+					  this.match.counter.goals.home
+				: null
+		}
+	}
 }
 </script>
 
