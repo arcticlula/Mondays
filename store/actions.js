@@ -14,44 +14,63 @@ export default {
 	},
 	async googleSignIn({ dispatch }) {
 		let loginInfo = await auth.signInWithPopup(google);
-		await dispatch('addUser', loginInfo)
-		// this.$router.push({ name: 'match', query: { match: id } })
-		// if (!loginInfo.isNewUser)
-		// else
-		// 	this.$router.push('/choosePlayer')
+		let res = await dispatch('loginUser', loginInfo)
+		if (_.isEmpty(res.player) && !res.isVisitor) this.$router.push({ name: 'choosePlayer' })
+		else this.$router.push({ name: 'index' })
 	},
-	async addUser({ commit }, loginInfo) {
-		let UsersRef = firestore.collection('Users').doc(firestore._credentials.currentUser.uid);
+	async loginUser({ rootState, commit }, loginInfo) {
+		let User = firestore.collection('Users').doc(rootState.user.uid);
+		let timeModified = Timestamp.fromDate(new Date());
+		let docSnapshot = await User.get();
+		if (docSnapshot.exists) {
+			let data = docSnapshot.data();
+			// console.log(data)
+			await hydrate(data, ['player'])
+			data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
+			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
+			commit('setUserDB', data)
+			commit('setUserPlayer', data.player)
+			console.log(data)
+		}
+		else {
+			let profile = loginParser(loginInfo).profile
+			let props = { dateCreated: timeModified, dateModified: timeModified, userCreated: User, userModified: User, lastOperation: "Add User" }
+			User.set({ ...profile, player: null, admin: 0, ...props, isVisitor: false })
+		}
+		return docSnapshot.data()
+	},
+	async checkUser({ rootState, commit }) {
+		let User = firestore.collection('Users').doc(rootState.user.uid);
+		let docSnapshot = await User.get();
+		if (docSnapshot.exists) {
+			let data = docSnapshot.data();
+			// console.log(data)
+			await hydrate(data, ['player'])
+			data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
+			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
+			commit('setUserDB', data)
+			commit('setUserPlayer', data.player)
+		}
+	},
+	async setPlayerUser({ rootState }, id) {
+		let User = firestore.collection('Users').doc(rootState.user.uid);
 		let Players = firestore.collection('Players')
 		let timeModified = Timestamp.fromDate(new Date());
-		UsersRef.get()
-			.then((docSnapshot) => {
-				if (docSnapshot.exists) {
-					let data;
-					UsersRef.onSnapshot(async documentSnapshot => {
-						data = documentSnapshot.data();
-						await hydrate(data, ['player'])
-						data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
-						data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
-						commit('setUserDB', data)
-						commit('setUserPlayer', data.player)
-					});
-					if (_.isEmpty(data.player)) this.$router.push({ name: 'choosePlayer' })
-				} else {
-					let profile = loginParser(loginInfo).profile
-					UsersRef.set({ ...profile, player: null, admin: 0 })
-					// return
-				}
-			});
-		// try {
-		// 	if (obj.dob) obj.dob = Timestamp.fromDate(new Date(obj.dob));
-		// 	else obj.dob = Timestamp.fromDate(new Date('2000-01-01'))
-		// 	obj.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified, lastOperation: "Add User" }
-		// 	console.log(context, this)
-		// 	Players.add(obj);
-		// }
-		// catch (e) {
-		// 	console.log(e);
-		// }
+		let props = {
+			"props.dateModified": timeModified, "props.userModified": User, "props.lastOperation": "Edit User"
+		};
+		let batch = firestore.batch();
+		if (id) {
+			let Player = Players.doc(id);
+			batch.update(User, {
+				...props, player: Player, isVisitor: false
+			})
+		}
+		else {
+			batch.update(User, {
+				...props, player: null, isVisitor: true
+			})
+		}
+		await batch.commit();
 	}
 }

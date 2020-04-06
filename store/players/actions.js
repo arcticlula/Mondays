@@ -1,11 +1,11 @@
-import { firestoreAction } from 'vuexfire'
 import { firestore, Timestamp } from '../../plugins/firebase'
 
 export default {
-	getPlayer: firestoreAction(async function ({ bindFirestoreRef }) {
-		const db = firestore.collection('Players').doc('gj0FqLu415vpu59nBSZA');
-		await bindFirestoreRef('player', db, { wait: true })
-	}),
+	async getPlayerById(context, id) {
+		return await firestore.collection('Players').doc(id).onSnapshot(documentSnapshot => {
+			context.commit('setPlayer', documentSnapshot.data())
+		});
+	},
 	async getPlayers(context) {
 		return await firestore.collection('Players').orderBy("name").onSnapshot(querySnapshot => {
 			const players = querySnapshot.docs.map(doc => {
