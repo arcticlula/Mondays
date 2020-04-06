@@ -1,8 +1,13 @@
 import moment from 'moment'
+import lodash from 'lodash'
 export default {
-  activeUser(state) {
-    console.log(state)
-    return !!state.userDB ? state.userDB : {}
+  userDB(state) {
+    console.log(state.userDB)
+    return !_.isEmpty(state.userDB) ? state.userDB : {}
+  },
+  userPlayer(state) {
+    console.log(state.userPlayer)
+    return !_.isEmpty(state.userPlayer) ? state.userPlayer : {}
   },
   yearHigh(state) {
     let date = state.navbar;

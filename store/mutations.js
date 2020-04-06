@@ -7,6 +7,9 @@ export default {
 	setUserDB(state, data) {
 		state.userDB = data;
 	},
+	setUserPlayer(state, data) {
+		state.userPlayer = data;
+	},
 	setNightMode(state, value) {
 		state.nightMode = value;
 		let element = document.getElementsByTagName("body")[0];

@@ -6,11 +6,6 @@ export default {
 		const db = firestore.collection('Players').doc('gj0FqLu415vpu59nBSZA');
 		await bindFirestoreRef('player', db, { wait: true })
 	}),
-	async getPlayerUser(context, id) {
-		return await firestore.collection('Players').doc(id).onSnapshot(documentSnapshot => {
-			context.commit('setPlayerUser', documentSnapshot.data())
-		});
-	},
 	async getPlayers(context) {
 		return await firestore.collection('Players').orderBy("name").onSnapshot(querySnapshot => {
 			const players = querySnapshot.docs.map(doc => {

@@ -9,13 +9,13 @@ export default {
 		const db = firestore.collection('Goals')
 		await bindFirestoreRef('goals', db, { wait: true })
 	}),
-	getGoalsFromMatch: firestoreAction(async function ({ bindFirestoreRef }, id) {
-		let Goals = firestore.collection('Goals');
-		let Match = firestore.collection('Matches').doc(id);
-		const db = Goals.where("match", "==", Match).orderBy('timeMin')
-		await bindFirestoreRef('goals', db, { wait: true })
-	}),
-	async getGoalsFromMatchStatic(context, id) {
+	// getGoalsFromMatch: firestoreAction(async function ({ bindFirestoreRef }, id) {
+	// 	let Goals = firestore.collection('Goals');
+	// 	let Match = firestore.collection('Matches').doc(id);
+	// 	const db = Goals.where("match", "==", Match).orderBy('timeMin')
+	// 	await bindFirestoreRef('goals', db, { wait: true })
+	// }),
+	async getGoalsFromMatch(context, id) {
 		let Match = firestore.collection('Matches').doc(id);
 		return await firestore.collection('Goals').where("match", "==", Match).orderBy('timeMin').get()
 			.then(async querySnapshot => {
