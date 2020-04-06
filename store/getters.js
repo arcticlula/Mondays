@@ -2,11 +2,12 @@ import moment from 'moment'
 import lodash from 'lodash'
 export default {
   userDB(state) {
-    console.log(state.userDB)
     return !_.isEmpty(state.userDB) ? state.userDB : {}
   },
+  userDob(state) {
+    return !_.isEmpty(state.userPlayer) ? moment(state.userPlayer.dob, 'DD/MM/YYYY') : moment()
+  },
   userPlayer(state) {
-    console.log(state.userPlayer)
     return !_.isEmpty(state.userPlayer) ? state.userPlayer : {}
   },
   yearHigh(state) {

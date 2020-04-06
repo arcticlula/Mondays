@@ -31,7 +31,7 @@
                     <b-row>
                       <b-col cols="12">
                         <b>Nome:</b>
-                        {{playerUser.name}}
+                        {{userDB.name}}
                       </b-col>
                     </b-row>
                     <b-row>
@@ -48,7 +48,7 @@
                         <span
                           class="d-inline d-sm-inline d-md-none d-lg-none d-xl-none font-weight-bold"
                         >Nasc.:</span>
-                        {{playerUser.dob | moment("DD/MM/YYYY")}}
+                        {{userDob | moment("DD/MM/YYYY")}}
                       </b-col>
                     </b-row>
                   </b-col>
@@ -98,7 +98,7 @@
             <b-card-body class="p-2">
               <match-stats
                 v-on:click.native="openMatch(match.id)"
-                v-for="match in matches"
+                v-for="match in matchesFiltered"
                 :match="match"
                 :key="match.id"
               ></match-stats>
@@ -125,44 +125,49 @@ import lodash from 'lodash'
 // import chartHeatmap from "./chartHeatmap.vue";
 
 export default {
-  name: 'profile',
-  layout: 'home',
-  // components: {
-  // 	heatmap: chartHeatmap
-  // },
-  data() {
-    return {
-      jogadorInfo: []
-    }
-  },
-  computed: {
-    ...mapState('players', ['playerUser']),
-    ...mapState('matches', ['matches']),
-    ...mapState('goals', ['goals']),
-    ...mapGetters(['userDB']),
-    age() {
-      return moment().diff(this.playerUser.dob, 'years', false) + ' anos'
-    }
-  },
-  async fetch({ store, route }) {
-    try {
-      // await store.dispatch(
-      // 	'goals/getGoalsByPlayer'
-      // )
-      // console.log(store.state)
-    } catch (e) {
-      console.error(e)
-    }
-  },
-  components: {
-    matchStats
-  },
-  methods: {
-    openMatch(id) {
-      console.log(id)
-      this.$router.push({ name: 'match', query: { match: id } })
-    }
-  }
+	name: 'profile',
+	layout: 'home',
+	// components: {
+	// 	heatmap: chartHeatmap
+	// },
+	data() {
+		return {
+			jogadorInfo: []
+		}
+	},
+	computed: {
+		...mapState('matches', ['matches']),
+		...mapState('goals', ['goals']),
+		...mapGetters(['userDB', 'userPlayer', 'userDob']),
+		age() {
+			console.log(this.userDob)
+			return moment().diff(this.userDob, 'years', false) + ' anos'
+		},
+		matchesFiltered() {
+			return !_.isEmpty(this.matches) && !_.isEmpty(this.userPlayer)
+				? this.matches.filter((s) => s.players[this.userPlayer.id])
+				: []
+		}
+	},
+	async fetch({ store, route }) {
+		try {
+			// await store.dispatch(
+			// 	'goals/getGoalsByPlayer'
+			// )
+			// console.log(store.state)
+		} catch (e) {
+			console.error(e)
+		}
+	},
+	components: {
+		matchStats
+	},
+	methods: {
+		openMatch(id) {
+			console.log(id)
+			this.$router.push({ name: 'match', query: { match: id } })
+		}
+	}
 }
 </script>
 

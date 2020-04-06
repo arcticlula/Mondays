@@ -78,18 +78,12 @@
             <label>(0&nbsp;-&nbsp;0)</label>
           </b-card-body>
         </b-card>
-        <b-card
-          v-else
-          border-variant="secondary"
-          header
-          header-bg-variant="secondary"
-          header-text-variant="white"
-          align="center"
-        >
+        <b-card v-else border-variant="secondary" align="center">
           <b-card-body class="resultado my-auto">
             <label>{{goalsHome}}&nbsp;-&nbsp;{{goalsAway}}</label>
             <br />
-            <label>(0&nbsp;-&nbsp;0)</label>
+            <label v-if="goalsHome>goalsAway">({{goalsHome-goalsAway}}&nbsp;-&nbsp;0)</label>
+            <label v-else>(0&nbsp;-&nbsp;{{goalsAway-goalsHome}})</label>
           </b-card-body>
         </b-card>
       </b-col>
@@ -102,47 +96,50 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
 
 export default {
-  name: 'matchCard',
-  props: { match: Object },
-  methods: {},
-  computed: {
-    ...mapGetters(['userPlayer']),
-    matchDate() {
-      return !_.isEmpty(this.match) ? this.match.beginTime.toDate() : ''
-    },
-    goalsHome() {
-      return !_.isEmpty(this.match) ? this.match.counter.goals.home : 0
-    },
-    goalsAway() {
-      return !_.isEmpty(this.match) ? this.match.counter.goals.away : 0
-    },
-    playersHome() {
-      let data = !_.isEmpty(this.match) ? this.match.players : {}
-      return Object.keys(data).reduce((filtered, s) => {
-        if (data[s].local == 'home') {
-          filtered.push({ id: s, nickname: data[s].nickname })
-        }
-        return filtered
-      }, [])
-    },
-    playersAway() {
-      let data = !_.isEmpty(this.match) ? this.match.players : {}
-      return Object.keys(data).reduce((filtered, s) => {
-        if (data[s].local == 'away') {
-          filtered.push({ id: s, nickname: data[s].nickname })
-        }
-        return filtered
-      }, [])
-    },
-    result() {
-      console.log(this.userPlayer)
-      return !_.isEmpty(this.match) && !_.isEmpty(this.userPlayer)
-        ? this.match.players[this.userPlayer.id].local == 'home'
-          ? this.match.counter.goals.home - this.match.counter.goals.away
-          : this.match.counter.goals.away - this.match.counter.goals.home
-        : null
-    }
-  }
+	name: 'matchCard',
+	props: { match: Object },
+	methods: {},
+	computed: {
+		...mapGetters(['userPlayer']),
+		matchDate() {
+			return !_.isEmpty(this.match) ? this.match.beginTime.toDate() : ''
+		},
+		goalsHome() {
+			return !_.isEmpty(this.match) ? this.match.counter.goals.home : 0
+		},
+		goalsAway() {
+			return !_.isEmpty(this.match) ? this.match.counter.goals.away : 0
+		},
+		playersHome() {
+			let data = !_.isEmpty(this.match) ? this.match.players : {}
+			return Object.keys(data).reduce((filtered, s) => {
+				if (data[s].local == 'home') {
+					filtered.push({ id: s, nickname: data[s].nickname })
+				}
+				return filtered
+			}, [])
+		},
+		playersAway() {
+			let data = !_.isEmpty(this.match) ? this.match.players : {}
+			return Object.keys(data).reduce((filtered, s) => {
+				if (data[s].local == 'away') {
+					filtered.push({ id: s, nickname: data[s].nickname })
+				}
+				return filtered
+			}, [])
+		},
+		result() {
+			return !_.isEmpty(this.match) &&
+				!_.isEmpty(this.userPlayer) &&
+				!_.isEmpty(this.match.players[this.userPlayer.id])
+				? this.match.players[this.userPlayer.id].local == 'home'
+					? this.match.counter.goals.home -
+					  this.match.counter.goals.away
+					: this.match.counter.goals.away -
+					  this.match.counter.goals.home
+				: null
+		}
+	}
 }
 </script>
 

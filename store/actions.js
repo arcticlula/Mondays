@@ -28,10 +28,10 @@ export default {
 				if (docSnapshot.exists) {
 					UsersRef.onSnapshot(async documentSnapshot => {
 						let data = documentSnapshot.data();
-						console.log(data)
 						await hydrate(data, ['player'])
-						// data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
-						// console.log(JSON.parse(JSON.stringify(data, getCircularReplacer())))
+						let dob = data.player.dob ? data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) : ''
+						data.player = { ...data.player, dob: dob }
+						data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
 						commit('setUserDB', data)
 						commit('setUserPlayer', data.player)
 					});

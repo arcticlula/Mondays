@@ -26,38 +26,40 @@ import moment from 'moment'
 import lodash from 'lodash'
 
 export default {
-  name: 'matchStats',
-  props: { match: Object },
-  methods: {},
-  computed: {
-    ...mapGetters(['userPlayer']),
-    matchDate() {
-      return !_.isEmpty(this.match) ? this.match.beginTime.toDate() : ''
-    },
-    goalsHome() {
-      return !_.isEmpty(this.match) ? this.match.counter.goals.home : 0
-    },
-    goalsAway() {
-      return !_.isEmpty(this.match) ? this.match.counter.goals.away : 0
-    },
-    playerGoals() {
-      return !_.isEmpty(this.match) && !_.isEmpty(this.userPlayer)
-        ? this.match.players[this.userPlayer.id].goals
-        : 0
-    },
-    playerAssists() {
-      return !_.isEmpty(this.match) && !_.isEmpty(this.userPlayer)
-        ? this.match.players[this.userPlayer.id].assists
-        : 0
-    },
-    result() {
-      return !_.isEmpty(this.match) && !_.isEmpty(this.userPlayer)
-        ? this.match.players[this.userPlayer.id].local == 'home'
-          ? this.match.counter.goals.home - this.match.counter.goals.away
-          : this.match.counter.goals.away - this.match.counter.goals.home
-        : null
-    }
-  }
+	name: 'matchStats',
+	props: { match: Object },
+	methods: {},
+	computed: {
+		...mapGetters(['userPlayer']),
+		matchDate() {
+			return !_.isEmpty(this.match) ? this.match.beginTime.toDate() : ''
+		},
+		goalsHome() {
+			return !_.isEmpty(this.match) ? this.match.counter.goals.home : 0
+		},
+		goalsAway() {
+			return !_.isEmpty(this.match) ? this.match.counter.goals.away : 0
+		},
+		playerGoals() {
+			return !_.isEmpty(this.match) && !_.isEmpty(this.userPlayer)
+				? this.match.players[this.userPlayer.id].goals
+				: 0
+		},
+		playerAssists() {
+			return !_.isEmpty(this.match) && !_.isEmpty(this.userPlayer)
+				? this.match.players[this.userPlayer.id].assists
+				: 0
+		},
+		result() {
+			return !_.isEmpty(this.match) && !_.isEmpty(this.userPlayer)
+				? this.match.players[this.userPlayer.id].local == 'home'
+					? this.match.counter.goals.home -
+					  this.match.counter.goals.away
+					: this.match.counter.goals.away -
+					  this.match.counter.goals.home
+				: null
+		}
+	}
 }
 </script>
 
