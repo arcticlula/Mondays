@@ -1,6 +1,9 @@
 import moment from 'moment'
 import lodash from 'lodash'
 export default {
+  admin(state) {
+    return !_.isEmpty(state.userDB) ? state.userDB.admin : 0
+  },
   userDB(state) {
     return !_.isEmpty(state.userDB) ? state.userDB : {}
   },

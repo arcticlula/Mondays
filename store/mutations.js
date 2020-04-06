@@ -11,7 +11,7 @@ export default {
 		state.userPlayer = data;
 	},
 	setNightMode(state, value) {
-		state.nightMode = value;
+		state.mode.night = value;
 		let element = document.getElementsByTagName("body")[0];
 		value ? element.classList.add("moon") : element.classList.remove("moon")
 	},

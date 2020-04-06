@@ -21,16 +21,36 @@
             <b-card-body class="px-2 py-1">
               <b-col cols="12">
                 <b-row>
-                  <b-col cols="12" class="px-0">Modo</b-col>
-                </b-row>
-                <b-row>
-                  <b-col cols="12" class="px-0">
-                    <span class="dl dl-sun"></span>
-                    <label class="switch">
-                      <input type="checkbox" v-model="nightModeVar" />
-                      <span class="slider round"></span>
-                    </label>
-                    <span class="dl dl-moon"></span>
+                  <b-col cols="12" class="px-0 py-2">
+                    <b-form-group
+                      class="mb-3 mx-3"
+                      id="input-group-0"
+                      label="Modo:"
+                      label-for="input-0"
+                    >
+                      <b-row cols="12">
+                        <b-form-checkbox id="input-0" v-model="nightModeVar" switch></b-form-checkbox>
+                        <span v-if="nightModeVar" style="align-self: center;" class="dl dl-moon"></span>
+                        <span v-else style="align-self: center;" class="dl dl-sun"></span>
+                      </b-row>
+                    </b-form-group>
+                  </b-col>
+                  <b-col cols="12" class="px-0 py-2">
+                    <b-form-group
+                      class="mb-3 mx-3"
+                      id="input-group-1"
+                      label="Admin:"
+                      label-for="input-1"
+                    >
+                      <b-row cols="12">
+                        <b-form-checkbox
+                          id="input-1"
+                          :disabled="admin==0"
+                          v-model="mode.edition"
+                          switch
+                        ></b-form-checkbox>
+                      </b-row>
+                    </b-form-group>
                   </b-col>
                   <b-col cols="12" class="px-0 py-2">
                     <b-btn size="sm" squared variant="outline-primary" @click="signOut">Sign Out</b-btn>
@@ -46,15 +66,16 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
 	name: 'config',
 	layout: 'home',
 	computed: {
-		...mapState(['nightMode']),
+		...mapState(['mode']),
+		...mapGetters(['admin']),
 		nightModeVar: {
 			get: function() {
-				return this.nightMode
+				return this.mode.night
 			},
 			set: function(data) {
 				return this.setNightMode(data)

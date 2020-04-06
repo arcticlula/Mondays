@@ -4,7 +4,7 @@ export default ({ store }) => {
     window.onNuxtReady(() => {
         createPersistedState({
             key: 'mondays',
-            paths: ['userDB', 'userPlayer', 'navbar', 'nightMode'],
+            paths: ['userDB', 'userPlayer', 'navbar', 'mode.night'],
             overwrite: true,
             rehydrated: ({ state }) => {
                 let element = document.getElementsByTagName("body")[0];
