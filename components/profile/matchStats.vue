@@ -32,7 +32,14 @@ export default {
 	computed: {
 		...mapGetters(['userPlayer']),
 		matchDate() {
-			return !_.isEmpty(this.match) ? this.match.beginTime.toDate() : ''
+			return !_.isEmpty(this.match)
+				? moment(
+						this.match.beginTime
+							.toDate()
+							.toLocaleDateString('pt-PT', { timeZone: 'UTC' }),
+						'DD/MM/YYYY'
+				  )
+				: moment()
 		},
 		goalsHome() {
 			return !_.isEmpty(this.match) ? this.match.counter.goals.home : 0

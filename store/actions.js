@@ -2,6 +2,7 @@ import { firestore, auth, google, Timestamp } from '../plugins/firebase'
 import hydrate from "../utils/hydrate"
 import loginParser from "../utils/loginParser"
 import getCircularReplacer from "../utils/getCircularReplacer"
+import lodash from "lodash";
 
 export default {
 	async signOut({ commit }) {
@@ -14,8 +15,8 @@ export default {
 	async googleSignIn({ dispatch }) {
 		let loginInfo = await auth.signInWithPopup(google);
 		await dispatch('addUser', loginInfo)
+		// this.$router.push({ name: 'match', query: { match: id } })
 		// if (!loginInfo.isNewUser)
-		this.$router.push('/')
 		// else
 		// 	this.$router.push('/choosePlayer')
 	},
@@ -29,15 +30,16 @@ export default {
 					UsersRef.onSnapshot(async documentSnapshot => {
 						let data = documentSnapshot.data();
 						await hydrate(data, ['player'])
-						let dob = data.player.dob ? data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) : ''
-						data.player = { ...data.player, dob: dob }
+						data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
 						data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
 						commit('setUserDB', data)
 						commit('setUserPlayer', data.player)
 					});
+					if (_.isEmpty(data.player)) this.$router.push({ name: 'choosePlayer' })
 				} else {
 					let profile = loginParser(loginInfo).profile
 					UsersRef.set({ ...profile, player: null, admin: 0 })
+					// return
 				}
 			});
 		// try {

@@ -7,7 +7,10 @@
             <b-col cols="12">
               <div class="row">
                 <b-col cols="6" class="px-0">Carolina Michaelis</b-col>
-                <b-col cols="6" class="text-right px-0">{{matchDate | moment("DD MMM YYYY HH:mm")}}</b-col>
+                <b-col
+                  cols="6"
+                  class="text-right px-0"
+                >{{matchDate | moment("DD MMMM YYYY - HH:mm")}}</b-col>
               </div>
             </b-col>
           </div>
@@ -102,7 +105,14 @@ export default {
 	computed: {
 		...mapGetters(['userPlayer']),
 		matchDate() {
-			return !_.isEmpty(this.match) ? this.match.beginTime.toDate() : ''
+			return !_.isEmpty(this.match)
+				? moment(
+						this.match.beginTime
+							.toDate()
+							.toLocaleString('pt-PT', { timeZone: 'UTC' }),
+						'DD/MM/YYYY, HH:mm:ss'
+				  )
+				: moment()
 		},
 		goalsHome() {
 			return !_.isEmpty(this.match) ? this.match.counter.goals.home : 0

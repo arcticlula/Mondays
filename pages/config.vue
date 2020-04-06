@@ -32,6 +32,9 @@
                     </label>
                     <span class="dl dl-moon"></span>
                   </b-col>
+                  <b-col cols="12" class="px-0 py-2">
+                    <b-btn size="sm" squared variant="outline-primary" @click="signOut">Sign Out</b-btn>
+                  </b-col>
                 </b-row>
               </b-col>
             </b-card-body>
@@ -43,24 +46,25 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
-  name: 'config',
-  layout: 'home',
-  computed: {
-    ...mapState(['nightMode']),
-    nightModeVar: {
-      get: function() {
-        return this.nightMode
-      },
-      set: function(data) {
-        return this.setNightMode(data)
-      }
-    }
-  },
-  methods: {
-    ...mapMutations(['setNightMode'])
-  }
+	name: 'config',
+	layout: 'home',
+	computed: {
+		...mapState(['nightMode']),
+		nightModeVar: {
+			get: function() {
+				return this.nightMode
+			},
+			set: function(data) {
+				return this.setNightMode(data)
+			}
+		}
+	},
+	methods: {
+		...mapMutations(['setNightMode']),
+		...mapActions(['signOut'])
+	}
 }
 </script>
 
