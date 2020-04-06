@@ -27,8 +27,9 @@ export default {
 		UsersRef.get()
 			.then((docSnapshot) => {
 				if (docSnapshot.exists) {
+					let data;
 					UsersRef.onSnapshot(async documentSnapshot => {
-						let data = documentSnapshot.data();
+						data = documentSnapshot.data();
 						await hydrate(data, ['player'])
 						data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
 						data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
