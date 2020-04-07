@@ -1,4 +1,5 @@
 import { firestore, Timestamp, increment, decrement, deleteField } from '../../plugins/firebase'
+import { firestoreAction } from 'vuexfire'
 import moment from 'moment';
 import hydrate from "../../utils/hydrate"
 import asyncForEach from "../../utils/asyncForEach"
@@ -20,13 +21,22 @@ export default {
 			let goals = []
 			await asyncForEach(querySnapshot.docs, async doc => {
 				let data = doc.data()
-				await hydrate(data, ['goal', 'assist'])
+				// console.time('getGoalsGA')
+				// await hydrate(data, ['goal', 'assist'])
+				// console.timeEnd('getGoalsGA')
 				data.id = doc.id;
 				goals.push(data);
 			})
 			context.commit('setGoals', goals)
+			console.timeEnd('getGoals')
 		});
 	},
+	getGoalsFromMatch2: firestoreAction(async function ({ bindFirestoreRef }, id) {
+		let Match = firestore.collection('Matches').doc(id);
+		const db = firestore.collection('Goals').where("match", "==", Match).orderBy('timeMin')
+		await bindFirestoreRef('goals', db, { wait: true })
+		// console.timeEnd('getGoals2')
+	}),
 	async addGoal(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');
@@ -73,7 +83,6 @@ export default {
 					counterTeam = { "counter.goals.total": increment }
 					counterPlayer = { ["counter.goals." + [obj.local]]: increment, ...counterTeam }
 					counterMatch = counterPlayer;
-					console.log(obj.goal)
 					highscores = { ["players." + [obj.goal] + ".goals"]: increment }
 					obj.isOwnGoal = false;
 					obj.isPenalty = false;
@@ -84,6 +93,8 @@ export default {
 			// /**						Players					**/
 			if (!_.isEmpty(obj.goal)) {
 				obj.goal = Players.doc(obj.goal)
+				const player = (await obj.goal.get()).data();
+				obj.players = { goal: { "name": player.name, "nickname": player.nickname } }
 				batch.update(obj.goal, {
 					...props, ...counterPlayer, ['goals.' + [Goal.id]]: true
 				})
@@ -94,6 +105,8 @@ export default {
 				counterMatch = { ...counterMatch, 'counter.assists.total': increment, ["counter.assists." + [obj.local]]: increment }
 				highscores = { ...highscores, ["players." + [obj.assist] + ".assists"]: increment }
 				obj.assist = Players.doc(obj.assist)
+				const player = (await obj.assist.get()).data();
+				obj.players = { assist: { "name": player.name, "nickname": player.nickname }, ...obj.players }
 				batch.update(obj.assist, {
 					...props, ...counterPlayer, ['assists.' + [Goal.id]]: true
 				})

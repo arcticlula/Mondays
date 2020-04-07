@@ -1,6 +1,8 @@
 
+import { vuexfireMutations } from 'vuexfire'
 
 export default {
+	...vuexfireMutations,
 	setUser(state, data) {
 		state.user = data;
 	},

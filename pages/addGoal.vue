@@ -52,7 +52,7 @@
                             <label class="pr-1">
                               <b>{{getNameGoal(goal)}}</b>
                             </label>
-                            <label v-if="!!goal.assist">({{getAssistGoal(goal)}})</label>
+                            <label v-if="!!goal.assist">({{getNameAssist(goal)}})</label>
                             <label v-else-if="goal.isPenalty">(Penalidade)</label>
                             <span @click="deleteGoal(goal)">x</span>
                           </b-col>
@@ -60,7 +60,7 @@
                         <b-row v-else class="my-1">
                           <b-col cols="12" class="text-right">
                             <span @click="deleteGoal(goal)">x</span>
-                            <label v-if="!!goal.assist" class="pr-1">({{getAssistGoal(goal)}})</label>
+                            <label v-if="!!goal.assist" class="pr-1">({{getNameAssist(goal)}})</label>
                             <label v-else-if="goal.isPenalty">(Penalidade)</label>
                             <label class="pr-1">
                               <b>{{getNameGoal(goal)}}</b>
@@ -243,6 +243,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import isTimestamp from '../utils/isTimestamp'
+import lodash from 'lodash'
 
 export default {
 	name: 'addGoal',
@@ -278,6 +279,7 @@ export default {
 				time: '',
 				timeMin: 0,
 				type: 'N',
+				players: {},
 				props: {}
 			},
 			show: true
@@ -287,10 +289,14 @@ export default {
 		...mapActions('matches', ['getMatchByIdStatic']),
 		...mapActions('goals', ['getGoalsFromMatch', 'addGoal', 'delGoal']),
 		getNameGoal(goal) {
-			return goal.goal ? goal.goal.name : ''
+			return !_.isEmpty(goal.players) ? goal.players.goal.nickname : ''
+			// return !_.isEmpty(goal.goal) ? goal.goal.name : ''
 		},
-		getAssistGoal(goal) {
-			return goal.assist ? goal.assist.name : ''
+		getNameAssist(goal) {
+			return !_.isEmpty(goal.players.assist)
+				? goal.players.assist.nickname
+				: ''
+			// return !_.isEmpty(goal.assist) ? goal.assist.name : ''
 		},
 		async setTeamId() {
 			await this.$nextTick()
@@ -316,6 +322,7 @@ export default {
 			this.form.assist = null
 			this.form.goal = null
 			this.form.type = 'N'
+			this.form.players = {}
 			this.form.props = {}
 			this.show = false
 			await this.$nextTick()

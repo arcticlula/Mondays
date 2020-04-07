@@ -31,7 +31,7 @@ export default {
 	async getMatchesByDate(context) {
 		let beginDate = Timestamp.fromDate(new Date(context.rootGetters.yearLow));
 		let endDate = Timestamp.fromDate(new Date(context.rootGetters.yearHigh));
-		return await firestore.collection('Matches').orderBy("beginTime").startAt(beginDate).endAt(endDate).onSnapshot(querySnapshot => {
+		return await firestore.collection('Matches').orderBy("beginTime", "desc").startAt(endDate).endAt(beginDate).onSnapshot(querySnapshot => {
 			const matches = querySnapshot.docs.map(doc => {
 				return { id: doc.id, ...doc.data() };
 			})
@@ -142,20 +142,16 @@ export default {
 			}
 			batch.set(TeamA, objTeamA);
 			batch.set(TeamB, objTeamB);
-		}
-		catch (e) {
-			console.log(e);
-		}
-		/** 						Match						**/
-		objMatch.beginTime = Timestamp.fromDate(new Date(objMatch.date + 'T' + objMatch.beginTime + 'Z'));
-		objMatch.endTime = Timestamp.fromDate(new Date(objMatch.date + 'T' + objMatch.endTime + 'Z'));
-		delete objMatch.date;
 
-		props = {
-			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Add Match"
-		};
+			/** 						Match						**/
+			objMatch.beginTime = Timestamp.fromDate(new Date(objMatch.date + 'T' + objMatch.beginTime + 'Z'));
+			objMatch.endTime = Timestamp.fromDate(new Date(objMatch.date + 'T' + objMatch.endTime + 'Z'));
+			delete objMatch.date;
 
-		try {
+			props = {
+				"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Add Match"
+			};
+
 			objMatch.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified, lastOperation: "Add Match" }
 			objMatch.teamA = TeamA;
 			objMatch.teamB = TeamB;
