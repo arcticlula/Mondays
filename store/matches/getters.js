@@ -3,13 +3,13 @@ import lodash from "lodash";
 
 export default {
     goalsHome(state) {
-        return !!state.match ? state.match.counter.goals.home : 0;
+        return !_.isEmpty(state.match) ? state.match.counter.goals.home : 0;
     },
     goalsAway(state) {
-        return !!state.match ? state.match.counter.goals.away : 0;
+        return !_.isEmpty(state.match) ? state.match.counter.goals.away : 0;
     },
     playersHome(state) {
-        let data = !!state.match ? state.match.players : {}
+        let data = !_.isEmpty(state.match) ? state.match.players : {}
         return Object.keys(data).reduce((filtered, s) => {
             if (data[s].local == 'home') {
                 filtered.push({ id: s, name: data[s].name, nickname: data[s].nickname })
@@ -18,7 +18,7 @@ export default {
         }, [])
     },
     playersAway(state) {
-        let data = !!state.match ? state.match.players : {}
+        let data = !_.isEmpty(state.match) ? state.match.players : {}
         return Object.keys(data).reduce((filtered, s) => {
             if (data[s].local == 'away') {
                 filtered.push({ id: s, name: data[s].name, nickname: data[s].nickname })
@@ -59,7 +59,7 @@ export default {
         return Object.keys(res).map(s => ({ id: s, matches: res[s].matches, wins: res[s].wins, draws: res[s].draws, losses: res[s].losses, name: res[s].name, goals: res[s].goals, assists: res[s].assists })).sort((a, b) => (b.wins - a.wins) || (b.goals - a.goals) || (b.assists - a.assists));
     },
     highscoreMatch(state) {
-        let data = !!state.match ? state.match.players : {}
+        let data = !_.isEmpty(state.match) ? state.match.players : {}
         return Object.keys(data).map(s => ({ id: s, name: data[s].name, goals: data[s].goals, assists: data[s].assists })).sort((a, b) => (b.goals - a.goals) || (b.assists - a.assists));
     }
 }

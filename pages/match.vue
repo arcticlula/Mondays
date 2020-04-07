@@ -73,18 +73,18 @@
                             <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola"></i>
                             <label class="pr-1">
-                              <b>{{goal.goal.name}}</b>
+                              <b>{{getNameGoal(goal)}}</b>
                             </label>
-                            <label v-if="!!goal.assist">({{goal.assist.name}})</label>
+                            <label v-if="!!goal.assist">({{getNameAssist(goal)}})</label>
                             <label v-else-if="goal.isPenalty">(Penalidade)</label>
                           </b-col>
                         </b-row>
                         <b-row v-else class="my-1">
                           <b-col cols="12" class="text-right">
-                            <label v-if="!!goal.assist" class="pr-1">({{goal.assist.name}})</label>
+                            <label v-if="!!goal.assist" class="pr-1">({{getNameAssist(goal)}})</label>
                             <label v-else-if="goal.isPenalty">(Penalidade)</label>
                             <label class="pr-1">
-                              <b>{{goal.goal.name}}</b>
+                              <b>{{getNameGoal(goal)}}</b>
                             </label>
                             <i class="dl dl-bola"></i>
                             <label class="pl-1">{{goal.timeMin}}</label>
@@ -97,7 +97,7 @@
                             <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola text-red"></i>
                             <label class="pr-1">
-                              <b>{{goal.goal.name}}</b>
+                              <b>{{getNameGoal(goal)}}</b>
                             </label>
                             <label>(Auto-Golo)</label>
                           </b-col>
@@ -106,7 +106,7 @@
                           <b-col cols="12" class="text-right">
                             <label class="pr-1">(Auto-Golo)</label>
                             <label class="pr-1">
-                              <b>{{goal.goal.name}}</b>
+                              <b>{{getNameGoal(goal)}}</b>
                             </label>
                             <i class="dl dl-bola text-red"></i>
                             <label class="pl-1">{{goal.timeMin}}</label>
@@ -179,38 +179,52 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import court from '../components/match/court'
 import highscore from '../components/match/highscore'
 export default {
-  name: 'match',
-  layout: 'simple',
-  components: {
-    court,
-    highscore
-  },
-  computed: {
-    ...mapState('matches', ['match']),
-    ...mapState('goals', ['goals']),
-    ...mapGetters('matches', [
-      'goalsHome',
-      'goalsAway',
-      'playersHome',
-      'playersAway',
-      'matchDate'
-    ]),
-    routerPath() {
-      return this.$nuxt.$route.name
-    },
-    routerQuery() {
-      return this.$nuxt.$route.query
-    }
-  },
-  methods: {},
-  async fetch({ store, route }) {
-    try {
-      await store.dispatch('matches/getMatchById', route.query.match)
-      await store.dispatch('goals/getGoalsFromMatch', route.query.match)
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'match',
+	layout: 'simple',
+	components: {
+		court,
+		highscore
+	},
+	computed: {
+		...mapState('matches', ['match']),
+		...mapState('goals', ['goals']),
+		...mapGetters('matches', [
+			'goalsHome',
+			'goalsAway',
+			'playersHome',
+			'playersAway',
+			'matchDate'
+		]),
+		routerPath() {
+			return this.$nuxt.$route.name
+		},
+		routerQuery() {
+			return this.$nuxt.$route.query
+		}
+	},
+	methods: {
+		getNameGoal(goal) {
+			return !_.isEmpty(goal.players) ? goal.players.goal.nickname : ''
+			// return !_.isEmpty(goal.goal) ? goal.goal.name : ''
+		},
+		getNameAssist(goal) {
+			return !_.isEmpty(goal.players.assist)
+				? goal.players.assist.nickname
+				: ''
+			// return !_.isEmpty(goal.assist) ? goal.assist.name : ''
+		}
+	},
+	async fetch({ store, route }) {
+		try {
+			await store.dispatch('matches/getMatchById', route.query.match)
+			console.time('getGoals')
+			store.dispatch('goals/getGoalsFromMatch', route.query.match) //takes too long, better to let it load freely
+			// console.time('getGoals2')
+			// store.dispatch('goals/getGoalsFromMatch2', route.query.match) //takes too long, better to let it load freely
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
 
