@@ -1,4 +1,4 @@
 export default function (rawObject = {}) {
-  const { displayName, email } = rawObject
-  return { displayName, email }
+  const { uid, photoURL, displayName, email } = rawObject
+  return { uid, photoURL, displayName, email }
 }

@@ -24,18 +24,22 @@ export default {
 		let docSnapshot = await User.get();
 		if (docSnapshot.exists) {
 			let data = docSnapshot.data();
-			// console.log(data)
 			await hydrate(data, ['player'])
-			data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
-			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
-			commit('setUserDB', data)
-			commit('setUserPlayer', data.player)
 			console.log(data)
+			let obj = JSON.stringify(data, getCircularReplacer())
+			console.log(obj)
+
+			console.log(JSON.parse(obj))
+			// data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
+			// commit('setUserDB', data)
+			// commit('setUserPlayer', data.player)
 		}
 		else {
 			let profile = loginParser(loginInfo).profile
 			let props = { dateCreated: timeModified, dateModified: timeModified, userCreated: User, userModified: User, lastOperation: "Add User" }
-			User.set({ ...profile, player: null, admin: 0, ...props, isVisitor: false })
+			let res = { ...profile, player: null, admin: 0, props: props, isVisitor: false }
+			await User.set(res);
+			return res;
 		}
 		return docSnapshot.data()
 	},
@@ -44,12 +48,13 @@ export default {
 		let docSnapshot = await User.get();
 		if (docSnapshot.exists) {
 			let data = docSnapshot.data();
-			// console.log(data)
 			await hydrate(data, ['player'])
-			data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
-			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
-			commit('setUserDB', data)
-			commit('setUserPlayer', data.player)
+			console.log(data)
+			let obj = JSON.stringify(data, getCircularReplacer())
+			console.log(JSON.parse(obj))
+			// data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
+			// commit('setUserDB', data)
+			// commit('setUserPlayer', data.player)
 		}
 	},
 	async setPlayerUser({ rootState }, player) {

@@ -1,7 +1,5 @@
 import { firestore, Timestamp, increment } from '../../plugins/firebase'
 import hydrate from "../../utils/hydrate"
-import asyncForEach from "../../utils/asyncForEach"
-import getCircularReplacer from "../../utils/getCircularReplacer"
 
 export default {
 	async getMatchById(context, id) {
@@ -98,9 +96,9 @@ export default {
 		}
 	},
 	async addTeamsMatch({ rootState }, { formTeamA, formTeamB, formMatch }) {
-		let objTeamA = JSON.parse(JSON.stringify(formTeamA), getCircularReplacer())
-		let objTeamB = JSON.parse(JSON.stringify(formTeamB), getCircularReplacer())
-		let objMatch = JSON.parse(JSON.stringify(formMatch), getCircularReplacer())
+		let objTeamA = JSON.parse(JSON.stringify(formTeamA))
+		let objTeamB = JSON.parse(JSON.stringify(formTeamB))
+		let objMatch = JSON.parse(JSON.stringify(formMatch))
 		let Users = firestore.collection('Users');
 		let Players = firestore.collection('Players')
 		let Teams = firestore.collection('Teams');
