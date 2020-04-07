@@ -65,6 +65,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import lodash from 'lodash'
 
 export default {
   name: 'addMatch',
@@ -73,9 +74,11 @@ export default {
     ...mapState('teams', ['teams']),
     ...mapState('matches', ['matches']),
     teamsUnselected() {
-      return this.teams.filter((s) => {
-        return !s.match
-      })
+      return !_.isEmpty(this.teams)
+        ? this.teams.filter((s) => {
+            return !s.match
+          })
+        : []
     },
     teamPlayersA() {
       return this.form.teamA == ''

@@ -52,7 +52,7 @@ export default {
 			commit('setUserPlayer', data.player)
 		}
 	},
-	async setPlayerUser({ rootState }, id) {
+	async setPlayerUser({ rootState }, player) {
 		let User = firestore.collection('Users').doc(rootState.user.uid);
 		let Players = firestore.collection('Players')
 		let timeModified = Timestamp.fromDate(new Date());
@@ -60,10 +60,10 @@ export default {
 			"props.dateModified": timeModified, "props.userModified": User, "props.lastOperation": "Edit User"
 		};
 		let batch = firestore.batch();
-		if (id) {
-			let Player = Players.doc(id);
+		if (!_.isEmpty(player)) {
+			let PlayerDB = Players.doc(player.id);
 			batch.update(User, {
-				...props, player: Player, isVisitor: false
+				...props, player: PlayerDB, isVisitor: false
 			})
 		}
 		else {

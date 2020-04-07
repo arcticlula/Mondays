@@ -7,7 +7,7 @@
             <div class="card-header bg-white">
               <b-col cols="12">
                 <div class="row">
-                  <b-col cols="12" class="px-0">{{matchDate| moment("DD MMM YYYY HH:mm")}}</b-col>
+                  <b-col cols="12" class="px-0">{{matchDate| moment("DD MMMM YYYY HH:mm")}}</b-col>
                 </div>
               </b-col>
             </div>
@@ -179,38 +179,38 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import court from '../components/match/court'
 import highscore from '../components/match/highscore'
 export default {
-	name: 'match',
-	layout: 'simple',
-	components: {
-		court,
-		highscore
-	},
-	computed: {
-		...mapState('matches', ['match']),
-		...mapState('goals', ['goals']),
-		...mapGetters('matches', [
-			'goalsHome',
-			'goalsAway',
-			'playersHome',
-			'playersAway',
-			'matchDate'
-		]),
-		routerPath() {
-			return this.$nuxt.$route.name
-		},
-		routerQuery() {
-			return this.$nuxt.$route.query
-		}
-	},
-	methods: {},
-	async fetch({ store, route }) {
-		try {
-			await store.dispatch('matches/getMatchById', route.query.match)
-			await store.dispatch('goals/getGoalsFromMatch', route.query.match)
-		} catch (e) {
-			console.error(e)
-		}
-	}
+  name: 'match',
+  layout: 'simple',
+  components: {
+    court,
+    highscore
+  },
+  computed: {
+    ...mapState('matches', ['match']),
+    ...mapState('goals', ['goals']),
+    ...mapGetters('matches', [
+      'goalsHome',
+      'goalsAway',
+      'playersHome',
+      'playersAway',
+      'matchDate'
+    ]),
+    routerPath() {
+      return this.$nuxt.$route.name
+    },
+    routerQuery() {
+      return this.$nuxt.$route.query
+    }
+  },
+  methods: {},
+  async fetch({ store, route }) {
+    try {
+      await store.dispatch('matches/getMatchById', route.query.match)
+      await store.dispatch('goals/getGoalsFromMatch', route.query.match)
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>
 

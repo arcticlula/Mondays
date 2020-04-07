@@ -1,11 +1,14 @@
-import { firestoreAction } from 'vuexfire'
 import { firestore, Timestamp, increment } from '../../plugins/firebase'
 
 export default {
-	getTeams: firestoreAction(async function ({ bindFirestoreRef }) {
-		const db = firestore.collection('Teams')
-		await bindFirestoreRef('teams', db, { wait: true })
-	}),
+	async getTeams(context) {
+		return await firestore.collection('Teams').onSnapshot(querySnapshot => {
+			const teams = querySnapshot.docs.map(doc => {
+				return { id: doc.id, ...doc.data() };
+			})
+			context.commit('setTeams', teams)
+		});
+	},
 	async addTeam(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');

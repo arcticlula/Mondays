@@ -1,20 +1,18 @@
-import { firestoreAction } from 'vuexfire'
 import { firestore, Timestamp, increment, decrement, deleteField } from '../../plugins/firebase'
 import moment from 'moment';
 import hydrate from "../../utils/hydrate"
 import asyncForEach from "../../utils/asyncForEach"
 
 export default {
-	getGoals: firestoreAction(async function ({ bindFirestoreRef }) {
-		const db = firestore.collection('Goals')
-		await bindFirestoreRef('goals', db, { wait: true })
-	}),
-	// getGoalsFromMatch: firestoreAction(async function ({ bindFirestoreRef }, id) {
-	// 	let Goals = firestore.collection('Goals');
-	// 	let Match = firestore.collection('Matches').doc(id);
-	// 	const db = Goals.where("match", "==", Match).orderBy('timeMin')
-	// 	await bindFirestoreRef('goals', db, { wait: true })
-	// }),
+	async getGoalsFromPlayer(context) {
+		let Player = firestore.collection('Players').doc(id);
+		return await firestore.collection('Goals').where("goal", '==', Player).orderBy("time", "desc").onSnapshot(querySnapshot => {
+			const goals = querySnapshot.docs.map(doc => {
+				return { id: doc.id, ...doc.data() };
+			})
+			context.commit('setGoals', goals)
+		});
+	},
 	async getGoalsFromMatch(context, id) {
 		let Match = firestore.collection('Matches').doc(id);
 		return await firestore.collection('Goals').where("match", "==", Match).orderBy('timeMin').get()
@@ -29,13 +27,6 @@ export default {
 				context.commit('setGoals', goals)
 			});
 	},
-	getGoalsByPlayer: firestoreAction(async function ({ bindFirestoreRef }, id) {
-		let Player = firestore.collection('Players').doc(id);
-		let Goals = firestore.collection('Goals');
-		// let Match = firestore.collection('Matches').doc(id);
-		const db = Goals.where("goal", '==', Player);
-		await bindFirestoreRef('goals', db, { wait: true })
-	}),
 	async addGoal(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');

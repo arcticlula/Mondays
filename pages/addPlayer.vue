@@ -29,11 +29,11 @@
         <pre class="m-0">{{ form }}</pre>
       </b-card>
     </b-card>
-    <b-row class="m-3">
+    <!-- <b-row class="m-3">
       <b-card class="mr-2" v-for="player in players" :key="player.id" :header="player.name">
         <pre class="m-0">{{ player }}</pre>
       </b-card>
-    </b-row>
+    </b-row>-->
   </div>
 </template>
 

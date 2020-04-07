@@ -1,6 +1,7 @@
 import { firestore, Timestamp, increment } from '../../plugins/firebase'
 import hydrate from "../../utils/hydrate"
 import asyncForEach from "../../utils/asyncForEach"
+import getCircularReplacer from "../../utils/getCircularReplacer"
 
 export default {
 	async getMatchById(context, id) {
@@ -95,5 +96,83 @@ export default {
 		catch (e) {
 			console.log(e);
 		}
+	},
+	async addTeamsMatch({ rootState }, { formTeamA, formTeamB, formMatch }) {
+		let objTeamA = JSON.parse(JSON.stringify(formTeamA), getCircularReplacer())
+		let objTeamB = JSON.parse(JSON.stringify(formTeamB), getCircularReplacer())
+		let objMatch = JSON.parse(JSON.stringify(formMatch), getCircularReplacer())
+		let Users = firestore.collection('Users');
+		let Players = firestore.collection('Players')
+		let Teams = firestore.collection('Teams');
+		let Matches = firestore.collection('Matches');
+		let TeamA = Teams.doc()
+		let TeamB = Teams.doc()
+		let Match = Matches.doc()
+		let timeModified = Timestamp.fromDate(new Date());
+		let userModified = Users.doc(rootState.user.uid);
+		let batch = firestore.batch();
+		let props = {
+			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Add Team"
+		};
+		let init = { goals: 0, assists: 0, ownGoals: 0, penalties: 0 }
+		let highscores = {}
+		/** 						Teams						**/
+		try {
+			objTeamA.match = Match;
+			objTeamB.match = Match;
+			objTeamA.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified, lastOperation: "Add Team" }
+			objTeamB.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified, lastOperation: "Add Team" }
+			for (let i = 0; i < objTeamA.players.length; i++) {
+				const player = objTeamA.players[i]
+				highscores[player.id] = { "name": player.name, "nickname": player.nickname, "local": "home", ...init }
+				player = Players.doc(objTeamA.players[i].id)
+				objTeamA.players[i] = player;
+				batch.update(player, {
+					...props, ["counter.teams." + [objTeamA.local]]: increment, ['teams.' + [TeamA.id]]: true
+				})
+			}
+			for (let i = 0; i < objTeamB.players.length; i++) {
+				const player = objTeamB.players[i]
+				highscores[player.id] = { "name": player.name, "nickname": player.nickname, "local": "away", ...init }
+				player = Players.doc(objTeamB.players[i].id)
+				objTeamB.players[i] = player;
+				batch.update(player, {
+					...props, ["counter.teams." + [objTeamB.local]]: increment, ['teams.' + [TeamB.id]]: true
+				})
+			}
+			batch.set(TeamA, objTeamA);
+			batch.set(TeamB, objTeamB);
+		}
+		catch (e) {
+			console.log(e);
+		}
+		/** 						Match						**/
+		objMatch.beginTime = Timestamp.fromDate(new Date(objMatch.date + 'T' + objMatch.beginTime + 'Z'));
+		objMatch.endTime = Timestamp.fromDate(new Date(objMatch.date + 'T' + objMatch.endTime + 'Z'));
+		delete objMatch.date;
+
+		props = {
+			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Add Match"
+		};
+
+		try {
+			objMatch.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified, lastOperation: "Add Match" }
+			objMatch.teamA = TeamA;
+			objMatch.teamB = TeamB;
+
+			/**						Players					**/
+			for (let i = 0; i < objTeamA.players.length; i++) {
+				batch.update(objTeamA.players[i], { ...props, "counter.matches.total": increment, ['matches.' + [Match.id]]: true })
+			}
+			for (let i = 0; i < objTeamB.players.length; i++) {
+				batch.update(objTeamB.players[i], { ...props, "counter.matches.total": increment, ['matches.' + [Match.id]]: true })
+			}
+			batch.set(Match, { ...objMatch, players: { ...highscores } });
+		}
+		catch (e) {
+			console.log(e);
+		}
+		/** 					Match					**/
+		await batch.commit();
 	}
 }

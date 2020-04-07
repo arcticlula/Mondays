@@ -27,7 +27,14 @@ export default {
         }, [])
     },
     matchDate(state) {
-        return !!state.match ? state.match.beginTime.toDate().toLocaleString('pt-PT', { timeZone: 'UTC' }) : '';
+        return !_.isEmpty(state.match)
+            ? moment(
+                state.match.beginTime
+                    .toDate()
+                    .toLocaleString('pt-PT', { timeZone: 'UTC' }),
+                'DD/MM/YYYY, HH:mm:ss'
+            )
+            : moment()
     },
     highscore(state) {
         let matches = !_.isEmpty(state.matches) ? state.matches : []

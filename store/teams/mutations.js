@@ -1,5 +1,5 @@
-import { vuexfireMutations } from 'vuexfire'
-
 export default {
-	...vuexfireMutations
+	setTeams(state, data) {
+		state.teams = data;
+	},
 }
