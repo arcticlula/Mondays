@@ -179,38 +179,38 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import court from '../components/match/court'
 import highscore from '../components/match/highscore'
 export default {
-  name: 'match',
-  layout: 'simple',
-  components: {
-    court,
-    highscore
-  },
-  computed: {
-    ...mapState('matches', ['match']),
-    ...mapState('goals', ['goals']),
-    ...mapGetters('matches', [
-      'goalsHome',
-      'goalsAway',
-      'playersHome',
-      'playersAway',
-      'matchDate'
-    ]),
-    routerPath() {
-      return this.$nuxt.$route.name
-    },
-    routerQuery() {
-      return this.$nuxt.$route.query
-    }
-  },
-  methods: {},
-  async fetch({ store, route }) {
-    try {
-      await store.dispatch('matches/getMatchById', route.query.match)
-      await store.dispatch('goals/getGoalsFromMatch', route.query.match)
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'match',
+	layout: 'simple',
+	components: {
+		court,
+		highscore
+	},
+	computed: {
+		...mapState('matches', ['match']),
+		...mapState('goals', ['goals']),
+		...mapGetters('matches', [
+			'goalsHome',
+			'goalsAway',
+			'playersHome',
+			'playersAway',
+			'matchDate'
+		]),
+		routerPath() {
+			return this.$nuxt.$route.name
+		},
+		routerQuery() {
+			return this.$nuxt.$route.query
+		}
+	},
+	methods: {},
+	async fetch({ store, route }) {
+		try {
+			await store.dispatch('matches/getMatchById', route.query.match)
+			store.dispatch('goals/getGoalsFromMatch', route.query.match) //takes too long, better to let it load freely
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
 

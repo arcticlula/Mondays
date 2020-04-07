@@ -2,6 +2,7 @@ import { firestore, Timestamp, increment, decrement, deleteField } from '../../p
 import moment from 'moment';
 import hydrate from "../../utils/hydrate"
 import asyncForEach from "../../utils/asyncForEach"
+import lodash from "lodash";
 
 export default {
 	async getGoalsFromPlayer(context) {
@@ -15,17 +16,16 @@ export default {
 	},
 	async getGoalsFromMatch(context, id) {
 		let Match = firestore.collection('Matches').doc(id);
-		return await firestore.collection('Goals').where("match", "==", Match).orderBy('timeMin').get()
-			.then(async querySnapshot => {
-				let goals = []
-				await asyncForEach(querySnapshot.docs, async doc => {
-					let data = doc.data()
-					await hydrate(data, ['goal', 'assist'])
-					data.id = doc.id;
-					goals.push(data);
-				})
-				context.commit('setGoals', goals)
-			});
+		return await firestore.collection('Goals').where("match", "==", Match).orderBy('timeMin').onSnapshot(async querySnapshot => {
+			let goals = []
+			await asyncForEach(querySnapshot.docs, async doc => {
+				let data = doc.data()
+				await hydrate(data, ['goal', 'assist'])
+				data.id = doc.id;
+				goals.push(data);
+			})
+			context.commit('setGoals', goals)
+		});
 	},
 	async addGoal(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
@@ -82,13 +82,13 @@ export default {
 			delete obj.type;
 
 			// /**						Players					**/
-			if (!!obj.goal) {
+			if (!_.isEmpty(obj.goal)) {
 				obj.goal = Players.doc(obj.goal)
 				batch.update(obj.goal, {
 					...props, ...counterPlayer, ['goals.' + [Goal.id]]: true
 				})
 			}
-			if (!!obj.assist) {
+			if (!_.isEmpty(obj.assist)) {
 				counterPlayer = { 'counter.assists.total': increment, ["counter.assists." + [obj.local]]: increment }
 				counterTeam = { ...counterTeam, 'counter.assists.total': increment }
 				counterMatch = { ...counterMatch, 'counter.assists.total': increment, ["counter.assists." + [obj.local]]: increment }
@@ -99,14 +99,14 @@ export default {
 				})
 			}
 			/**						Teams					**/
-			if (!!obj.team) {
+			if (!_.isEmpty(obj.team)) {
 				obj.team = Teams.doc(obj.team);
 				batch.update(obj.team, {
 					...props, ...counterTeam, ['goals.' + [Goal.id]]: true
 				});
 			}
 
-			if (!!counterOtherTeam) {
+			if (!_.isEmpty(counterOtherTeam)) {
 				obj.otherTeam = Teams.doc(obj.otherTeam);
 				batch.update(obj.otherTeam, {
 					...props, ...counterOtherTeam
@@ -115,7 +115,7 @@ export default {
 			delete obj.otherTeam;
 
 			/** 					Match					**/
-			if (!!obj.match) {
+			if (!_.isEmpty(obj.match)) {
 				obj.match = Matches.doc(obj.match);
 				batch.update(obj.match, {
 					...props, ...counterMatch, ...highscores, ['goals.' + [Goal.id]]: true
@@ -123,7 +123,6 @@ export default {
 			}
 			/** 					Goals					**/
 			batch.set(Goal, obj);
-			console.log('1')
 			return await batch.commit();
 		}
 		catch (e) {
@@ -137,8 +136,8 @@ export default {
 		let Teams = firestore.collection('Teams');
 		let Matches = firestore.collection('Matches');
 		let Goals = firestore.collection('Goals');
-		let GoalPlayer = !!obj.goal ? Players.doc(obj.goal.id) : null;
-		let AssistPlayer = !!obj.assist ? Players.doc(obj.assist.id) : null
+		let GoalPlayer = !_.isEmpty(obj.goal) ? Players.doc(obj.goal.id) : null;
+		let AssistPlayer = (!_.isEmpty(obj.assist)) ? Players.doc(obj.assist.id) : null
 		let Team = Teams.doc(obj.team.id);
 		const matchId = obj.match.id;
 		obj.match = (await obj.match.get()).data()
@@ -176,12 +175,12 @@ export default {
 				highscores = { ["players." + [obj.goal.id] + ".goals"]: decrement }
 			}
 			// /**						Players					**/
-			if (!!GoalPlayer) {
+			if (!_.isEmpty(GoalPlayer)) {
 				batch.update(GoalPlayer, {
 					...props, ...counterPlayer, ['goals.' + [obj.id]]: deleteField
 				})
 			}
-			if (!!AssistPlayer) {
+			if (!_.isEmpty(AssistPlayer)) {
 				counterPlayer = { 'counter.assists.total': decrement, ["counter.assists." + [obj.local]]: decrement }
 				counterTeam = { ...counterTeam, 'counter.assists.total': decrement }
 				counterMatch = { ...counterMatch, 'counter.assists.total': decrement, ["counter.assists." + [obj.local]]: decrement }
@@ -191,20 +190,20 @@ export default {
 				})
 			}
 			/**						Teams					**/
-			if (!!Team) {
+			if (!_.isEmpty(Team)) {
 				batch.update(Team, {
 					...props, ...counterTeam, ['goals.' + [obj.id]]: deleteField
 				});
 			}
 
-			if (!!counterOtherTeam) {
+			if (!_.isEmpty(otherTeam)) {
 				batch.update(otherTeam, {
 					...props, ...counterOtherTeam
 				});
 			}
 
 			/** 					Match					**/
-			if (!!Match) {
+			if (!_.isEmpty(Match)) {
 				batch.update(Match, {
 					...props, ...counterMatch, ...highscores, ['goals.' + [obj.id]]: deleteField
 				})
