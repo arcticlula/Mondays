@@ -8,6 +8,15 @@ import config from '../config'
 export const Timestamp = firebase.firestore.Timestamp
 export const auth = firebase.auth()
 export const firestore = firebase.firestore()
+console.log("Enable Persistence")
+firebase.firestore().enablePersistence().catch(function (err) {
+	console.log(err.code)
+	// if (err.code == 'failed-precondition') {
+	// 	console.log()
+	// } else if (err.code == 'unimplemented') {
+	// 	console.log()
+	// }
+});
 export const increment = firebase.firestore.FieldValue.increment(1);
 export const decrement = firebase.firestore.FieldValue.increment(-1);
 export const deleteField = firebase.firestore.FieldValue.delete();
