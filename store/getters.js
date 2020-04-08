@@ -7,6 +7,9 @@ export default {
   userDB(state) {
     return !_.isEmpty(state.userDB) ? state.userDB : {}
   },
+  isVisitor(state) {
+    return !_.isEmpty(state.userDB) ? state.userDB.isVisitor : true
+  },
   userDob(state) {
     return !_.isEmpty(state.userPlayer) ? moment(state.userPlayer.dob, 'DD/MM/YYYY') : moment()
   },
