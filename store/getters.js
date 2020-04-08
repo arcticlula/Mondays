@@ -11,6 +11,7 @@ export default {
     return !_.isEmpty(state.userPlayer) ? moment(state.userPlayer.dob, 'DD/MM/YYYY') : moment()
   },
   userPlayer(state) {
+    console.log(state)
     return !_.isEmpty(state.userPlayer) ? state.userPlayer : {}
   },
   yearHigh(state) {

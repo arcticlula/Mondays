@@ -1,6 +1,5 @@
 <template>
   <b-card border-variant="primary" cols="4" class="p-3 clicker" style="display: inline-block;">
-    <!-- {{playerUser}} -->
     <b-row>
       <b-col cols="2" class="px-1">
         <span class="playerProfile text-center">
@@ -40,25 +39,25 @@ import moment from 'moment'
 import lodash from 'lodash'
 
 export default {
-	name: 'profile',
-	props: { player: Object },
-	methods: {},
-	computed: {
-		userDob() {
-			return !_.isEmpty(this.player)
-				? moment(
-						this.player.dob
-							.toDate()
-							.toLocaleDateString('pt-PT', { timeZone: 'UTC' }),
-						'DD/MM/YYYY',
-						'DD/MM/YYYY'
-				  )
-				: moment()
-		},
-		age() {
-			return moment().diff(this.userDob, 'years', false) + ' anos'
-		}
-	}
+  name: 'profile',
+  props: { player: Object },
+  methods: {},
+  computed: {
+    userDob() {
+      return !_.isEmpty(this.player)
+        ? moment(
+            this.player.dob
+              .toDate()
+              .toLocaleDateString('pt-PT', { timeZone: 'UTC' }),
+            'DD/MM/YYYY',
+            'DD/MM/YYYY'
+          )
+        : moment()
+    },
+    age() {
+      return moment().diff(this.userDob, 'years', false) + ' anos'
+    }
+  }
 }
 </script>
 

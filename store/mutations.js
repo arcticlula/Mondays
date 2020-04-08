@@ -6,6 +6,7 @@ export default {
 		state.userDB = data;
 	},
 	setUserPlayer(state, data) {
+		console.log(data)
 		state.userPlayer = data;
 	},
 	setNightMode(state, value) {

@@ -9,7 +9,8 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "deploy": "npm run generate && firebase deploy"
+    "deploy-dev": "npm run generate && firebase deploy --only hosting:segundas-dev",
+    "deploy-prod": "npm run generate && firebase deploy --only hosting:segundas-prod"
   },
   "dependencies": {
     "@nuxtjs/dotenv": "^1.4.1",

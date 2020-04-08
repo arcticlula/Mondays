@@ -5,12 +5,9 @@ export default ({ store }) => {
         createPersistedState({
             key: 'mondays',
             paths: ['userDB', 'userPlayer', 'navbar', 'mode.night'],
-            overwrite: true,
             rehydrated: ({ state }) => {
                 let element = document.getElementsByTagName("body")[0];
-                state.nightMode ? element.classList.add("moon") : element.classList.remove("moon")
-                // state.userDB = Object.assign({}, state.userDB)
-                // state.userPlayer = Object.assign({}, state.userPlayer)
+                state.mode.night ? element.classList.add("moon") : element.classList.remove("moon")
             }
         })(store)
     }

@@ -22,24 +22,22 @@ export default {
 		let User = firestore.collection('Users').doc(rootState.user.uid);
 		let timeModified = Timestamp.fromDate(new Date());
 		let docSnapshot = await User.get();
-		let data = {};
 		if (docSnapshot.exists) {
-			data = docSnapshot.data();
+			let data = docSnapshot.data();
 			// console.log(data)
 			await hydrate(data, ['player'])
-			data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
 			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
 			commit('setUserDB', data)
 			commit('setUserPlayer', data.player)
+			return data;
 		}
 		else {
 			let profile = loginParser(loginInfo).profile
 			let props = { dateCreated: timeModified, dateModified: timeModified, userCreated: User, userModified: User, lastOperation: "Add User" }
-			data = { ...profile, player: null, admin: 0, props: props, isVisitor: false }
+			let data = { ...profile, player: null, admin: 0, props: props, isVisitor: false }
 			User.set(data)
+			return data;
 		}
-		console.log(data)
-		return data;
 	},
 	async checkUser({ rootState, commit }) {
 		let User = firestore.collection('Users').doc(rootState.user.uid);
@@ -48,7 +46,6 @@ export default {
 			let data = docSnapshot.data();
 			// console.log(data)
 			await hydrate(data, ['player'])
-			data.player = !_.isEmpty(data.player) ? { ...data.player, dob: data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' }) } : {}
 			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
 			commit('setUserDB', data)
 			commit('setUserPlayer', data.player)

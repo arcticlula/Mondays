@@ -2,7 +2,7 @@
   <div>
     <nav
       class="navbar navbar-expand-lg bg-white fixed-top"
-      v-bind:class="[{ 'navbar-dark':nightMode }, 'navbar-light']"
+      v-bind:class="[{ 'navbar-dark':mode.night }, 'navbar-light']"
     >
       <a class="d-none d-sm-none d-md-none d-lg-block navbar-brand">
         <img width="35px" src="../assets/icon.png" />
@@ -48,7 +48,7 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'simple',
   computed: {
-    ...mapState(['nightMode']),
+    ...mapState(['mode']),
     ...mapGetters(['userDB']),
     routerPath() {
       return this.$nuxt.$route.name
