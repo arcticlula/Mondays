@@ -244,6 +244,10 @@ span.navbar-toggler-icon.rotate-90 {
 	background: white;
 }
 
+.badge-xl {
+	border: 3px solid white;
+}
+
 /* DATATABLE */
 
 #pesquisa_length, #pesquisa_filter {
@@ -513,7 +517,8 @@ select:focus {
 }
 
 :focus {
-	outline: 0px !important;
+	outline: none !important;
+	box-shadow: none !important;
 }
 
 #tabsnav .card-header {
@@ -671,7 +676,97 @@ ul#navbarUser a.dropdown-item:active {
 	height: 64px !important;
 }
 
+
+.navbar-toggler-icon {
+	display: inherit;
+}
+
+.btnarrowleft {
+	border: none !important;
+	background: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	color: #007bff !important;
+}
+
+.btnarrowleft:focus {
+	border: none !important;
+	background: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	color: #007bff !important;
+}
+
+.btnarrowleft:active {
+	border: none !important;
+	background: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	color: #007bff !important;
+}
+
+.btnarrowleft:hover {
+	border: none !important;
+	background: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	color: #007bff !important;
+}
+
+.btn-outline-primary.btnarrowleft:not(:disabled):not(.disabled):active {
+	border: none !important;
+	background: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	color: #007bff !important;
+}
+
+body.moon .btn-outline-primary.btnarrowleft {
+    color: #007bff !important;
+   	background: transparent !important;
+}
+
+.btnNoBorder {
+	border: none !important;
+	background: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	color: #dc3545 !important;
+}
+
+.btnNoBorder:focus {
+	border: none !important;
+	background: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	color: #dc3545 !important;
+}
+
+.btnNoBorder:active {
+	border: none !important;
+	background: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	color: #dc3545 !important;
+}
+
+.btnNoBorder:hover {
+	border: none !important;
+	background: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	color: #dc3545 !important;
+}
+
+.noty_buttons {
+	text-align: right !important;
+}
+
 @media (max-width: 992px) {
+
+	.navbar-toggler-icon {
+		display: none;
+	}
 
 	.navbar {
 		height: 42px !important;
@@ -682,7 +777,7 @@ ul#navbarUser a.dropdown-item:active {
 	}
 
 	.content-page {
-		margin-top: 42px;
+		margin-top: 47px;
 	}
 
 	.navbar-vertical-dl ul {
@@ -1447,4 +1542,102 @@ body.moon .mondaysIcon:active {
 body.moon .footerDl {
 	background: rgb(58, 58, 58) !important;
 	border-color: rgb(58, 58, 58) !important;
+}
+
+.letterRound {
+	background: #007bff;
+	color: white;
+	width: 20px;
+	height: 20px;
+	border-radius: 20px;
+	margin: 0 auto !important;
+}
+
+#my-table-scroll td:last-child {
+	text-align: right !important;
+}
+
+#my-table-scroll.table tr {
+	padding: 0px 5px !important;
+	vertical-align: inherit;
+}
+
+#my-table-scroll.table td {
+	padding: 0px 5px !important;
+}
+
+.formPlayersA.table td {
+	border-top: 1px solid #dee2e6;
+	padding: 0px 5px !important;
+}
+
+.formPlayersA.table tr {
+	vertical-align: inherit;
+}
+
+.formPlayersB.table tr {
+	vertical-align: inherit;
+}
+
+.formPlayersB.table td {
+	border-top: 1px solid #dee2e6;
+	padding: 0px 5px !important;
+}
+
+.formPlayersA.table td:last-child {
+	text-align: right;
+}
+
+.formPlayersB.table td:first-child {
+	text-align: left;
+}
+
+/* table scroll */
+table.my-table-scroll {
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+}
+
+table.my-table-scroll,
+table.my-table-scroll > thead,
+table.my-table-scroll > tbody,
+table.my-table-scroll > tfoot,
+table.my-table-scroll > tbody > tr,
+table.my-table-scroll > thead > tr {
+	width: 100%;
+	display: block;
+}
+
+table.my-table-scroll > thead,
+table.my-table-scroll > tbody,
+table.my-table-scroll > tfoot {
+	display: block;
+	width: 100%;
+}
+
+table.my-table-scroll > thead,
+table.my-table-scroll > tfoot {
+	height: auto;
+}
+
+table.my-table-scroll > tbody {
+	max-height: 300px;
+	overflow: auto;
+}
+@media (max-width: 992px) {
+	table.my-table-scroll > tbody::-webkit-scrollbar {
+		width: 0px; /* Remove scrollbar space */
+		background: transparent; /* Optional: just make scrollbar invisible */
+	}
+}
+
+table.my-table-scroll > thead > tr > th,
+table.my-table-scroll > thead > tr > td,
+table.my-table-scroll > tbody > tr > th,
+table.my-table-scroll > tbody > tr > td,
+table.my-table-scroll > tfoot > tr > th,
+table.my-table-scroll > tfoot > tr > td {
+	display: inline-block;
+	width: 50%;
 }

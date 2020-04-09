@@ -1,70 +1,127 @@
 <template>
-  <div>
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-      <b-card class="m-3">
-        <b-row>
-          <b-col cols="4">
-            <b-table
-              class="my-table-scroll"
-              :items="playersUnselected"
-              :fields="[{key:'name',label:'Jogador'},{key:'actions',label:''}]"
-            >
-              <template v-slot:cell(actions)="row">
-                <span @click="addPlayerToTeam(row.item)">+</span>
-              </template>
-            </b-table>
+  <div class="content-page">
+    <b-row>
+      <b-col cols="12" md="6" lg="6">
+        <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+          <b-row>
+            <b-col cols="12">
+              <b-card>
+                <b-row>
+                  <b-col cols="12" class="text-center">
+                    <div style="display: inline-flex;">
+                      <b-form-checkbox
+                        v-model="teamLetter"
+                        value="B"
+                        unchecked-value="A"
+                        size="sm"
+                        switch
+                      ></b-form-checkbox>
+                    </div>
+                    <div style="display: inline-flex;">
+                      <div class="letterRound text-center">
+                        <b>{{ teamLetter}}</b>
+                      </div>
+                    </div>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col cols="6" style="min-height: 136px;">
+                    <b-table
+                      class="formPlayersA"
+                      :items="formA.players"
+                      :fields="[{key:'name',label:'Equipa A'},{key:'actions',label:''}]"
+                    >
+                      <template v-slot:cell(actions)="row">
+                        <b-button
+                          size="sm"
+                          class="btnNoBorder p-0"
+                          variant="outline-danger"
+                          @click="delPlayerFromTeam(row.item)"
+                          :disabled="teamLetter=='B'"
+                        >
+                          <span class="dl dl-remover"></span>
+                        </b-button>
+                      </template>
+                    </b-table>
+                  </b-col>
+                  <b-col cols="6" class="text-right" style="min-height: 136px;">
+                    <b-table
+                      class="formPlayersB"
+                      :items="formB.players"
+                      :fields="[{key:'actions',label:''},{key:'name',label:'Equipa B'}]"
+                    >
+                      <template v-slot:cell(actions)="row">
+                        <b-button
+                          size="sm"
+                          class="btnNoBorder p-0"
+                          variant="outline-danger"
+                          @click="delPlayerFromTeam(row.item)"
+                          :disabled="teamLetter=='A'"
+                        >
+                          <span class="dl dl-remover"></span>
+                        </b-button>
+                      </template>
+                    </b-table>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col cols="12">
+                    <b-table
+                      id="my-table-scroll"
+                      class="my-table-scroll"
+                      :items="playersUnselected"
+                      :fields="[{key:'name',label:'Jogador'},{key:'actions',label:''}]"
+                    >
+                      <template v-slot:cell(actions)="row">
+                        <b-button
+                          size="sm"
+                          class="btnarrowleft p-0"
+                          variant="outline-primary"
+                          @click="addPlayerToTeam(row.item)"
+                        >
+                          <span class="dl dl-plus"></span>
+                        </b-button>
+                      </template>
+                    </b-table>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="12">
+              <b-card>
+                <b-row>
+                  <!-- <b-col>
+							<b-form-checkbox class="mx-3" v-model="createMatch" size="sm">Criar Jogo</b-form-checkbox>
+                  </b-col>-->
+                  <b-col>
+                    <b-button class="mr-2" size="sm" type="submit" variant="primary">Submeter</b-button>
+                    <b-button size="sm" type="reset" variant="danger">Limpar</b-button>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-col>
+          </b-row>
+        </b-form>
+        <b-row class="mt-2">
+          <b-col cols="6" md="6">
+            <b-card header="Equipa A">
+              <pre class="m-0">{{ formA }}</pre>
+            </b-card>
           </b-col>
-          <b-col cols="3">
-            <b-table
-              :items="formA.players"
-              :fields="[{key:'name',label:'Equipa A'},{key:'actions',label:''}]"
-            >
-              <template v-slot:cell(actions)="row">
-                <span :hidden="teamLetter=='B'" @click="delPlayerFromTeam(row.item)">-</span>
-              </template>
-            </b-table>
-          </b-col>
-          <b-col cols="2">
-            <b-form-checkbox v-model="teamLetter" value="B" unchecked-value="A" size="sm" switch>
-              <b>{{ teamLetter}}</b>
-            </b-form-checkbox>
-          </b-col>
-          <b-col cols="3">
-            <b-table
-              :items="formB.players"
-              :fields="[{key:'name',label:'Equipa B'},{key:'actions',label:''}]"
-            >
-              <template v-slot:cell(actions)="row">
-                <span :hidden="teamLetter=='A'" @click="delPlayerFromTeam(row.item)">-</span>
-              </template>
-            </b-table>
+          <b-col cols="6" md="6">
+            <b-card header="Equipa B">
+              <pre class="m-0">{{ formB }}</pre>
+            </b-card>
           </b-col>
         </b-row>
-      </b-card>
-      <b-card class="m-3">
-        <b-row>
-          <!-- <b-col>
-            <b-form-checkbox class="mx-3" v-model="createMatch" size="sm">Criar Jogo</b-form-checkbox>
-          </b-col>-->
-          <b-col>
-            <b-button class="mr-2" size="sm" type="submit" variant="primary">Submeter</b-button>
-            <b-button size="sm" type="reset" variant="danger">Limpar</b-button>
-          </b-col>
+        <b-row class="mt-2">
+          <b-card v-for="team in teams" :key="team.id" :header="team.id">
+            <pre class="m-0">{{ team }}</pre>
+          </b-card>
         </b-row>
-      </b-card>
-    </b-form>
-    <b-row class="m-3">
-      <b-card class="mt-3" header="Equipa A">
-        <pre class="m-0">{{ formA }}</pre>
-      </b-card>
-      <b-card class="mt-3" header="Equipa B">
-        <pre class="m-0">{{ formB }}</pre>
-      </b-card>
-    </b-row>
-    <b-row class="m-3">
-      <b-card class="mr-2" v-for="team in teams" :key="team.id" :header="team.id">
-        <pre class="m-0">{{ team }}</pre>
-      </b-card>
+      </b-col>
     </b-row>
   </div>
 </template>
@@ -74,139 +131,101 @@ import { mapState, mapActions } from 'vuex'
 import lodash from 'lodash'
 
 export default {
-  name: 'addTeam',
-  layout: 'dev-add',
-  computed: {
-    ...mapState('teams', ['teams']),
-    ...mapState('players', ['players']),
-    playersSelected() {
-      let players = !_.isEmpty(this.players) ? this.players : []
-      return players.filter(function(s) {
-        return s.selected
-      })
-    },
-    playersUnselected() {
-      let players = !_.isEmpty(this.players) ? this.players : []
-      return players.filter(function(s) {
-        return !s.selected
-      })
-    }
-  },
-  data() {
-    return {
-      teamLetter: 'A',
-      formA: {
-        goals: {},
-        match: null,
-        players: [],
-        local: 'home',
-        props: {},
-        counter: {
-          goals: { total: 0, penalties: 0, ownGoals: 0 },
-          assists: { total: 0 }
-        }
-      },
-      formB: {
-        goals: {},
-        match: null,
-        players: [],
-        local: 'away',
-        props: {},
-        counter: {
-          goals: { total: 0, penalties: 0, ownGoals: 0 },
-          assists: { total: 0 }
-        }
-      },
-      show: true
-      // createMatch: false
-    }
-  },
-  methods: {
-    ...mapActions('teams', ['getTeams', 'addTeam']),
-    addPlayerToTeam(player) {
-      this['form' + this.teamLetter].players.push({
-        id: player.id,
-        name: player.name
-      })
-      player.selected = true
-    },
-    delPlayerFromTeam(player) {
-      let i = this['form' + this.teamLetter].players.indexOf(player) // find index of your object
-      this['form' + this.teamLetter].players.splice(i, 1)
-      this.players.find((element) => element.id == player.id).selected = false
-    },
-    async onSubmit(evt) {
-      evt.preventDefault()
-      await this.addTeam(this.formA)
-      await this.addTeam(this.formB)
-      // if (createMatch) await this.setMatch()
-    },
-    async onReset(evt) {
-      evt.preventDefault()
-      // Reset our form values
-      this.formA.goals = {}
-      this.formA.match = null
-      this.formA.players = []
-      this.formA.props = {}
+	name: 'addTeam',
+	layout: 'simple',
+	computed: {
+		...mapState('teams', ['teams']),
+		...mapState('players', ['players']),
+		playersSelected() {
+			let players = !_.isEmpty(this.players) ? this.players : []
+			return players.filter(function(s) {
+				return s.selected
+			})
+		},
+		playersUnselected() {
+			let players = !_.isEmpty(this.players) ? this.players : []
+			return players.filter(function(s) {
+				return !s.selected
+			})
+		}
+	},
+	data() {
+		return {
+			teamLetter: 'A',
+			formA: {
+				goals: {},
+				match: null,
+				players: [],
+				local: 'home',
+				props: {},
+				counter: {
+					goals: { total: 0, penalties: 0, ownGoals: 0 },
+					assists: { total: 0 }
+				}
+			},
+			formB: {
+				goals: {},
+				match: null,
+				players: [],
+				local: 'away',
+				props: {},
+				counter: {
+					goals: { total: 0, penalties: 0, ownGoals: 0 },
+					assists: { total: 0 }
+				}
+			},
+			show: true
+			// createMatch: false
+		}
+	},
+	methods: {
+		...mapActions('teams', ['getTeams', 'addTeam']),
+		addPlayerToTeam(player) {
+			this['form' + this.teamLetter].players.push({
+				id: player.id,
+				name: player.name
+			})
+			player.selected = true
+		},
+		delPlayerFromTeam(player) {
+			let i = this['form' + this.teamLetter].players.indexOf(player) // find index of your object
+			this['form' + this.teamLetter].players.splice(i, 1)
+			this.players.find(
+				(element) => element.id == player.id
+			).selected = false
+		},
+		async onSubmit(evt) {
+			evt.preventDefault()
+			await this.addTeam(this.formA)
+			await this.addTeam(this.formB)
+			// if (createMatch) await this.setMatch()
+		},
+		async onReset(evt) {
+			evt.preventDefault()
+			// Reset our form values
+			this.formA.goals = {}
+			this.formA.match = null
+			this.formA.players = []
+			this.formA.props = {}
 
-      this.formB.goals = {}
-      this.formB.match = null
-      this.formB.players = []
-      this.formB.props = {}
+			this.formB.goals = {}
+			this.formB.match = null
+			this.formB.players = []
+			this.formB.props = {}
 
-      // Trick to reset/clear native browser form validation state
-      this.show = false
-      await this.$nextTick()
-      this.show = true
-    }
-  },
-  async fetch({ store }) {
-    try {
-      await store.dispatch('players/getPlayers')
-      // await store.dispatch('teams/getTeams')
-    } catch (e) {
-      console.error(e)
-    }
-  }
+			// Trick to reset/clear native browser form validation state
+			this.show = false
+			await this.$nextTick()
+			this.show = true
+		}
+	},
+	async fetch({ store }) {
+		try {
+			await store.dispatch('players/getPlayers')
+			// await store.dispatch('teams/getTeams')
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-table.my-table-scroll,
-table.my-table-scroll > thead,
-table.my-table-scroll > tbody,
-table.my-table-scroll > tfoot,
-table.my-table-scroll > tbody > tr,
-table.my-table-scroll > thead > tr {
-  width: 100%;
-  display: block;
-}
-
-table.my-table-scroll > thead,
-table.my-table-scroll > tbody,
-table.my-table-scroll > tfoot {
-  display: block;
-  width: 100%;
-  overflow-y: scroll;
-}
-
-table.my-table-scroll > thead,
-table.my-table-scroll > tfoot {
-  height: auto;
-}
-
-table.my-table-scroll > tbody {
-  max-height: 300px;
-}
-
-table.my-table-scroll > thead > tr > th,
-table.my-table-scroll > thead > tr > td,
-table.my-table-scroll > tbody > tr > th,
-table.my-table-scroll > tbody > tr > td,
-table.my-table-scroll > tfoot > tr > th,
-table.my-table-scroll > tfoot > tr > td {
-  display: inline-block;
-  width: 50%;
-}
-</style>
