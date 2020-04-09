@@ -3,7 +3,7 @@ import { firestore, Timestamp } from '../../plugins/firebase'
 export default {
 	async getPlayerById(context, id) {
 		return await firestore.collection('Players').doc(id).onSnapshot(documentSnapshot => {
-			context.commit('setPlayer', documentSnapshot.data())
+			context.commit('setPlayer', { id: id, ...documentSnapshot.data() })
 		});
 	},
 	async getPlayers(context) {

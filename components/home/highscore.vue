@@ -130,8 +130,8 @@ export default {
 		// ...mapActions(['getMarcadoresTop']),
 		goToProfile(row) {
 			this.$router.push({
-				name: 'profile',
-				query: { id: row.idJogador }
+				name: 'player',
+				query: { player: row.id }
 			})
 		}
 	},

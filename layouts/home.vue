@@ -114,7 +114,7 @@
             <span class="dl dl-req"></span>
           </b-button>
         </nuxt-link>
-        <nuxt-link :to="{ name: 'profile'}">
+        <nuxt-link v-if="!isVisitor" :to="{ name: 'profile'}">
           <b-button
             size="sm"
             class="mondaysIcon icon3"
@@ -158,7 +158,7 @@ export default {
 	},
 	computed: {
 		...mapState(['navbar', 'firstYear', 'mode']),
-		...mapGetters(['userDB', 'yearHigh', 'yearLow']),
+		...mapGetters(['userDB', 'isVisitor', 'yearHigh', 'yearLow']),
 		routerPath() {
 			return this.$nuxt.$route.name
 		}
