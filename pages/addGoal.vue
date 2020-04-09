@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <b-row class="px-2">
-      <b-col cols="12" md="9">
+  <div class="content-page">
+    <b-row>
+      <b-col cols="12" md="6" lg="6">
         <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-          <b-card class="mt-1">
+          <b-card>
             <b-row>
               <!-- <b-col cols="6"> -->
               <!-- <b-form-group class="mb-3" id="input-group-1" label="Data:" label-for="input-1">
@@ -104,9 +104,9 @@
             <b-row>
               <b-col cols="12" md="11">
                 <b-row>
-                  <b-col cols="12" md="6">
+                  <b-col cols="12">
                     <b-row>
-                      <b-col cols="12" md="3">
+                      <b-col cols="12" md="4">
                         <b-form-group
                           class="mb-3 mx-3"
                           id="input-group-0"
@@ -135,7 +135,7 @@
                           <b-form-timepicker show-seconds required id="input-1" v-model="form.time"></b-form-timepicker>
                         </b-form-group>
                       </b-col>
-                      <b-col cols="12" md="5">
+                      <b-col cols="12" md="4">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-2"
@@ -154,9 +154,9 @@
                       </b-col>
                     </b-row>
                   </b-col>
-                  <b-col cols="12" md="6">
+                  <b-col cols="12">
                     <b-row>
-                      <b-col cols="12" md="5">
+                      <b-col cols="12" md="6">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-3"
@@ -173,7 +173,7 @@
                           ></b-form-select>
                         </b-form-group>
                       </b-col>
-                      <b-col cols="12" md="7">
+                      <b-col cols="12" md="6">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-4"
@@ -200,7 +200,7 @@
                   </b-col>
                 </b-row>
               </b-col>
-              <b-col cols="12" md="1" class="pr-4" style="align-self: center; text-align: right;">
+              <b-col cols="12" class="pr-4" style="align-self: center; text-align: right;">
                 <b-form-group
                   class="ml-3"
                   style="align-self: center;"
@@ -247,7 +247,7 @@ import lodash from 'lodash'
 
 export default {
 	name: 'addGoal',
-	layout: 'dev-add',
+	layout: 'simple',
 	computed: {
 		...mapState('matches', ['match', 'matches']),
 		...mapState('goals', ['goals']),

@@ -28,7 +28,7 @@
       </div>
       <div style="text-align: right;">
         <ul id="navbarUser">
-          <b-avatar v-if="userDB.name" :src="userDB.picture"></b-avatar>
+          <b-avatar variant="primary" v-if="userDB.name" :src="userDB.picture"></b-avatar>
           <li class="btn-pages user_name">{{userDB.name}}</li>
           <li class="collapse-dl btn-pages">
             <b-dropdown right variant="outline-secondary" size="sm">
