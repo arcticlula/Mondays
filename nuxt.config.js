@@ -1,5 +1,3 @@
-import config from "./config"
-const path = require('path')
 export default {
   mode: 'spa',
   /*
@@ -39,10 +37,15 @@ export default {
    ** Nuxt.js modules
    
    */
-  modules: ['@nuxtjs/pwa',
+  modules: [
+    '@nuxtjs/pwa',
     '@nuxtjs/svg',
-    'bootstrap-vue/nuxt'
+    'bootstrap-vue/nuxt',
+    '@nuxtjs/dotenv',
   ],
+  dotenv: {
+    filename: '.env.' + process.env.NODE_ENV
+  },
   pwa: {
     manifest: {
       "name": "Segundas",

@@ -88,7 +88,8 @@ sw.*
 .DS_Store
 
 # credentials
-/config.js
+
+#/config.js
 
 # The file containing environment variables 
-*.local
+*.env.*
