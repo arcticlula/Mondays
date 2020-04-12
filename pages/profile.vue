@@ -48,7 +48,7 @@
                         <span
                           class="d-inline d-sm-inline d-md-none d-lg-none d-xl-none font-weight-bold"
                         >Nasc.:</span>
-                        {{userDob | moment("DD/MM/YYYY")}}
+                        {{dob | moment("DD/MM/YYYY")}}
                       </b-col>
                     </b-row>
                   </b-col>
@@ -125,48 +125,48 @@ import lodash from 'lodash'
 // import chartHeatmap from "./chartHeatmap.vue";
 
 export default {
-	name: 'profile',
-	layout: 'home',
-	// components: {
-	// 	heatmap: chartHeatmap
-	// },
-	data() {
-		return {
-			jogadorInfo: []
-		}
-	},
-	computed: {
-		...mapState('matches', ['matches']),
-		...mapState('goals', ['goals']),
-		...mapGetters(['userDB', 'userPlayer', 'userDob']),
-		age() {
-			return moment().diff(this.userDob, 'years', false) + ' anos'
-		},
-		matchesFiltered() {
-			return !_.isEmpty(this.matches) && !_.isEmpty(this.userPlayer)
-				? this.matches.filter((s) => s.players[this.userPlayer.id])
-				: []
-		}
-	},
-	async fetch({ store, route }) {
-		try {
-			// await store.dispatch(
-			// 	'goals/getGoalsFromPlayer'
-			// )
-			// console.log(store.state)
-		} catch (e) {
-			console.error(e)
-		}
-	},
-	components: {
-		matchStats
-	},
-	methods: {
-		openMatch(id) {
-			console.log(id)
-			this.$router.push({ name: 'match', query: { match: id } })
-		}
-	}
+  name: 'profile',
+  layout: 'home',
+  // components: {
+  // 	heatmap: chartHeatmap
+  // },
+  data() {
+    return {
+      jogadorInfo: []
+    }
+  },
+  computed: {
+    ...mapState('matches', ['matches']),
+    ...mapState('goals', ['goals']),
+    ...mapGetters(['userDB', 'userPlayer', 'dob']),
+    age() {
+      return moment().diff(this.dob, 'years', false) + ' anos'
+    },
+    matchesFiltered() {
+      return !_.isEmpty(this.matches) && !_.isEmpty(this.userPlayer)
+        ? this.matches.filter((s) => s.players[this.userPlayer.id])
+        : []
+    }
+  },
+  async fetch({ store, route }) {
+    try {
+      // await store.dispatch(
+      // 	'goals/getGoalsFromPlayer'
+      // )
+      // console.log(store.state)
+    } catch (e) {
+      console.error(e)
+    }
+  },
+  components: {
+    matchStats
+  },
+  methods: {
+    openMatch(id) {
+      console.log(id)
+      this.$router.push({ name: 'match', query: { match: id } })
+    }
+  }
 }
 </script>
 

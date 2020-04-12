@@ -48,12 +48,14 @@
                         <b-row v-if="goal.local=='home'" class="my-1">
                           <b-col cols="12">
                             <label class="pr-1">{{goal.timeMin}}</label>
-                            <i class="dl dl-bola"></i>
+                            <i v-if="!goal.isPenaltyFailed" class="dl dl-bola"></i>
+                            <i v-else class="dl dl-warning text-red"></i>
                             <label class="pr-1">
                               <b>{{getNameGoal(goal)}}</b>
                             </label>
                             <label v-if="!!goal.assist">({{getNameAssist(goal)}})</label>
                             <label v-else-if="goal.isPenalty">(Penalidade)</label>
+                            <label v-else-if="goal.isPenaltyFailed">(Pen. Falhado)</label>
                             <span @click="deleteGoal(goal)">x</span>
                           </b-col>
                         </b-row>
@@ -62,16 +64,18 @@
                             <span @click="deleteGoal(goal)">x</span>
                             <label v-if="!!goal.assist" class="pr-1">({{getNameAssist(goal)}})</label>
                             <label v-else-if="goal.isPenalty">(Penalidade)</label>
+                            <label v-else-if="goal.isPenaltyFailed">(Pen. Falhado)</label>
                             <label class="pr-1">
                               <b>{{getNameGoal(goal)}}</b>
                             </label>
-                            <i class="dl dl-bola"></i>
+                            <i v-if="!goal.isPenaltyFailed" class="dl dl-bola"></i>
+                            <i v-else class="dl dl-bola text-red"></i>
                             <label class="pl-1">{{goal.timeMin}}</label>
                           </b-col>
                         </b-row>
                       </div>
                       <div v-else>
-                        <b-row v-if="goal.local=='away'" class="my-1">
+                        <b-row v-if="goal.local=='home'" class="my-1">
                           <b-col cols="12">
                             <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola text-red"></i>
@@ -156,7 +160,7 @@
                   </b-col>
                   <b-col cols="12">
                     <b-row>
-                      <b-col cols="12" md="6">
+                      <b-col cols="12" md="4">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-3"
@@ -164,7 +168,7 @@
                           label-for="input-3"
                         >
                           <b-form-select
-                            :disabled="form.type=='O'"
+                            :disabled="form.type=='O' || form.type=='PF'"
                             :options="playersAssist"
                             value-field="id"
                             text-field="name"
@@ -173,7 +177,7 @@
                           ></b-form-select>
                         </b-form-group>
                       </b-col>
-                      <b-col cols="12" md="6">
+                      <b-col cols="12" md="8">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-4"
@@ -186,13 +190,20 @@
                               value="O"
                               unchecked-value="N"
                               v-model="form.type"
-                              @change="ownGoalToggle"
+                              @change="checkToggle"
                             >Auto-Golo</b-form-checkbox>
                             <b-form-checkbox
+                              class="mx-3"
                               value="P"
                               unchecked-value="N"
                               v-model="form.type"
                             >Penalidade</b-form-checkbox>
+                            <b-form-checkbox
+                              value="PF"
+                              unchecked-value="N"
+                              v-model="form.type"
+                              @change="checkToggle"
+                            >Pen. Falhado</b-form-checkbox>
                           </b-row>
                         </b-form-group>
                       </b-col>
@@ -217,7 +228,7 @@
           </b-card>
         </b-form>
       </b-col>
-      <b-col cols="12" md="3">
+      <!-- <b-col cols="12" md="3">
         <b-row>
           <b-col cols="12">
             <b-card class="mt-1" header="Jogo">
@@ -225,18 +236,18 @@
             </b-card>
           </b-col>
         </b-row>
-      </b-col>
+      </b-col>-->
     </b-row>
-    <b-row class="px-2 mt-3">
-      <b-col cols="12">
-        <!-- <b-card class="mr-2" :header="match.id">
+    <!-- <b-row class="px-2 mt-3">
+    <b-col cols="12">-->
+    <!-- <b-card class="mr-2" :header="match.id">
           <pre class="m-0">{{ match }}</pre>
-        </b-card>-->
-        <!-- <b-card v-for="goal in goals" :key="goal.id" :header="goal.id">
+    </b-card>-->
+    <!-- <b-card v-for="goal in goals" :key="goal.id" :header="goal.id">
           <pre>{{ goal }}</pre>
-        </b-card>-->
-      </b-col>
-    </b-row>
+    </b-card>-->
+    <!-- </b-col>
+    </b-row>-->
   </div>
 </template>
 
@@ -244,117 +255,141 @@
 import { mapState, mapActions } from 'vuex'
 import isTimestamp from '../utils/isTimestamp'
 import lodash from 'lodash'
+import Noty from 'noty'
 
 export default {
-	name: 'addGoal',
-	layout: 'simple',
-	computed: {
-		...mapState('matches', ['match', 'matches']),
-		...mapState('goals', ['goals']),
-		routerQuery() {
-			return this.$nuxt.$route.query
-		},
-		playersScore() {
-			let players = this.match['team' + this.form.local].players
-			return !!players ? players : null
-		},
-		playersAssist() {
-			let players = this.match['team' + this.form.local].players
-			return !!players
-				? players.filter((s) => {
-						return s.id != this.form.goal
-				  })
-				: null
-		}
-	},
-	data() {
-		return {
-			form: {
-				local: 'A',
-				assist: null,
-				goal: null,
-				match: null,
-				team: null,
-				otherTeam: null,
-				time: '',
-				timeMin: 0,
-				type: 'N',
-				players: {},
-				props: {}
-			},
-			show: true
-		}
-	},
-	methods: {
-		...mapActions('matches', ['getMatchByIdStatic']),
-		...mapActions('goals', ['getGoalsFromMatch', 'addGoal', 'delGoal']),
-		getNameGoal(goal) {
-			return !_.isEmpty(goal.players) ? goal.players.goal.nickname : ''
-			// return !_.isEmpty(goal.goal) ? goal.goal.name : ''
-		},
-		getNameAssist(goal) {
-			return !_.isEmpty(goal.players.assist)
-				? goal.players.assist.nickname
-				: ''
-			// return !_.isEmpty(goal.assist) ? goal.assist.name : ''
-		},
-		async setTeamId() {
-			await this.$nextTick()
-			let localOwnGoal = this.form.local == 'A' ? 'B' : 'A'
-			this.form.team = this.match['team' + this.form.local].id
-			this.form.otherTeam = this.match['team' + localOwnGoal].id
-			this.form.goal = null
-			this.form.assist = null
-		},
-		async ownGoalToggle() {
-			await this.$nextTick()
-			this.form.assist = null
-			this.setTeamId()
-		},
-		async deleteGoal(goal) {
-			await this.delGoal(goal)
-			this.$noty.warning('Golo Removido!')
-		},
-		async onSubmit(evt) {
-			evt.preventDefault()
-			await this.addGoal(this.form)
-			this.$noty.success('Golo Adicionado!')
-			this.form.assist = null
-			this.form.goal = null
-			this.form.type = 'N'
-			this.form.players = {}
-			this.form.props = {}
-			this.show = false
-			await this.$nextTick()
-			this.show = true
-		},
-		async onReset(evt) {
-			evt.preventDefault()
-		}
-	},
-	async fetch({ store, route }) {
-		try {
-			await store.dispatch(
-				'matches/getMatchByIdStatic',
-				route.query.match
-			)
-			await store.dispatch('goals/getGoalsFromMatch', route.query.match)
-		} catch (e) {
-			console.error(e)
-		}
-	},
-	async mounted() {
-		try {
-			console.log(this.match)
-			this.form.time = this.match.beginTime
-				.toDate()
-				.toLocaleTimeString('pt-PT', { timeZone: 'UTC' })
-			this.form.match = this.match.id
-			this.form.team = this.match.teamA.id
-			this.form.otherTeam = this.match.teamB.id
-		} catch (e) {
-			console.error(e)
-		}
-	}
+  name: 'addGoal',
+  layout: 'simple',
+  computed: {
+    ...mapState('matches', ['match', 'matches']),
+    ...mapState('goals', ['goals']),
+    routerQuery() {
+      return this.$nuxt.$route.query
+    },
+    playersScore() {
+      let data = !_.isEmpty(this.match) ? this.match.players : {}
+      let local = this.form.local == 'A' ? 'home' : 'away'
+      return Object.keys(data).reduce((filtered, s) => {
+        if (data[s].local == local) {
+          filtered.push({
+            id: s,
+            name: data[s].name,
+            nickname: data[s].nickname
+          })
+        }
+        return filtered
+      }, [])
+    },
+    playersAssist() {
+      let data = !_.isEmpty(this.match) ? this.match.players : {}
+      let local = this.form.local == 'A' ? 'home' : 'away'
+      return Object.keys(data).reduce((filtered, s) => {
+        if (data[s].local == local && s != this.form.goal) {
+          filtered.push({
+            id: s,
+            name: data[s].name,
+            nickname: data[s].nickname
+          })
+        }
+        return filtered
+      }, [])
+    }
+  },
+  data() {
+    return {
+      form: {
+        local: 'A',
+        assist: null,
+        goal: null,
+        match: null,
+        team: null,
+        otherTeam: null,
+        time: '',
+        timeMin: 0,
+        type: 'N',
+        players: {},
+        props: {}
+      },
+      show: true
+    }
+  },
+  methods: {
+    ...mapActions('goals', ['getGoalsFromMatch', 'addGoal', 'delGoal']),
+    getNameGoal(goal) {
+      return !_.isEmpty(goal.players) ? goal.players.goal.nickname : ''
+      // return !_.isEmpty(goal.goal) ? goal.goal.name : ''
+    },
+    getNameAssist(goal) {
+      return !_.isEmpty(goal.players.assist) ? goal.players.assist.nickname : ''
+      // return !_.isEmpty(goal.assist) ? goal.assist.name : ''
+    },
+    async setTeamId() {
+      await this.$nextTick()
+      let localOwnGoal = this.form.local == 'A' ? 'B' : 'A'
+      this.form.team = this.match['team' + this.form.local].id
+      this.form.otherTeam = this.match['team' + localOwnGoal].id
+      this.form.goal = null
+      this.form.assist = null
+    },
+    async checkToggle() {
+      this.form.assist = null
+    },
+    async deleteGoal(goal) {
+      let n = new Noty({
+        text: 'Tens a certeza que queres apagar este golo?',
+        theme: 'metroui',
+        type: 'error',
+        layout: 'center',
+        modal: true,
+        buttons: [
+          Noty.button('Sim', 'btn btn-outline-light btn-sm', async () => {
+            await this.delGoal(goal)
+            this.$noty.warning('Golo Removido!')
+            n.close()
+          }),
+          Noty.button('Não', 'btn btn-outline-light btn-sm ml-1', () => {
+            n.close()
+          })
+        ]
+      }).show()
+    },
+    async onSubmit(evt) {
+      evt.preventDefault()
+      await this.addGoal(this.form)
+      this.$noty.success('Golo Adicionado!')
+      this.form.assist = null
+      this.form.goal = null
+      this.form.type = 'N'
+      this.form.players = {}
+      this.form.props = {}
+      this.show = false
+      await this.$nextTick()
+      this.show = true
+    },
+    async onReset(evt) {
+      evt.preventDefault()
+    }
+  },
+  async fetch({ store, route }) {
+    try {
+      await store.dispatch('matches/getMatchByIdOnce', route.query.match)
+      await store.dispatch('goals/getGoalsFromMatch', route.query.match)
+    } catch (e) {
+      console.error(e)
+    }
+  },
+  async mounted() {
+    try {
+      console.log(this.match)
+      this.form.time = this.match.beginTime
+        .toDate()
+        .toLocaleTimeString('pt-PT', { timeZone: 'UTC' })
+      this.form.match = this.match.id
+      this.form.team = this.match.teamA.id
+      this.form.otherTeam = this.match.teamB.id
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>

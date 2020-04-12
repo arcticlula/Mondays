@@ -20,14 +20,10 @@ export default {
 			let goals = []
 			await asyncForEach(querySnapshot.docs, async doc => {
 				let data = doc.data()
-				// console.time('getGoalsGA')
-				// await hydrate(data, ['goal', 'assist'])
-				// console.timeEnd('getGoalsGA')
 				data.id = doc.id;
 				goals.push(data);
 			})
 			context.commit('setGoals', goals)
-			console.timeEnd('getGoals')
 		});
 	},
 	async addGoal(context, data) {
@@ -63,6 +59,7 @@ export default {
 					highscores = { ["players." + [obj.goal] + ".ownGoals"]: increment }
 					obj.isOwnGoal = true;
 					obj.isPenalty = false;
+					obj.isPenaltyFailed = false;
 					break;
 				case "P":
 					counterTeam = { "counter.goals.total": increment, "counter.goals.penalties": increment }
@@ -71,6 +68,16 @@ export default {
 					highscores = { ["players." + [obj.goal] + ".goals"]: increment, ["players." + [obj.goal] + ".penalties"]: increment }
 					obj.isOwnGoal = false;
 					obj.isPenalty = true;
+					obj.isPenaltyFailed = false;
+					break;
+				case "PF":
+					counterPlayer = { "counter.goals.penaltiesFailed": increment }
+					counterTeam = counterPlayer;
+					counterMatch = counterPlayer;
+					highscores = { ["players." + [obj.goal] + ".penaltiesFailed"]: increment }
+					obj.isOwnGoal = false;
+					obj.isPenalty = false;
+					obj.isPenaltyFailed = true;
 					break;
 				default:
 					counterTeam = { "counter.goals.total": increment }
@@ -79,6 +86,7 @@ export default {
 					highscores = { ["players." + [obj.goal] + ".goals"]: increment }
 					obj.isOwnGoal = false;
 					obj.isPenalty = false;
+					obj.isPenaltyFailed = false;
 					break;
 			}
 			delete obj.type;
@@ -173,6 +181,12 @@ export default {
 				counterPlayer = { ["counter.goals." + [obj.local]]: decrement, ...counterTeam }
 				counterMatch = counterPlayer;
 				highscores = { ["players." + [obj.goal.id] + ".goals"]: decrement, ["players." + [obj.goal.id] + ".penalties"]: decrement }
+			}
+			else if (obj.isPenaltyFailed) {
+				counterPlayer = { "counter.goals.penaltiesFailed": decrement }
+				counterTeam = counterPlayer;
+				counterMatch = counterPlayer;
+				highscores = { ["players." + [obj.goal.id] + ".penaltiesFailed"]: decrement }
 			}
 			else {
 				counterTeam = { "counter.goals.total": decrement }

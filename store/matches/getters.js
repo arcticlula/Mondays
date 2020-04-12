@@ -36,19 +36,24 @@ export default {
             )
             : moment()
     },
-    highscore(state) {
-        let matches = !_.isEmpty(state.matches) ? state.matches : []
+    highscorePlayed(state, getters, rootState) {
+        let matches = rootState.mode.playedMatchesOnly
+            ? !_.isEmpty(state.matches) && !_.isEmpty(rootState.userPlayer)
+                ? state.matches.filter((s) => s.players[rootState.userPlayer.id])
+                : []
+            : !_.isEmpty(state.matches) ? state.matches : []
         let res = matches.reduce((hash, data) => {
             const players = data.players;
             Object.keys(players).map(key => {
                 const goalDiff = players[key].local == 'home' ? data.counter.goals.home - data.counter.goals.away : data.counter.goals.away - data.counter.goals.home;
                 if (!hash[key]) {
-                    hash[key] = { id: key, matches: 0, wins: 0, draws: 0, losses: 0, assists: 0, goals: 0, local: players[key].local, name: players[key].name, nickname: players[key].nickname, ownGoals: 0, penalties: 0 };
+                    hash[key] = { id: key, matches: 0, wins: 0, draws: 0, losses: 0, assists: 0, goals: 0, local: players[key].local, name: players[key].name, nickname: players[key].nickname, ownGoals: 0, penalties: 0, penaltiesFailed: 0 };
                 }
                 hash[key].assists += players[key].assists;
                 hash[key].goals += players[key].goals;
                 hash[key].ownGoals += players[key].ownGoals;
                 hash[key].penalties += players[key].penalties;
+                hash[key].penaltiesFailed += players[key].penaltiesFailed;
                 hash[key].matches++
                 if (goalDiff > 0) hash[key].wins++;
                 if (goalDiff < 0) hash[key].losses++;
@@ -61,5 +66,12 @@ export default {
     highscoreMatch(state) {
         let data = !_.isEmpty(state.match) ? state.match.players : {}
         return Object.keys(data).map(s => ({ id: s, name: data[s].name, goals: data[s].goals, assists: data[s].assists })).sort((a, b) => (b.goals - a.goals) || (b.assists - a.assists));
+    },
+    matchesPlayed(state, getters, rootState) {
+        return rootState.mode.playedMatchesOnly
+            ? !_.isEmpty(state.matches) && !_.isEmpty(rootState.userPlayer)
+                ? state.matches.filter((s) => s.players[rootState.userPlayer.id])
+                : []
+            : state.matches
     }
 }

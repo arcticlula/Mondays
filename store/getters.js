@@ -10,11 +10,11 @@ export default {
   isVisitor(state) {
     return !_.isEmpty(state.userDB) ? state.userDB.isVisitor : true
   },
-  userDob(state) {
+  dob(state) {
     return !_.isEmpty(state.userPlayer) ? moment(state.userPlayer.dob, 'DD/MM/YYYY') : moment()
   },
   userPlayer(state) {
-    console.log(state)
+    // console.log(state)
     return !_.isEmpty(state.userPlayer) ? state.userPlayer : {}
   },
   yearHigh(state) {

@@ -106,89 +106,88 @@ import { mapState, mapActions } from 'vuex'
 import lodash from 'lodash'
 
 export default {
-	name: 'addMatch',
-	layout: 'simple',
-	computed: {
-		...mapState('teams', ['teams']),
-		...mapState('matches', ['matches']),
-		teamsUnselected() {
-			return !_.isEmpty(this.teams)
-				? this.teams.filter((s) => {
-						return !s.match
-				  })
-				: []
-		},
-		teamPlayersA() {
-			return this.form.teamA == ''
-				? []
-				: this.teams.find((element) => element.id == this.form.teamA)
-						.players
-		},
-		teamPlayersB() {
-			return this.form.teamB == ''
-				? []
-				: this.teams.find((element) => element.id == this.form.teamB)
-						.players
-		}
-	},
-	data() {
-		return {
-			form: {
-				date: null,
-				beginTime: '22:00:00',
-				endTime: '23:00:00',
-				goals: {},
-				teamA: '',
-				teamB: '',
-				players: {},
-				props: {},
-				counter: {
-					goals: {
-						home: 0,
-						away: 0,
-						total: 0,
-						penalties: 0,
-						ownGoals: 0
-					},
-					assists: { home: 0, away: 0, total: 0 }
-				}
-			},
-			show: true
-		}
-	},
-	methods: {
-		...mapActions('teams', ['getTeams']),
-		...mapActions('matches', ['getMatches', 'addMatch']),
+  name: 'addMatch',
+  layout: 'simple',
+  computed: {
+    ...mapState('teams', ['teams']),
+    ...mapState('matches', ['matches']),
+    teamsUnselected() {
+      return !_.isEmpty(this.teams)
+        ? this.teams.filter((s) => {
+            return !s.match
+          })
+        : []
+    },
+    teamPlayersA() {
+      return this.form.teamA == ''
+        ? []
+        : this.teams.find((element) => element.id == this.form.teamA).players
+    },
+    teamPlayersB() {
+      return this.form.teamB == ''
+        ? []
+        : this.teams.find((element) => element.id == this.form.teamB).players
+    }
+  },
+  data() {
+    return {
+      form: {
+        date: null,
+        beginTime: '22:00:00',
+        endTime: '23:00:00',
+        goals: {},
+        teamA: '',
+        teamB: '',
+        players: {},
+        props: {},
+        counter: {
+          goals: {
+            home: 0,
+            away: 0,
+            total: 0,
+            penalties: 0,
+            penaltiesFailed: 0,
+            ownGoals: 0
+          },
+          assists: { home: 0, away: 0, total: 0 }
+        }
+      },
+      show: true
+    }
+  },
+  methods: {
+    ...mapActions('teams', ['getTeams']),
+    ...mapActions('matches', ['getMatches', 'addMatch']),
 
-		async onSubmit(evt) {
-			evt.preventDefault()
-			await this.addMatch(this.form)
-			this.$noty.success('Jogo Adicionado!')
-		},
-		async onReset(evt) {
-			evt.preventDefault()
-			// Reset our form values
-			this.form.date = null
-			this.form.beginTime = '22:00:00'
-			this.form.endTime = '23:00:00'
-			this.form.goals = {}
-			this.form.teamA = null
-			this.form.teamB = null
-			this.form.props = {}
+    async onSubmit(evt) {
+      evt.preventDefault()
+      await this.addMatch(this.form)
+      this.$noty.success('Jogo Adicionado!')
+    },
+    async onReset(evt) {
+      evt.preventDefault()
+      // Reset our form values
+      this.form.date = null
+      this.form.beginTime = '22:00:00'
+      this.form.endTime = '23:00:00'
+      this.form.goals = {}
+      this.form.teamA = null
+      this.form.teamB = null
+      this.form.props = {}
 
-			// Trick to reset/clear native browser form validation state
-			this.show = false
-			await this.$nextTick()
-			this.show = true
-		}
-	},
-	async fetch({ store }) {
-		try {
-			await store.dispatch('teams/getTeams')
-			// await store.dispatch('matches/getMatches')
-		} catch (e) {
-			console.error(e)
-		}
-	}
+      // Trick to reset/clear native browser form validation state
+      this.show = false
+      await this.$nextTick()
+      this.show = true
+    }
+  },
+  async fetch({ store }) {
+    try {
+      await store.dispatch('teams/getTeams')
+      // await store.dispatch('matches/getMatches')
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>

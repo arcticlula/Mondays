@@ -26,7 +26,7 @@ export default {
 			let data = docSnapshot.data();
 			// console.log(data)
 			await hydrate(data, ['player'])
-			data.player.dob = data.player.dob.toDate().toLocaleString('pt-PT', { timeZone: 'UTC' })
+			data.player.dob = data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' })
 			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
 			commit('setUserDB', data)
 			commit('setUserPlayer', data.player)
@@ -47,7 +47,7 @@ export default {
 			let data = docSnapshot.data();
 			// console.log(data)
 			await hydrate(data, ['player'])
-			data.player.dob = data.player.dob.toDate().toLocaleString('pt-PT', { timeZone: 'UTC' })
+			data.player.dob = data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' })
 			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
 			commit('setUserDB', data)
 			commit('setUserPlayer', data.player)

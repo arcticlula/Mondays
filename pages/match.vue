@@ -92,7 +92,7 @@
                         </b-row>
                       </div>
                       <div v-else>
-                        <b-row v-if="goal.local=='away'" class="my-1">
+                        <b-row v-if="goal.local=='home'" class="my-1">
                           <b-col cols="12">
                             <label class="pr-1">{{goal.timeMin}}</label>
                             <i class="dl dl-bola text-red"></i>
@@ -114,6 +114,23 @@
                         </b-row>
                       </div>
                     </div>
+                  </b-col>
+                  <b-col
+                    v-if="mode.edition"
+                    cols="12"
+                    class="mt-2 py-0 px-1"
+                    style="display: inline-block;"
+                  >
+                    <b-button
+                      v-if="!hasGoals"
+                      @click="deleteMatch"
+                      variant="outline-primary"
+                      size="sm"
+                      squared
+                    >Apagar Jogo</b-button>
+                    <nuxt-link :to="{ name: 'addGoal',query: routerQuery}">
+                      <b-button variant="outline-primary" size="sm" squared>Adicionar Golos</b-button>
+                    </nuxt-link>
                   </b-col>
                 </b-card-text>
               </b-tab>
@@ -178,53 +195,75 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import court from '../components/match/court'
 import highscore from '../components/match/highscore'
+import lodash from 'lodash'
+import Noty from 'noty'
 export default {
-	name: 'match',
-	layout: 'simple',
-	components: {
-		court,
-		highscore
-	},
-	computed: {
-		...mapState('matches', ['match']),
-		...mapState('goals', ['goals']),
-		...mapGetters('matches', [
-			'goalsHome',
-			'goalsAway',
-			'playersHome',
-			'playersAway',
-			'matchDate'
-		]),
-		routerPath() {
-			return this.$nuxt.$route.name
-		},
-		routerQuery() {
-			return this.$nuxt.$route.query
-		}
-	},
-	methods: {
-		getNameGoal(goal) {
-			return !_.isEmpty(goal.players) ? goal.players.goal.nickname : ''
-			// return !_.isEmpty(goal.goal) ? goal.goal.name : ''
-		},
-		getNameAssist(goal) {
-			return !_.isEmpty(goal.players.assist)
-				? goal.players.assist.nickname
-				: ''
-			// return !_.isEmpty(goal.assist) ? goal.assist.name : ''
-		}
-	},
-	async fetch({ store, route }) {
-		try {
-			await store.dispatch('matches/getMatchById', route.query.match)
-			console.time('getGoals')
-			store.dispatch('goals/getGoalsFromMatch', route.query.match) //takes too long, better to let it load freely
-			// console.time('getGoals2')
-			// store.dispatch('goals/getGoalsFromMatch2', route.query.match) //takes too long, better to let it load freely
-		} catch (e) {
-			console.error(e)
-		}
-	}
+  name: 'match',
+  layout: 'simple',
+  components: {
+    court,
+    highscore
+  },
+  computed: {
+    ...mapState(['mode']),
+    ...mapState('matches', ['match']),
+    ...mapState('goals', ['goals']),
+    ...mapGetters('matches', [
+      'goalsHome',
+      'goalsAway',
+      'playersHome',
+      'playersAway',
+      'matchDate'
+    ]),
+    routerPath() {
+      return this.$nuxt.$route.name
+    },
+    routerQuery() {
+      return this.$nuxt.$route.query
+    },
+    hasGoals() {
+      console.log(this.goals, _.isEmpty(this.goals) ? false : true)
+      return _.isEmpty(this.goals) ? false : true
+    }
+  },
+  methods: {
+    ...mapActions('matches', ['delMatch']),
+    getNameGoal(goal) {
+      return !_.isEmpty(goal.players) ? goal.players.goal.nickname : ''
+      // return !_.isEmpty(goal.goal) ? goal.goal.name : ''
+    },
+    getNameAssist(goal) {
+      return !_.isEmpty(goal.players.assist) ? goal.players.assist.nickname : ''
+      // return !_.isEmpty(goal.assist) ? goal.assist.name : ''
+    },
+    async deleteMatch() {
+      let n = new Noty({
+        text: 'Tens a certeza que queres apagar este jogo?',
+        theme: 'metroui',
+        type: 'error',
+        layout: 'center',
+        modal: true,
+        buttons: [
+          Noty.button('Sim', 'btn btn-outline-light btn-sm', async () => {
+            await this.delMatch(this.match)
+            this.$router.push({ name: 'index' })
+            n.close()
+          }),
+          Noty.button('Não', 'btn btn-outline-light btn-sm ml-1', () => {
+            n.close()
+          })
+        ]
+      }).show()
+    }
+  },
+  async fetch({ store, route }) {
+    try {
+      await store.dispatch('matches/getMatchById', route.query.match)
+      store.dispatch('goals/getGoalsFromMatch', route.query.match) //takes too long, better to let it load freely
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>
 

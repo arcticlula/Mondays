@@ -50,6 +50,17 @@
                 </b-col>
               </b-row>
               <b-row>
+                <b-col cols="12">
+                  <b-form-group
+                    class="my-2"
+                    label="Mostrar apenas jogos jogados:"
+                    label-for="input-2"
+                  >
+                    <b-form-checkbox id="input-2" v-model="mode.playedMatchesOnly" switch></b-form-checkbox>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+              <b-row>
                 <b-col cols="12" class="text-right">
                   <b-btn size="sm" variant="outline-primary" @click="signOut">Sign Out</b-btn>
                 </b-col>
@@ -65,24 +76,24 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-	name: 'config',
-	layout: 'home',
-	computed: {
-		...mapState(['mode']),
-		...mapGetters(['admin']),
-		nightModeVar: {
-			get: function() {
-				return this.mode.night
-			},
-			set: function(data) {
-				return this.setNightMode(data)
-			}
-		}
-	},
-	methods: {
-		...mapMutations(['setNightMode']),
-		...mapActions(['signOut'])
-	}
+  name: 'config',
+  layout: 'home',
+  computed: {
+    ...mapState(['mode']),
+    ...mapGetters(['admin']),
+    nightModeVar: {
+      get: function() {
+        return this.mode.night
+      },
+      set: function(data) {
+        return this.setNightMode(data)
+      }
+    }
+  },
+  methods: {
+    ...mapMutations(['setNightMode']),
+    ...mapActions(['signOut'])
+  }
 }
 </script>
 
