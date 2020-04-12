@@ -43,62 +43,7 @@
                 ></b-table>-->
                 <b-card-text>
                   <b-col cols="12">
-                    <div v-for="goal in goals" :key="goal.id">
-                      <div v-if="!goal.isOwnGoal">
-                        <b-row v-if="goal.local=='home'" class="my-1">
-                          <b-col cols="12">
-                            <label class="pr-1">{{goal.timeMin}}</label>
-                            <i v-if="!goal.isPenaltyFailed" class="dl dl-bola"></i>
-                            <i v-else class="dl dl-warning text-red"></i>
-                            <label class="pr-1">
-                              <b>{{getNameGoal(goal)}}</b>
-                            </label>
-                            <label v-if="!!goal.assist">({{getNameAssist(goal)}})</label>
-                            <label v-else-if="goal.isPenalty">(Penalidade)</label>
-                            <label v-else-if="goal.isPenaltyFailed">(Pen. Falhado)</label>
-                            <span @click="deleteGoal(goal)">x</span>
-                          </b-col>
-                        </b-row>
-                        <b-row v-else class="my-1">
-                          <b-col cols="12" class="text-right">
-                            <span @click="deleteGoal(goal)">x</span>
-                            <label v-if="!!goal.assist" class="pr-1">({{getNameAssist(goal)}})</label>
-                            <label v-else-if="goal.isPenalty">(Penalidade)</label>
-                            <label v-else-if="goal.isPenaltyFailed">(Pen. Falhado)</label>
-                            <label class="pr-1">
-                              <b>{{getNameGoal(goal)}}</b>
-                            </label>
-                            <i v-if="!goal.isPenaltyFailed" class="dl dl-bola"></i>
-                            <i v-else class="dl dl-bola text-red"></i>
-                            <label class="pl-1">{{goal.timeMin}}</label>
-                          </b-col>
-                        </b-row>
-                      </div>
-                      <div v-else>
-                        <b-row v-if="goal.local=='home'" class="my-1">
-                          <b-col cols="12">
-                            <label class="pr-1">{{goal.timeMin}}</label>
-                            <i class="dl dl-bola text-red"></i>
-                            <label class="pr-1">
-                              <b>{{getNameGoal(goal)}}</b>
-                            </label>
-                            <label>(Auto-Golo)</label>
-                            <span @click="deleteGoal(goal)">x</span>
-                          </b-col>
-                        </b-row>
-                        <b-row v-else class="my-1">
-                          <b-col cols="12" class="text-right">
-                            <span @click="deleteGoal(goal)">x</span>
-                            <label class="pr-1">(Auto-Golo)</label>
-                            <label class="pr-1">
-                              <b>{{getNameGoal(goal)}}</b>
-                            </label>
-                            <i class="dl dl-bola text-red"></i>
-                            <label class="pl-1">{{goal.timeMin}}</label>
-                          </b-col>
-                        </b-row>
-                      </div>
-                    </div>
+                    <match-goals v-for="goal in goals" :goal="goal" :key="goal.id"></match-goals>
                   </b-col>
                 </b-card-text>
               </b-col>
@@ -110,7 +55,7 @@
                 <b-row>
                   <b-col cols="12">
                     <b-row>
-                      <b-col cols="12" md="4">
+                      <b-col cols="6" md="6" lg="4">
                         <b-form-group
                           class="mb-3 mx-3"
                           id="input-group-0"
@@ -129,7 +74,7 @@
                           </b-form-checkbox>
                         </b-form-group>
                       </b-col>
-                      <b-col cols="12" md="4">
+                      <b-col cols="6" md="6" lg="4">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-1"
@@ -139,7 +84,7 @@
                           <b-form-timepicker show-seconds required id="input-1" v-model="form.time"></b-form-timepicker>
                         </b-form-group>
                       </b-col>
-                      <b-col cols="12" md="4">
+                      <b-col cols="6" md="6" lg="4">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-2"
@@ -156,11 +101,7 @@
                           ></b-form-select>
                         </b-form-group>
                       </b-col>
-                    </b-row>
-                  </b-col>
-                  <b-col cols="12">
-                    <b-row>
-                      <b-col cols="12" md="4">
+                      <b-col cols="6" md="6" lg="4">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-3"
@@ -177,7 +118,7 @@
                           ></b-form-select>
                         </b-form-group>
                       </b-col>
-                      <b-col cols="12" md="8">
+                      <b-col cols="12" md="12" lg="8">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-4"
@@ -206,6 +147,48 @@
                             >Pen. Falhado</b-form-checkbox>
                           </b-row>
                         </b-form-group>
+                      </b-col>
+                    </b-row>
+                  </b-col>
+                  <b-col cols="12">
+                    <b-row>
+                      <b-col cols="11" md="11" lg="6">
+                        <b-form-input
+                          class="mb-3 ml-3"
+                          @paste="pasteLink"
+                          v-model="form.url.link"
+                          placeholder="Link Youtube"
+                        ></b-form-input>
+                      </b-col>
+                      <b-col cols="7" md="7" lg="4">
+                        <b-form-timepicker
+                          class="mb-3 ml-3"
+                          :disabled="urlTimeDisabled"
+                          seconds-step="5"
+                          show-seconds
+                          v-model="form.url.time"
+                          @input="changeTimeLink"
+                        ></b-form-timepicker>
+                      </b-col>
+                      <b-col cols="5" md="5" lg="2">
+                        <b-row>
+                          <b-btn
+                            class="mb-3 ml-2"
+                            size="sm"
+                            variant="outline-secondary"
+                            @click="pasteLink"
+                          >
+                            <i class="dl dl-paste"></i>
+                          </b-btn>
+                          <b-btn
+                            class="mb-3 ml-2"
+                            size="sm"
+                            variant="outline-secondary"
+                            @click="deleteLink"
+                          >
+                            <i class="dl dl-eliminar"></i>
+                          </b-btn>
+                        </b-row>
                       </b-col>
                     </b-row>
                   </b-col>
@@ -253,13 +236,18 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import matchGoals from '../components/addGoal/matchGoals'
 import isTimestamp from '../utils/isTimestamp'
+import { secondsToTime, timeToSeconds } from '../utils/time'
+import { getQueryParams, updateURLParameter } from '../utils/url'
 import lodash from 'lodash'
-import Noty from 'noty'
 
 export default {
   name: 'addGoal',
   layout: 'simple',
+  components: {
+    matchGoals
+  },
   computed: {
     ...mapState('matches', ['match', 'matches']),
     ...mapState('goals', ['goals']),
@@ -297,6 +285,7 @@ export default {
   },
   data() {
     return {
+      urlTimeDisabled: true,
       form: {
         local: 'A',
         assist: null,
@@ -307,6 +296,7 @@ export default {
         time: '',
         timeMin: 0,
         type: 'N',
+        url: { link: '', time: '00:00:00' },
         players: {},
         props: {}
       },
@@ -314,14 +304,25 @@ export default {
     }
   },
   methods: {
-    ...mapActions('goals', ['getGoalsFromMatch', 'addGoal', 'delGoal']),
-    getNameGoal(goal) {
-      return !_.isEmpty(goal.players) ? goal.players.goal.nickname : ''
-      // return !_.isEmpty(goal.goal) ? goal.goal.name : ''
+    ...mapActions('goals', ['getGoalsFromMatch', 'addGoal']),
+    async pasteLink() {
+      await this.$nextTick()
+      this.form.url.link = await navigator.clipboard.readText()
+      let query = getQueryParams('t', this.form.url.link)
+      this.urlTimeDisabled = false
+      if (query) {
+        this.form.url.time = secondsToTime(query)
+      }
     },
-    getNameAssist(goal) {
-      return !_.isEmpty(goal.players.assist) ? goal.players.assist.nickname : ''
-      // return !_.isEmpty(goal.assist) ? goal.assist.name : ''
+    deleteLink() {
+      this.form.url = { link: '', time: '00:00:00' }
+    },
+    changeTimeLink(value) {
+      this.form.url.link = updateURLParameter(
+        this.form.url.link,
+        't',
+        timeToSeconds(value)
+      )
     },
     async setTeamId() {
       await this.$nextTick()
@@ -334,25 +335,6 @@ export default {
     async checkToggle() {
       this.form.assist = null
     },
-    async deleteGoal(goal) {
-      let n = new Noty({
-        text: 'Tens a certeza que queres apagar este golo?',
-        theme: 'metroui',
-        type: 'error',
-        layout: 'center',
-        modal: true,
-        buttons: [
-          Noty.button('Sim', 'btn btn-outline-light btn-sm', async () => {
-            await this.delGoal(goal)
-            this.$noty.warning('Golo Removido!')
-            n.close()
-          }),
-          Noty.button('Não', 'btn btn-outline-light btn-sm ml-1', () => {
-            n.close()
-          })
-        ]
-      }).show()
-    },
     async onSubmit(evt) {
       evt.preventDefault()
       await this.addGoal(this.form)
@@ -360,6 +342,8 @@ export default {
       this.form.assist = null
       this.form.goal = null
       this.form.type = 'N'
+      this.form.url.link = ''
+      this.urlTimeDisabled = true
       this.form.players = {}
       this.form.props = {}
       this.show = false

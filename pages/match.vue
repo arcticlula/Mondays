@@ -66,54 +66,7 @@
               <b-tab title="Resumo" active>
                 <b-card-text>
                   <b-col cols="12">
-                    <div v-for="goal in goals" :key="goal.id">
-                      <div v-if="!goal.isOwnGoal">
-                        <b-row v-if="goal.local=='home'" class="my-1">
-                          <b-col cols="12">
-                            <label class="pr-1">{{goal.timeMin}}</label>
-                            <i class="dl dl-bola"></i>
-                            <label class="pr-1">
-                              <b>{{getNameGoal(goal)}}</b>
-                            </label>
-                            <label v-if="!!goal.assist">({{getNameAssist(goal)}})</label>
-                            <label v-else-if="goal.isPenalty">(Penalidade)</label>
-                          </b-col>
-                        </b-row>
-                        <b-row v-else class="my-1">
-                          <b-col cols="12" class="text-right">
-                            <label v-if="!!goal.assist" class="pr-1">({{getNameAssist(goal)}})</label>
-                            <label v-else-if="goal.isPenalty">(Penalidade)</label>
-                            <label class="pr-1">
-                              <b>{{getNameGoal(goal)}}</b>
-                            </label>
-                            <i class="dl dl-bola"></i>
-                            <label class="pl-1">{{goal.timeMin}}</label>
-                          </b-col>
-                        </b-row>
-                      </div>
-                      <div v-else>
-                        <b-row v-if="goal.local=='home'" class="my-1">
-                          <b-col cols="12">
-                            <label class="pr-1">{{goal.timeMin}}</label>
-                            <i class="dl dl-bola text-red"></i>
-                            <label class="pr-1">
-                              <b>{{getNameGoal(goal)}}</b>
-                            </label>
-                            <label>(Auto-Golo)</label>
-                          </b-col>
-                        </b-row>
-                        <b-row v-else class="my-1">
-                          <b-col cols="12" class="text-right">
-                            <label class="pr-1">(Auto-Golo)</label>
-                            <label class="pr-1">
-                              <b>{{getNameGoal(goal)}}</b>
-                            </label>
-                            <i class="dl dl-bola text-red"></i>
-                            <label class="pl-1">{{goal.timeMin}}</label>
-                          </b-col>
-                        </b-row>
-                      </div>
-                    </div>
+                    <match-goals v-for="goal in goals" :goal="goal" :key="goal.id"></match-goals>
                   </b-col>
                   <b-col
                     v-if="mode.edition"
@@ -193,6 +146,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
+import matchGoals from '../components/match/matchGoals'
 import court from '../components/match/court'
 import highscore from '../components/match/highscore'
 import lodash from 'lodash'
@@ -201,6 +155,7 @@ export default {
   name: 'match',
   layout: 'simple',
   components: {
+    matchGoals,
     court,
     highscore
   },
@@ -228,14 +183,6 @@ export default {
   },
   methods: {
     ...mapActions('matches', ['delMatch']),
-    getNameGoal(goal) {
-      return !_.isEmpty(goal.players) ? goal.players.goal.nickname : ''
-      // return !_.isEmpty(goal.goal) ? goal.goal.name : ''
-    },
-    getNameAssist(goal) {
-      return !_.isEmpty(goal.players.assist) ? goal.players.assist.nickname : ''
-      // return !_.isEmpty(goal.assist) ? goal.assist.name : ''
-    },
     async deleteMatch() {
       let n = new Noty({
         text: 'Tens a certeza que queres apagar este jogo?',

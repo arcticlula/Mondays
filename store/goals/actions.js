@@ -90,6 +90,7 @@ export default {
 					break;
 			}
 			delete obj.type;
+			if (_.isEmpty(obj.url.link)) delete obj.url
 
 			// /**						Players					**/
 			if (!_.isEmpty(obj.goal)) {
