@@ -78,8 +78,8 @@
           <b-card class="mt-1">
             <b-row>
               <b-col>
-                <b-button class="mr-2" size="sm" type="submit" variant="primary">Submeter</b-button>
-                <b-button size="sm" type="reset" variant="danger">Limpar</b-button>
+                <b-btn class="mr-2" size="sm" type="submit" variant="primary">Submeter</b-btn>
+                <b-btn size="sm" type="reset" variant="danger">Limpar</b-btn>
               </b-col>
             </b-row>
           </b-card>

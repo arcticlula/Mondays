@@ -32,7 +32,7 @@
                       :fields="[{key:'name',label:'Equipa Casa'},{key:'actions',label:''}]"
                     >
                       <template v-slot:cell(actions)="row">
-                        <b-button
+                        <b-btn
                           size="sm"
                           class="btnNoBorder p-0"
                           variant="outline-danger"
@@ -40,7 +40,7 @@
                           :disabled="teamLetter=='B'"
                         >
                           <span class="dl dl-remover"></span>
-                        </b-button>
+                        </b-btn>
                       </template>
                     </b-table>
                   </b-col>
@@ -52,7 +52,7 @@
                       :fields="[{key:'actions',label:''},{key:'name',label:'Equipa Fora'}]"
                     >
                       <template v-slot:cell(actions)="row">
-                        <b-button
+                        <b-btn
                           size="sm"
                           class="btnNoBorder p-0"
                           variant="outline-danger"
@@ -60,7 +60,7 @@
                           :disabled="teamLetter=='A'"
                         >
                           <span class="dl dl-remover"></span>
-                        </b-button>
+                        </b-btn>
                       </template>
                     </b-table>
                   </b-col>
@@ -74,14 +74,14 @@
                       :fields="[{key:'name',label:'Jogador'},{key:'actions',label:''}]"
                     >
                       <template v-slot:cell(actions)="row">
-                        <b-button
+                        <b-btn
                           size="sm"
                           class="btnarrowleft p-0"
                           variant="outline-primary"
                           @click="addPlayerToTeam(row.item)"
                         >
                           <span class="dl dl-plus"></span>
-                        </b-button>
+                        </b-btn>
                       </template>
                     </b-table>
                   </b-col>
@@ -129,8 +129,8 @@
               <b-card>
                 <b-row>
                   <b-col>
-                    <b-button class="mr-2" size="sm" type="submit" variant="primary">Submeter</b-button>
-                    <b-button size="sm" type="reset" variant="danger">Limpar</b-button>
+                    <b-btn class="mr-2" size="sm" type="submit" variant="primary">Submeter</b-btn>
+                    <b-btn size="sm" type="reset" variant="danger">Limpar</b-btn>
                   </b-col>
                 </b-row>
               </b-card>

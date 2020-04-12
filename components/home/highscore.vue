@@ -22,10 +22,10 @@
                   ref="table"
                 >
                   <!-- <template slot="actions" slot-scope="row">
-										<b-button
+										<b-btn
 											size="sm"
 											@click="row.toggleDetails"
-										>{{ row.detailsShowing ? 'Hide' : 'Show' }} Details</b-button>
+										>{{ row.detailsShowing ? 'Hide' : 'Show' }} Details</b-btn>
                   </template>-->
                   <!-- <template slot="row-details" slot-scope="row">
 										<b-card>

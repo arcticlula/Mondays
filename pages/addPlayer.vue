@@ -31,8 +31,8 @@
                   <b-form-input id="input-4" v-model="form.dob" required placeholder></b-form-input>
                 </b-form-group>
 
-                <b-button type="submit" variant="primary">Submit</b-button>
-                <b-button type="reset" variant="danger">Reset</b-button>
+                <b-btn type="submit" variant="primary">Submit</b-btn>
+                <b-btn type="reset" variant="danger">Reset</b-btn>
               </b-form>
             </b-card>
           </b-col>

@@ -121,15 +121,15 @@
                     class="mt-2 py-0 px-1"
                     style="display: inline-block;"
                   >
-                    <b-button
+                    <b-btn
                       v-if="!hasGoals"
                       @click="deleteMatch"
                       variant="outline-primary"
                       size="sm"
                       squared
-                    >Apagar Jogo</b-button>
+                    >Apagar Jogo</b-btn>
                     <nuxt-link :to="{ name: 'addGoal',query: routerQuery}">
-                      <b-button variant="outline-primary" size="sm" squared>Adicionar Golos</b-button>
+                      <b-btn variant="outline-primary" size="sm" squared>Adicionar Golos</b-btn>
                     </nuxt-link>
                   </b-col>
                 </b-card-text>

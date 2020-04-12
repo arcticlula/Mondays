@@ -8,9 +8,9 @@
         <img width="35px" src="../assets/icon.png" />
       </a>
       <span class="navbar-toggler-icon rotate-90"></span>
-      <b-button @click="$router.go(-1)" class="btnarrowleft" variant="outline-primary">
+      <b-btn @click="$router.go(-1)" class="btnarrowleft" variant="outline-primary">
         <span class="dl dl-left"></span>
-      </b-button>
+      </b-btn>
       <div class="pl-2" id="navbarText" style="margin: 0 auto;">
         <ul class="navbar-nav"></ul>
       </div>
@@ -19,10 +19,10 @@
           <b-avatar variant="primary" v-if="userDB.name" :src="userDB.picture"></b-avatar>
           <li class="btn-pages user_name">{{userDB.name}}</li>
           <!-- <li class="btn-pages">
-					<b-button variant="danger" size="sm">
+					<b-btn variant="danger" size="sm">
 						<b>-20</b>
 						<i class="dl dl-money"></i>
-					</b-button>
+					</b-btn>
           </li>-->
           <li class="collapse-dl btn-pages">
             <b-dropdown right variant="outline-secondary" size="sm">
@@ -49,14 +49,14 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 export default {
-	name: 'simple',
-	computed: {
-		...mapState(['mode']),
-		...mapGetters(['userDB']),
-		routerPath() {
-			return this.$nuxt.$route.name
-		}
-	}
+  name: 'simple',
+  computed: {
+    ...mapState(['mode']),
+    ...mapGetters(['userDB']),
+    routerPath() {
+      return this.$nuxt.$route.name
+    }
+  }
 }
 </script>
 
