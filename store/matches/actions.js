@@ -1,4 +1,5 @@
 import { firestore, Timestamp, increment, decrement, deleteField } from '../../plugins/firebase'
+import moment from 'moment'
 import hydrate from "../../utils/hydrate"
 
 export default {
@@ -136,8 +137,11 @@ export default {
 			batch.set(TeamB, objTeamB);
 
 			/** 						Match						**/
-			objMatch.beginTime = Timestamp.fromDate(new Date(objMatch.date + 'T' + objMatch.beginTime + 'Z'));
-			objMatch.endTime = Timestamp.fromDate(new Date(objMatch.date + 'T' + objMatch.endTime + 'Z'));
+			let begin = new Date(objMatch.date + 'T' + objMatch.beginTime + 'Z')
+			let end = new Date(objMatch.date + 'T' + objMatch.endTime + 'Z')
+			objMatch.beginTime = Timestamp.fromDate(begin);
+			objMatch.endTime = Timestamp.fromDate(end);
+			objMatch.durationMin = moment(end).diff(begin, 'minute');
 			delete objMatch.date;
 
 			props = {

@@ -135,6 +135,7 @@ export default {
         date: null,
         beginTime: '22:00:00',
         endTime: '23:00:00',
+        durationMin: 0,
         goals: {},
         teamA: '',
         teamB: '',
