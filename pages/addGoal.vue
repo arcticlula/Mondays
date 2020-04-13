@@ -231,12 +231,14 @@
     </b-card>-->
     <!-- </b-col>
     </b-row>-->
+    <modal-edit-goal />
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
 import matchGoals from '../components/addGoal/matchGoals'
+import modalEditGoal from '../components/modalEditGoal'
 import isTimestamp from '../utils/isTimestamp'
 import { secondsToTime, timeToSeconds } from '../utils/time'
 import { getQueryParams, updateURLParameter } from '../utils/url'
@@ -246,7 +248,8 @@ export default {
   name: 'addGoal',
   layout: 'simple',
   components: {
-    matchGoals
+    matchGoals,
+    modalEditGoal
   },
   computed: {
     ...mapState('matches', ['match', 'matches']),

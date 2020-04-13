@@ -11,12 +11,12 @@
         <label v-if="!!goal.assist">({{getNameAssist}})</label>
         <label v-else-if="goal.isPenalty">(Penalidade)</label>
         <label v-else-if="goal.isPenaltyFailed">(Pen. Falhado)</label>
-        <span @click="deleteGoal">x</span>
+        <i @click="editGoal" class="dl dl-pencil"></i>
       </b-col>
     </b-row>
     <b-row v-else class="my-1">
       <b-col cols="12" class="text-right">
-        <span @click="deleteGoal">x</span>
+        <i @click="editGoal" class="dl dl-pencil"></i>
         <label v-if="!!goal.assist" class="pr-1">({{getNameAssist}})</label>
         <label v-else-if="goal.isPenalty">(Penalidade)</label>
         <label v-else-if="goal.isPenaltyFailed">(Pen. Falhado)</label>
@@ -38,12 +38,12 @@
           <b>{{getNameGoal}}</b>
         </label>
         <label>(Auto-Golo)</label>
-        <span @click="deleteGoal">x</span>
+        <i @click="editGoal" class="dl dl-pencil"></i>
       </b-col>
     </b-row>
     <b-row v-else class="my-1">
       <b-col cols="12" class="text-right">
-        <span @click="deleteGoal">x</span>
+        <i @click="editGoal" class="dl dl-pencil"></i>
         <label class="pr-1">(Auto-Golo)</label>
         <label class="pr-1">
           <b>{{getNameGoal}}</b>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import moment from 'moment'
 import lodash from 'lodash'
 import Noty from 'noty'
@@ -65,6 +65,7 @@ export default {
   name: 'matchGoals',
   props: { goal: Object },
   computed: {
+    ...mapState(['modal']),
     getNameGoal() {
       return !_.isEmpty(this.goal.players)
         ? this.goal.players.goal.nickname
@@ -77,25 +78,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions('goals', ['delGoal']),
-    async deleteGoal() {
-      let n = new Noty({
-        text: 'Tens a certeza que queres apagar este golo?',
-        theme: 'metroui',
-        type: 'error',
-        layout: 'center',
-        modal: true,
-        buttons: [
-          Noty.button('Sim', 'btn btn-outline-light btn-sm', async () => {
-            await this.delGoal(this.goal)
-            this.$noty.warning('Golo Removido!')
-            n.close()
-          }),
-          Noty.button('Não', 'btn btn-outline-light btn-sm ml-1', () => {
-            n.close()
-          })
-        ]
-      }).show()
+    ...mapMutations('goals', ['setGoal']),
+    ...mapActions('goals', ['setTimeMin']),
+    editGoal() {
+      this.setGoal(this.goal)
+      this.setTimeMin()
+      this.modal.showGoal = true
     }
   }
 }

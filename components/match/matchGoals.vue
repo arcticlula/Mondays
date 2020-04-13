@@ -66,37 +66,56 @@ import lodash from 'lodash'
 import Noty from 'noty'
 
 export default {
-	name: 'matchGoals',
-	props: { goal: Object },
-	computed: {
-		...mapState(['modal']),
-		...mapGetters(['canEdit']),
-		getNameGoal() {
-			return !_.isEmpty(this.goal.players)
-				? this.goal.players.goal.nickname
-				: ''
-		},
-		getNameAssist() {
-			return !_.isEmpty(this.goal.players.assist)
-				? this.goal.players.assist.nickname
-				: ''
-		},
-		hasUrl() {
-			return _.isEmpty(this.goal.url) ? false : true
-		}
-	},
-	methods: {
-		...mapMutations('goals', ['setGoal']),
-		...mapActions('goals', ['setTimeMin']),
-		openVideo() {
-			window.open(this.goal.url.link, '_blank')
-		},
-		editGoal() {
-			this.setGoal(this.goal)
-			this.setTimeMin()
-			this.modal.showGoal = true
-		}
-	}
+  name: 'matchGoals',
+  props: { goal: Object },
+  computed: {
+    ...mapState(['modal']),
+    ...mapGetters(['canEdit']),
+    getNameGoal() {
+      return !_.isEmpty(this.goal.players)
+        ? this.goal.players.goal.nickname
+        : ''
+    },
+    getNameAssist() {
+      return !_.isEmpty(this.goal.players.assist)
+        ? this.goal.players.assist.nickname
+        : ''
+    },
+    hasUrl() {
+      return _.isEmpty(this.goal.url) ? false : true
+    }
+  },
+  methods: {
+    ...mapMutations('goals', ['setGoal']),
+    ...mapActions('goals', ['setTimeMin']),
+    openVideo() {
+      window.open(this.goal.url.link, '_blank')
+    },
+    editGoal() {
+      this.setGoal(this.goal)
+      this.setTimeMin()
+      this.modal.showGoal = true
+    },
+    async deleteGoal() {
+      let n = new Noty({
+        text: 'Tens a certeza que queres apagar este golo?',
+        theme: 'metroui',
+        type: 'error',
+        layout: 'center',
+        modal: true,
+        buttons: [
+          Noty.button('Sim', 'btn btn-outline-light btn-sm', async () => {
+            await this.delGoal(this.goal)
+            this.$noty.warning('Golo Removido!')
+            n.close()
+          }),
+          Noty.button('Não', 'btn btn-outline-light btn-sm ml-1', () => {
+            n.close()
+          })
+        ]
+      }).show()
+    }
+  }
 }
 </script>
 
