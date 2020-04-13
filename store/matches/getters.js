@@ -73,5 +73,8 @@ export default {
                 ? state.matches.filter((s) => s.players[rootState.userPlayer.id])
                 : []
             : state.matches
+    },
+    hasMatches(state) {
+        return _.isEmpty(state.matches) ? false : true
     }
 }

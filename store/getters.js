@@ -4,6 +4,10 @@ export default {
   admin(state) {
     return !_.isEmpty(state.userDB) ? state.userDB.admin : 0
   },
+  canEdit(state) {
+    // return true
+    return state.mode.edition
+  },
   userDB(state) {
     return !_.isEmpty(state.userDB) ? state.userDB : {}
   },

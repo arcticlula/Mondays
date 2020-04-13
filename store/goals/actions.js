@@ -26,6 +26,16 @@ export default {
 			context.commit('setGoals', goals)
 		});
 	},
+	async setTimeMin({ rootState, state }) {
+		let dateMatch = moment(rootState.matches.match.beginTime.toDate())
+		let dateGoal = new Date(
+			state.goalEdit.datetime +
+			'T' +
+			state.goalEdit.time +
+			'Z'
+		)
+		state.goalEdit.timeMin = moment(dateGoal).diff(dateMatch, 'minute')
+	},
 	async addGoal(context, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');
@@ -139,6 +149,25 @@ export default {
 			/** 					Goals					**/
 			batch.set(Goal, obj);
 			return await batch.commit();
+		}
+		catch (e) {
+			console.log(e);
+		}
+	},
+	async editGoal({ state, rootState }) {
+		let objGoal = JSON.parse(JSON.stringify(state.goalEdit))
+		console.log(objGoal)
+		let Goal = firestore.collection('Goals').doc(objGoal.id)
+		let timeModified = Timestamp.fromDate(new Date());
+		let userModified = firestore.collection('Users').doc(rootState.user.uid);
+		let props = {
+			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Edit Goal"
+		};
+		try {
+			let time = new Date(objGoal.datetime + 'T' + objGoal.time + 'Z')
+			time = Timestamp.fromDate(time);
+			let url = { link: objGoal.URLLink, time: objGoal.URLTime }
+			Goal.update({ time: time, timeMin: objGoal.timeMin, url: url, ...props })
 		}
 		catch (e) {
 			console.log(e);

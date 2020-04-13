@@ -11,12 +11,14 @@
         <label v-if="!!goal.assist">({{getNameAssist}})</label>
         <label v-else-if="goal.isPenalty">(Penalidade)</label>
         <label v-else-if="goal.isPenaltyFailed">(Pen. Falhado)</label>
-        <i v-if="hasUrl" @click="openVideo" class="dl dl-bell"></i>
+        <i v-if="canEdit" @click="editGoal" class="dl dl-pencil"></i>
+        <i v-else-if="hasUrl" @click="openVideo" class="dl dl-bell"></i>
       </b-col>
     </b-row>
     <b-row v-else class="my-1">
       <b-col cols="12" class="text-right">
-        <i v-if="hasUrl" @click="openVideo" class="dl dl-bell"></i>
+        <i v-if="canEdit" @click="editGoal" class="dl dl-pencil"></i>
+        <i v-else-if="hasUrl" @click="openVideo" class="dl dl-bell"></i>
         <label v-if="!!goal.assist" class="pr-1">({{getNameAssist}})</label>
         <label v-else-if="goal.isPenalty">(Penalidade)</label>
         <label v-else-if="goal.isPenaltyFailed">(Pen. Falhado)</label>
@@ -38,12 +40,14 @@
           <b>{{getNameGoal}}</b>
         </label>
         <label>(Auto-Golo)</label>
-        <i v-if="hasUrl" @click="openVideo" class="dl dl-bell"></i>
+        <i v-if="canEdit" @click="editGoal" class="dl dl-pencil"></i>
+        <i v-else-if="hasUrl" @click="openVideo" class="dl dl-bell"></i>
       </b-col>
     </b-row>
     <b-row v-else class="my-1">
       <b-col cols="12" class="text-right">
-        <i v-if="hasUrl" @click="openVideo" class="dl dl-bell"></i>
+        <i v-if="canEdit" @click="editGoal" class="dl dl-pencil"></i>
+        <i v-else-if="hasUrl" @click="openVideo" class="dl dl-bell"></i>
         <label class="pr-1">(Auto-Golo)</label>
         <label class="pr-1">
           <b>{{getNameGoal}}</b>
@@ -56,34 +60,43 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import moment from 'moment'
 import lodash from 'lodash'
 import Noty from 'noty'
 
 export default {
-  name: 'matchGoals',
-  props: { goal: Object },
-  computed: {
-    getNameGoal() {
-      return !_.isEmpty(this.goal.players)
-        ? this.goal.players.goal.nickname
-        : ''
-    },
-    getNameAssist() {
-      return !_.isEmpty(this.goal.players.assist)
-        ? this.goal.players.assist.nickname
-        : ''
-    },
-    hasUrl() {
-      return _.isEmpty(this.goal.url) ? false : true
-    }
-  },
-  methods: {
-    openVideo() {
-      window.open(this.goal.url.link, '_blank')
-    }
-  }
+	name: 'matchGoals',
+	props: { goal: Object },
+	computed: {
+		...mapState(['modal']),
+		...mapGetters(['canEdit']),
+		getNameGoal() {
+			return !_.isEmpty(this.goal.players)
+				? this.goal.players.goal.nickname
+				: ''
+		},
+		getNameAssist() {
+			return !_.isEmpty(this.goal.players.assist)
+				? this.goal.players.assist.nickname
+				: ''
+		},
+		hasUrl() {
+			return _.isEmpty(this.goal.url) ? false : true
+		}
+	},
+	methods: {
+		...mapMutations('goals', ['setGoal']),
+		...mapActions('goals', ['setTimeMin']),
+		openVideo() {
+			window.open(this.goal.url.link, '_blank')
+		},
+		editGoal() {
+			this.setGoal(this.goal)
+			this.setTimeMin()
+			this.modal.showGoal = true
+		}
+	}
 }
 </script>
 

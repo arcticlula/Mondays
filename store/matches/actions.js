@@ -170,21 +170,19 @@ export default {
 	async editMatch({ state, rootState }) {
 		let objMatch = JSON.parse(JSON.stringify(state.matchEdit))
 		let Match = firestore.collection('Matches').doc(objMatch.id)
-		// delete objMatch.id;
+		delete objMatch.id;
 		let timeModified = Timestamp.fromDate(new Date());
 		let userModified = firestore.collection('Users').doc(rootState.user.uid);
 		let props = {
 			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Edit Match"
 		};
 		try {
-			/** 						Match						**/
 			let begin = new Date(objMatch.date + 'T' + objMatch.beginTime + 'Z')
 			let end = new Date(objMatch.date + 'T' + objMatch.endTime + 'Z')
 			objMatch.beginTime = Timestamp.fromDate(begin);
 			objMatch.endTime = Timestamp.fromDate(end);
 			objMatch.durationMin = moment(end).diff(begin, 'minute');
 			delete objMatch.date;
-			/**						Players					**/
 			Match.update({ ...objMatch, ...props })
 		}
 		catch (e) {
