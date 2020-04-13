@@ -69,11 +69,17 @@
                     <match-goals v-for="goal in goals" :goal="goal" :key="goal.id"></match-goals>
                   </b-col>
                   <b-col
-                    v-if="mode.edition"
+                    v-if="canEdit"
                     cols="12"
                     class="mt-2 py-0 px-1"
                     style="display: inline-block;"
                   >
+                    <b-btn
+                      @click="showModal=true"
+                      variant="outline-primary"
+                      size="sm"
+                      squared
+                    >Editar Jogo</b-btn>
                     <b-btn
                       v-if="!hasGoals"
                       @click="deleteMatch"
@@ -141,6 +147,57 @@
         </b-col>
       </b-row>
     </b-col>
+    <b-modal
+      v-model="showModal"
+      title="Editar Jogo"
+      header-bg-variant="dark"
+      header-text-variant="light"
+      body-bg-variant="light"
+      body-text-variant="dark"
+      footer-bg-variant="light"
+    >
+      <b-container fluid>
+        <b-row class="mb-1">
+          <b-col>
+            <b-form-group class="mb-3" id="input-group-1" label="Data:" label-for="input-1">
+              <b-form-datepicker required id="input-1" v-model="matchEdit.date"></b-form-datepicker>
+            </b-form-group>
+          </b-col>
+        </b-row>
+
+        <b-row class="mb-1">
+          <b-col>
+            <b-form-group class="mb-3" id="input-group-2" label="Hora Início:" label-for="input-2">
+              <b-form-timepicker id="input-2" v-model="matchEdit.beginTime"></b-form-timepicker>
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group class="mb-3" id="input-group-3" label="Hora Fim:" label-for="input-3">
+              <b-form-timepicker id="input-3" v-model="matchEdit.endTime"></b-form-timepicker>
+            </b-form-group>
+          </b-col>
+        </b-row>
+        <br />
+        <br />
+      </b-container>
+
+      <template v-slot:modal-footer>
+        <div class="w-100">
+          <b-button
+            variant="outline-primary"
+            size="sm"
+            class="float-right"
+            @click="editionMatch"
+          >Gravar</b-button>
+          <b-button
+            variant="outline-primary"
+            size="sm"
+            class="float-right"
+            @click="showModal=false"
+          >Fechar</b-button>
+        </div>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -152,65 +209,87 @@ import highscore from '../components/match/highscore'
 import lodash from 'lodash'
 import Noty from 'noty'
 export default {
-  name: 'match',
-  layout: 'simple',
-  components: {
-    matchGoals,
-    court,
-    highscore
-  },
-  computed: {
-    ...mapState(['mode']),
-    ...mapState('matches', ['match']),
-    ...mapState('goals', ['goals']),
-    ...mapGetters('matches', [
-      'goalsHome',
-      'goalsAway',
-      'playersHome',
-      'playersAway',
-      'matchDate'
-    ]),
-    routerPath() {
-      return this.$nuxt.$route.name
-    },
-    routerQuery() {
-      return this.$nuxt.$route.query
-    },
-    hasGoals() {
-      console.log(this.goals, _.isEmpty(this.goals) ? false : true)
-      return _.isEmpty(this.goals) ? false : true
-    }
-  },
-  methods: {
-    ...mapActions('matches', ['delMatch']),
-    async deleteMatch() {
-      let n = new Noty({
-        text: 'Tens a certeza que queres apagar este jogo?',
-        theme: 'metroui',
-        type: 'error',
-        layout: 'center',
-        modal: true,
-        buttons: [
-          Noty.button('Sim', 'btn btn-outline-light btn-sm', async () => {
-            await this.delMatch(this.match)
-            this.$router.push({ name: 'index' })
-            n.close()
-          }),
-          Noty.button('Não', 'btn btn-outline-light btn-sm ml-1', () => {
-            n.close()
-          })
-        ]
-      }).show()
-    }
-  },
-  async fetch({ store, route }) {
-    try {
-      await store.dispatch('matches/getMatchById', route.query.match)
-      store.dispatch('goals/getGoalsFromMatch', route.query.match) //takes too long, better to let it load freely
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'match',
+	layout: 'simple',
+	components: {
+		matchGoals,
+		court,
+		highscore
+	},
+	data() {
+		return {
+			showModal: false
+		}
+	},
+	computed: {
+		...mapState(['mode']),
+		...mapState('matches', ['match', 'matchEdit']),
+		...mapState('goals', ['goals']),
+		...mapGetters('matches', [
+			'goalsHome',
+			'goalsAway',
+			'playersHome',
+			'playersAway',
+			'matchDate'
+		]),
+		routerPath() {
+			return this.$nuxt.$route.name
+		},
+		routerQuery() {
+			return this.$nuxt.$route.query
+		},
+		hasGoals() {
+			return _.isEmpty(this.goals) ? false : true
+		},
+		canEdit() {
+			// return true
+			return this.mode.edition
+		}
+	},
+	methods: {
+		...mapActions('matches', ['editMatch', 'delMatch']),
+		async editionMatch() {
+			await this.editMatch()
+			this.$noty.info('Jogo Actualizado!')
+			this.showModal = false
+		},
+		async deleteMatch() {
+			let n = new Noty({
+				text: 'Tens a certeza que queres apagar este jogo?',
+				theme: 'metroui',
+				type: 'error',
+				layout: 'center',
+				modal: true,
+				buttons: [
+					Noty.button(
+						'Sim',
+						'btn btn-outline-light btn-sm',
+						async () => {
+							await this.delMatch(this.match)
+							this.$router.push({ name: 'index' })
+							this.$noty.warning('Jogo Removido!')
+							n.close()
+						}
+					),
+					Noty.button(
+						'Não',
+						'btn btn-outline-light btn-sm ml-1',
+						() => {
+							n.close()
+						}
+					)
+				]
+			}).show()
+		}
+	},
+	async fetch({ store, route }) {
+		try {
+			await store.dispatch('matches/getMatchById', route.query.match)
+			store.dispatch('goals/getGoalsFromMatch', route.query.match) //takes too long, better to let it load freely
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
 
