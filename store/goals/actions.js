@@ -36,16 +36,15 @@ export default {
 		)
 		state.goalEdit.timeMin = moment(dateGoal).diff(dateMatch, 'minute')
 	},
-	async addGoal(context, data) {
+	async addGoal({ rootState, state }, data) {
 		let obj = JSON.parse(JSON.stringify(data))
 		let Users = firestore.collection('Users');
 		let Players = firestore.collection('Players');
 		let Teams = firestore.collection('Teams');
 		let Matches = firestore.collection('Matches');
-		let Match = await Matches.doc(obj.match).get();
 		let Goal = firestore.collection('Goals').doc()
 		let timeModified = Timestamp.fromDate(new Date());
-		let userModified = Users.doc(context.rootState.user.uid);
+		let userModified = Users.doc(rootState.user.uid);
 		let batch = firestore.batch();
 		let highscores = {}
 		let props = {
@@ -54,10 +53,10 @@ export default {
 		let counterPlayer = {}, counterTeam = {}, counterOtherTeam = {}, counterMatch = {};
 		try {
 			obj.props = { dateCreated: timeModified, dateModified: timeModified, userCreated: userModified, userModified: userModified }
-			let date = moment(Match.data().beginTime.toDate())
-			let dateGoal = new Date(date.format('YYYY-MM-DD') + 'T' + obj.time + 'Z');
+			let dateMatch = rootState.matches.match.beginTime.toDate()
+			let dateGoal = new Date(obj.date + 'T' + obj.time + 'Z');
 			obj.time = Timestamp.fromDate(dateGoal);
-			obj.timeMin = moment(dateGoal).diff(date, 'minute');
+			obj.timeMin = moment(dateGoal).diff(dateMatch, 'minute');
 			obj.local = obj.local == 'A' ? 'home' : 'away';
 			switch (obj.type) {
 				case "O":

@@ -58,72 +58,72 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: 'addPlayer',
-  layout: 'simple',
-  computed: {
-    ...mapState('players', ['players'])
-  },
-  data() {
-    return {
-      form: {
-        assists: {},
-        goals: {},
-        matches: {},
-        teams: {},
-        dob: '',
-        name: '',
-        nickname: '',
-        counter: {
-          goals: {
-            home: 0,
-            away: 0,
-            total: 0,
-            penalties: 0,
-            penaltiesFailed: 0,
-            ownGoals: 0
-          },
-          assists: { home: 0, away: 0, total: 0 },
-          teams: { home: 0, away: 0 },
-          matches: { total: 0 }
-        },
-        props: {}
-      },
-      show: true
-    }
-  },
-  methods: {
-    ...mapActions('players', ['getPlayers', 'addPlayer']),
-    onSubmit(evt) {
-      evt.preventDefault()
-      // Timestamp.fromDate(new Date()),
-      this.addPlayer(this.form)
-      // alert(JSON.stringify(this.form))
-    },
-    async onReset(evt) {
-      evt.preventDefault()
-      // Reset our form values
-      this.form.assists = {}
-      this.form.goals = {}
-      this.form.matches = {}
-      this.form.teams = {}
-      this.form.dob = ''
-      this.form.name = ''
-      this.form.nickname = ''
+	name: 'addPlayer',
+	layout: 'simple',
+	computed: {
+		...mapState('players', ['players'])
+	},
+	data() {
+		return {
+			form: {
+				assists: {},
+				goals: {},
+				matches: {},
+				teams: {},
+				dob: '',
+				name: '',
+				nickname: '',
+				counter: {
+					goals: {
+						home: 0,
+						away: 0,
+						total: 0,
+						penalties: 0,
+						penaltiesFailed: 0,
+						ownGoals: 0
+					},
+					assists: { home: 0, away: 0, total: 0 },
+					teams: { home: 0, away: 0 },
+					matches: { total: 0 }
+				},
+				props: {}
+			},
+			show: true
+		}
+	},
+	methods: {
+		...mapActions('players', ['getPlayers', 'addPlayer']),
+		async onSubmit(evt) {
+			evt.preventDefault()
+			// Timestamp.fromDate(new Date()),
+			await this.addPlayer(this.form)
+			this.$noty.success('Jogador Adicionado!')
+		},
+		async onReset(evt) {
+			evt.preventDefault()
+			// Reset our form values
+			this.form.assists = {}
+			this.form.goals = {}
+			this.form.matches = {}
+			this.form.teams = {}
+			this.form.dob = ''
+			this.form.name = ''
+			this.form.nickname = ''
 
-      // Trick to reset/clear native browser form validation state
-      this.show = false
-      await this.$nextTick()
-      this.show = true
-    }
-  },
-  async fetch({ store }) {
-    try {
-      await store.dispatch('players/getPlayers')
-    } catch (e) {
-      console.error(e)
-    }
-    console.log(store.state.players)
-  }
+			// Trick to reset/clear native browser form validation state
+			this.show = false
+			await this.$nextTick()
+			this.show = true
+		}
+	},
+	async fetch({ store }) {
+		try {
+			await store.dispatch('players/getPlayers')
+		} catch (e) {
+			console.error(e)
+		}
+		console.log(store.state.players)
+	}
 }
 </script>
 

@@ -43,33 +43,33 @@ import moment from 'moment'
 import lodash from 'lodash'
 
 export default {
-  name: 'profile',
-  props: { player: Object },
-  methods: {
-    getImg(id) {
-      try {
-        return require(`@/assets/players-dev/${id}.jpg`)
-      } catch (e) {
-        return require(`@/assets/players-dev/playernull.jpg`)
-      }
-    }
-  },
-  computed: {
-    userDob() {
-      return !_.isEmpty(this.player)
-        ? moment(
-            this.player.dob
-              .toDate()
-              .toLocaleDateString('pt-PT', { timeZone: 'UTC' }),
-            'DD/MM/YYYY',
-            'DD/MM/YYYY'
-          )
-        : moment()
-    },
-    age() {
-      return moment().diff(this.userDob, 'years', false) + ' anos'
-    }
-  }
+	name: 'profile',
+	props: { player: Object },
+	methods: {
+		getImg(id) {
+			try {
+				return require(`@/assets/${process.env.PLAYERS_ASSETS}/${id}.jpg`)
+			} catch (e) {
+				return require(`@/assets/players-dev/playernull.jpg`)
+			}
+		}
+	},
+	computed: {
+		userDob() {
+			return !_.isEmpty(this.player)
+				? moment(
+						this.player.dob
+							.toDate()
+							.toLocaleDateString('pt-PT', { timeZone: 'UTC' }),
+						'DD/MM/YYYY',
+						'DD/MM/YYYY'
+				  )
+				: moment()
+		},
+		age() {
+			return moment().diff(this.userDob, 'years', false) + ' anos'
+		}
+	}
 }
 </script>
 

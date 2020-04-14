@@ -76,24 +76,31 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-  name: 'config',
-  layout: 'home',
-  computed: {
-    ...mapState(['mode']),
-    ...mapGetters(['admin']),
-    nightModeVar: {
-      get: function() {
-        return this.mode.night
-      },
-      set: function(data) {
-        return this.setNightMode(data)
-      }
-    }
-  },
-  methods: {
-    ...mapMutations(['setNightMode']),
-    ...mapActions(['signOut'])
-  }
+	name: 'config',
+	layout: 'home',
+	computed: {
+		...mapState(['mode']),
+		...mapGetters(['admin']),
+		nightModeVar: {
+			get: function() {
+				return this.mode.night
+			},
+			set: function(data) {
+				return this.setNightMode(data)
+			}
+		}
+	},
+	methods: {
+		...mapMutations(['setNightMode']),
+		...mapActions(['signOut'])
+	},
+	async fetch({ store }) {
+		try {
+			await store.dispatch('checkUser')
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
 

@@ -55,7 +55,7 @@
                 <b-row>
                   <b-col cols="12">
                     <b-row>
-                      <b-col cols="6" md="6" lg="4">
+                      <b-col cols="4" md="4" lg="2">
                         <b-form-group
                           class="mb-3 mx-3"
                           id="input-group-0"
@@ -74,7 +74,7 @@
                           </b-form-checkbox>
                         </b-form-group>
                       </b-col>
-                      <b-col cols="6" md="6" lg="4">
+                      <b-col cols="5" md="5" lg="4">
                         <b-form-group
                           class="mb-3 ml-3"
                           id="input-group-1"
@@ -82,6 +82,16 @@
                           label-for="input-1"
                         >
                           <b-form-timepicker show-seconds required id="input-1" v-model="form.time"></b-form-timepicker>
+                        </b-form-group>
+                      </b-col>
+                      <b-col cols="3" md="3" lg="2">
+                        <b-form-group
+                          class="mb-3"
+                          id="label-group-1"
+                          label="Minuto:"
+                          label-for="label-1"
+                        >
+                          <b-form-input :readonly="true" id="label-1" :value="getMinute"></b-form-input>
                         </b-form-group>
                       </b-col>
                       <b-col cols="6" md="6" lg="4">
@@ -95,7 +105,7 @@
                             required
                             :options="playersScore"
                             value-field="id"
-                            text-field="name"
+                            text-field="nickname"
                             id="input-2"
                             v-model="form.goal"
                           ></b-form-select>
@@ -112,7 +122,7 @@
                             :disabled="form.type=='O' || form.type=='PF'"
                             :options="playersAssist"
                             value-field="id"
-                            text-field="name"
+                            text-field="nickname"
                             id="input-3"
                             v-model="form.assist"
                           ></b-form-select>
@@ -243,140 +253,152 @@ import isTimestamp from '../utils/isTimestamp'
 import { secondsToTime, timeToSeconds } from '../utils/time'
 import { getQueryParams, updateURLParameter } from '../utils/url'
 import lodash from 'lodash'
+import moment from 'moment'
 
 export default {
-  name: 'addGoal',
-  layout: 'simple',
-  components: {
-    matchGoals,
-    modalEditGoal
-  },
-  computed: {
-    ...mapState('matches', ['match', 'matches']),
-    ...mapState('goals', ['goals']),
-    routerQuery() {
-      return this.$nuxt.$route.query
-    },
-    playersScore() {
-      let data = !_.isEmpty(this.match) ? this.match.players : {}
-      let local = this.form.local == 'A' ? 'home' : 'away'
-      return Object.keys(data).reduce((filtered, s) => {
-        if (data[s].local == local) {
-          filtered.push({
-            id: s,
-            name: data[s].name,
-            nickname: data[s].nickname
-          })
-        }
-        return filtered
-      }, [])
-    },
-    playersAssist() {
-      let data = !_.isEmpty(this.match) ? this.match.players : {}
-      let local = this.form.local == 'A' ? 'home' : 'away'
-      return Object.keys(data).reduce((filtered, s) => {
-        if (data[s].local == local && s != this.form.goal) {
-          filtered.push({
-            id: s,
-            name: data[s].name,
-            nickname: data[s].nickname
-          })
-        }
-        return filtered
-      }, [])
-    }
-  },
-  data() {
-    return {
-      urlTimeDisabled: true,
-      form: {
-        local: 'A',
-        assist: null,
-        goal: null,
-        match: null,
-        team: null,
-        otherTeam: null,
-        time: '',
-        timeMin: 0,
-        type: 'N',
-        url: { link: '', time: '00:00:00' },
-        players: {},
-        props: {}
-      },
-      show: true
-    }
-  },
-  methods: {
-    ...mapActions('goals', ['getGoalsFromMatch', 'addGoal']),
-    async pasteLink() {
-      await this.$nextTick()
-      this.form.url.link = await navigator.clipboard.readText()
-      let query = getQueryParams('t', this.form.url.link)
-      this.urlTimeDisabled = false
-      if (query) {
-        this.form.url.time = secondsToTime(query)
-      }
-    },
-    deleteLink() {
-      this.form.url = { link: '', time: '00:00:00' }
-    },
-    changeTimeLink(value) {
-      this.form.url.link = updateURLParameter(
-        this.form.url.link,
-        't',
-        timeToSeconds(value)
-      )
-    },
-    async setTeamId() {
-      await this.$nextTick()
-      let localOwnGoal = this.form.local == 'A' ? 'B' : 'A'
-      this.form.team = this.match['team' + this.form.local].id
-      this.form.otherTeam = this.match['team' + localOwnGoal].id
-      this.form.goal = null
-      this.form.assist = null
-    },
-    async checkToggle() {
-      this.form.assist = null
-    },
-    async onSubmit(evt) {
-      evt.preventDefault()
-      await this.addGoal(this.form)
-      this.$noty.success('Golo Adicionado!')
-      this.form.assist = null
-      this.form.goal = null
-      this.form.type = 'N'
-      this.form.url.link = ''
-      this.urlTimeDisabled = true
-      this.form.players = {}
-      this.form.props = {}
-      this.show = false
-      await this.$nextTick()
-      this.show = true
-    },
-    async onReset(evt) {
-      evt.preventDefault()
-    }
-  },
-  async fetch({ store, route }) {
-    try {
-      await store.dispatch('matches/getMatchByIdOnce', route.query.match)
-      await store.dispatch('goals/getGoalsFromMatch', route.query.match)
-    } catch (e) {
-      console.error(e)
-    }
-  },
-  async mounted() {
-    try {
-      console.log(this.match)
-      this.form.time = this.match.beginTime
-        .toDate()
-        .toLocaleTimeString('pt-PT', { timeZone: 'UTC' })
-      this.form.match = this.match.id
-      this.form.team = this.match.teamA.id
-      this.form.otherTeam = this.match.teamB.id
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'addGoal',
+	layout: 'simple',
+	components: {
+		matchGoals,
+		modalEditGoal
+	},
+	computed: {
+		...mapState('matches', ['match', 'matches']),
+		...mapState('goals', ['goals']),
+		routerQuery() {
+			return this.$nuxt.$route.query
+		},
+		playersScore() {
+			let data = !_.isEmpty(this.match) ? this.match.players : {}
+			let local = this.form.local == 'A' ? 'home' : 'away'
+			return Object.keys(data).reduce((filtered, s) => {
+				if (data[s].local == local) {
+					filtered.push({
+						id: s,
+						name: data[s].name,
+						nickname: data[s].nickname
+					})
+				}
+				return filtered
+			}, [])
+		},
+		playersAssist() {
+			let data = !_.isEmpty(this.match) ? this.match.players : {}
+			let local = this.form.local == 'A' ? 'home' : 'away'
+			return Object.keys(data).reduce((filtered, s) => {
+				if (data[s].local == local && s != this.form.goal) {
+					filtered.push({
+						id: s,
+						name: data[s].name,
+						nickname: data[s].nickname
+					})
+				}
+				return filtered
+			}, [])
+		},
+		getMinute() {
+			let dateMatch = moment(this.match.beginTime.toDate())
+			let dateGoal = new Date(this.form.date + 'T' + this.form.time + 'Z')
+			return moment(dateGoal).diff(dateMatch, 'minute')
+		}
+	},
+	data() {
+		return {
+			urlTimeDisabled: true,
+			form: {
+				local: 'A',
+				assist: null,
+				goal: null,
+				match: null,
+				team: null,
+				otherTeam: null,
+				time: '',
+				timeMin: 0,
+				type: 'N',
+				url: { link: '', time: '00:00:00' },
+				players: {},
+				props: {}
+			},
+			show: true
+		}
+	},
+	methods: {
+		...mapActions('goals', ['getGoalsFromMatch', 'addGoal']),
+		async pasteLink() {
+			await this.$nextTick()
+			this.form.url.link = await navigator.clipboard.readText()
+			let query = getQueryParams('t', this.form.url.link)
+			this.urlTimeDisabled = false
+			if (query) {
+				this.form.url.time = secondsToTime(query)
+			}
+		},
+		deleteLink() {
+			this.form.url = { link: '', time: '00:00:00' }
+		},
+		changeTimeLink(value) {
+			this.form.url.link = updateURLParameter(
+				this.form.url.link,
+				't',
+				timeToSeconds(value)
+			)
+		},
+		async setTeamId() {
+			await this.$nextTick()
+			let localOwnGoal = this.form.local == 'A' ? 'B' : 'A'
+			this.form.team = this.match['team' + this.form.local].id
+			this.form.otherTeam = this.match['team' + localOwnGoal].id
+			this.form.goal = null
+			this.form.assist = null
+		},
+		async checkToggle() {
+			this.form.assist = null
+		},
+		async onSubmit(evt) {
+			evt.preventDefault()
+			await this.addGoal(this.form)
+			this.$noty.success('Golo Adicionado!')
+			this.form.assist = null
+			this.form.goal = null
+			this.form.type = 'N'
+			this.form.url.link = ''
+			this.form.url.time = '00:00:00'
+			this.urlTimeDisabled = true
+			this.form.players = {}
+			this.form.props = {}
+			this.show = false
+			await this.$nextTick()
+			this.show = true
+		},
+		async onReset(evt) {
+			evt.preventDefault()
+		}
+	},
+	async fetch({ store, route }) {
+		try {
+			await store.dispatch('matches/getMatchByIdOnce', route.query.match)
+			await store.dispatch('goals/getGoalsFromMatch', route.query.match)
+		} catch (e) {
+			console.error(e)
+		}
+	},
+	async mounted() {
+		try {
+			console.log(this.match)
+			let date = moment(
+				this.match.beginTime
+					.toDate()
+					.toLocaleString('pt-PT', { timeZone: 'UTC' }),
+				'DD/MM/YYYY, HH:mm:ss'
+			)
+			this.form.date = date.format('YYYY-MM-DD')
+			this.form.time = date.format('HH:mm:ss')
+			this.form.match = this.match.id
+			this.form.team = this.match.teamA.id
+			this.form.otherTeam = this.match.teamB.id
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
