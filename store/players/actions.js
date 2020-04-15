@@ -30,5 +30,19 @@ export default {
 		catch (e) {
 			console.log(e);
 		}
-	}
+	},
+	setPlayerPicture({ rootState }, { id, url }) {
+		let Player = firestore.collection('Players').doc(id)
+		let timeModified = Timestamp.fromDate(new Date());
+		let userModified = firestore.collection('Users').doc(rootState.user.uid);
+		let props = {
+			"props.dateModified": timeModified, "props.userModified": userModified, "props.lastOperation": "Edit Player Picture"
+		};
+		try {
+			Player.update({ picture: url, ...props })
+		}
+		catch (e) {
+			console.log(e);
+		}
+	},
 }

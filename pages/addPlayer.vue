@@ -73,6 +73,7 @@ export default {
 				dob: '',
 				name: '',
 				nickname: '',
+				picture: null,
 				counter: {
 					goals: {
 						home: 0,
@@ -109,7 +110,7 @@ export default {
 			this.form.dob = ''
 			this.form.name = ''
 			this.form.nickname = ''
-
+			this.form.picture = null
 			// Trick to reset/clear native browser form validation state
 			this.show = false
 			await this.$nextTick()

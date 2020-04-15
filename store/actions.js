@@ -35,7 +35,7 @@ export default {
 		else {
 			let profile = loginParser(loginInfo).profile
 			let props = { dateCreated: timeModified, dateModified: timeModified, userCreated: User, userModified: User, lastOperation: "Add User" }
-			let data = { ...profile, player: null, admin: 0, props: props, isVisitor: false }
+			let data = { ...profile, player: null, admin: 0, props: props, isVisitor: false, isVerified: false }
 			User.set(data)
 			return data;
 		}

@@ -9,7 +9,7 @@
       <b-row>
         <div class="mr-2" style="display: grid;">
           <span class="playerProfile text-center">
-            <img class="badge-xl" :src="getImg(player.id)" />
+            <img class="badge-xl" :src="getPic" onerror="this.src='getDefault'" />
           </span>
         </div>
         <div style="display: grid;">
@@ -45,15 +45,7 @@ import lodash from 'lodash'
 export default {
 	name: 'profile',
 	props: { player: Object },
-	methods: {
-		getImg(id) {
-			try {
-				return require(`@/assets/${process.env.PLAYERS_ASSETS}/${id}.jpg`)
-			} catch (e) {
-				return require(`@/assets/players-dev/playernull.jpg`)
-			}
-		}
-	},
+	methods: {},
 	computed: {
 		userDob() {
 			return !_.isEmpty(this.player)
@@ -68,6 +60,12 @@ export default {
 		},
 		age() {
 			return moment().diff(this.userDob, 'years', false) + ' anos'
+		},
+		getPic() {
+			return this.player.picture ? this.player.picture : this.getDefault
+		},
+		getDefault() {
+			return require(`@/assets/players/playernull.jpg`)
 		}
 	}
 }

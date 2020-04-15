@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
+import 'firebase/storage'
 
 !firebase.apps.length ? firebase.initializeApp({
 	apiKey: process.env.API_KEY,
@@ -16,6 +17,8 @@ import 'firebase/firestore'
 export const Timestamp = firebase.firestore.Timestamp
 export const auth = firebase.auth()
 export const firestore = firebase.firestore()
+export const storage = firebase.storage()
+
 // console.log("Enable Persistence")
 // firebase.firestore().enablePersistence().catch(function (err) {
 // 	console.log(err.code)

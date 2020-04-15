@@ -11,20 +11,20 @@
       <b-row class="row-eq-height">
         <b-col cols="12" class="py-0">
           <b-card border-variant="primary" no-body style="height: 100%;">
-            <div class="card-header bg-white">
-              <!-- <b-col cols="12">
+            <!-- <div class="card-header bg-white"> -->
+            <!-- <b-col cols="12">
               <div class="row">
                 <b-col cols="12" class="px-0">{{playerUser.name}}</b-col>
               </div>
-              </b-col>-->
-            </div>
+            </b-col>-->
+            <!-- </div> -->
             <b-card-body class="px-2 py-1">
               <!-- {{playerUser}} -->
               <b-col cols="12">
                 <b-row>
                   <b-col cols="3" sm="2" class="px-0">
                     <span class="playerProfile text-center">
-                      <img :src="userDB.picture" />
+                      <img :src="getPic" onerror="this.src='getDefault'" />
                     </span>
                   </b-col>
                   <b-col cols="9" sm="10">
@@ -117,6 +117,7 @@
 				</b-card>
         </b-col>-->
       </b-row>
+      <upload v-if="canEdit" :player="player" />
     </b-col>
   </div>
 </template>
@@ -124,6 +125,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import matchStats from '../components/player/matchStats'
+import upload from '../components/upload'
 import moment from 'moment'
 import lodash from 'lodash'
 // import chartHeatmap from "./chartHeatmap.vue";
@@ -131,10 +133,14 @@ import lodash from 'lodash'
 export default {
 	name: 'player',
 	layout: 'home',
+	components: {
+		matchStats,
+		upload
+	},
 	computed: {
 		...mapState('matches', ['matches']),
 		...mapState('players', ['player']),
-		...mapGetters(['userDB']),
+		...mapGetters(['canEdit']),
 		...mapGetters('players', ['dob']),
 		age() {
 			return moment().diff(this.dob, 'years', false) + ' anos'
@@ -149,6 +155,18 @@ export default {
 		},
 		routerQuery() {
 			return this.$nuxt.$route.query
+		},
+		getPic() {
+			return this.player.picture ? this.player.picture : this.getDefault
+		},
+		getDefault() {
+			return require(`@/assets/players/playernull.jpg`)
+		}
+	},
+	methods: {
+		openMatch(id) {
+			console.log(id)
+			this.$router.push({ name: 'match', query: { match: id } })
 		}
 	},
 	async fetch({ store, route }) {
@@ -157,15 +175,6 @@ export default {
 			// console.log(store.state)
 		} catch (e) {
 			console.error(e)
-		}
-	},
-	components: {
-		matchStats
-	},
-	methods: {
-		openMatch(id) {
-			console.log(id)
-			this.$router.push({ name: 'match', query: { match: id } })
 		}
 	}
 }
