@@ -41,6 +41,7 @@
           title="Só é possível remover o jogo após a remoção dos golos do mesmo!"
         >
           <b-btn
+            v-if="canDeleteMatch"
             class="ml-3"
             :disabled="hasGoals"
             @click="deleteMatch"
@@ -70,7 +71,7 @@
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
 import moment from 'moment'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 import Noty from 'noty'
 
 export default {
@@ -83,7 +84,7 @@ export default {
   computed: {
     ...mapState(['modal']),
     ...mapState('matches', ['match', 'matchEdit']),
-    ...mapGetters(['canEdit']),
+    ...mapGetters(['canDeleteMatch']),
     ...mapGetters('matches', ['hasMatches']),
     ...mapGetters('goals', ['hasGoals'])
   },

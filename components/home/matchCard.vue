@@ -97,59 +97,58 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
+import { isEmpty } from 'lodash'
 
 export default {
-	name: 'matchCard',
-	props: { match: Object },
-	methods: {},
-	computed: {
-		...mapGetters(['userPlayer']),
-		matchDate() {
-			return !_.isEmpty(this.match)
-				? moment(
-						this.match.beginTime
-							.toDate()
-							.toLocaleString('pt-PT', { timeZone: 'UTC' }),
-						'DD/MM/YYYY, HH:mm:ss'
-				  )
-				: moment()
-		},
-		goalsHome() {
-			return !_.isEmpty(this.match) ? this.match.counter.goals.home : 0
-		},
-		goalsAway() {
-			return !_.isEmpty(this.match) ? this.match.counter.goals.away : 0
-		},
-		playersHome() {
-			let data = !_.isEmpty(this.match) ? this.match.players : {}
-			return Object.keys(data).reduce((filtered, s) => {
-				if (data[s].local == 'home') {
-					filtered.push({ id: s, nickname: data[s].nickname })
-				}
-				return filtered
-			}, [])
-		},
-		playersAway() {
-			let data = !_.isEmpty(this.match) ? this.match.players : {}
-			return Object.keys(data).reduce((filtered, s) => {
-				if (data[s].local == 'away') {
-					filtered.push({ id: s, nickname: data[s].nickname })
-				}
-				return filtered
-			}, [])
-		},
-		result() {
-			return !_.isEmpty(this.match) &&
-				!_.isEmpty(this.userPlayer) &&
-				!_.isEmpty(this.match.players[this.userPlayer.id])
-				? this.match.players[this.userPlayer.id].local == 'home'
-					? this.match.counter.goals.home -
-					  this.match.counter.goals.away
-					: this.match.counter.goals.away -
-					  this.match.counter.goals.home
-				: null
-		}
-	}
+  name: 'matchCard',
+  props: { match: Object },
+  methods: {},
+  computed: {
+    ...mapGetters(['userPlayer']),
+    matchDate() {
+      return !isEmpty(this.match)
+        ? moment(
+            this.match.beginTime
+              .toDate()
+              .toLocaleString('pt-PT', { timeZone: 'UTC' }),
+            'DD/MM/YYYY, HH:mm:ss'
+          )
+        : moment()
+    },
+    goalsHome() {
+      return !isEmpty(this.match) ? this.match.counter.goals.home : 0
+    },
+    goalsAway() {
+      return !isEmpty(this.match) ? this.match.counter.goals.away : 0
+    },
+    playersHome() {
+      let data = !isEmpty(this.match) ? this.match.players : {}
+      return Object.keys(data).reduce((filtered, s) => {
+        if (data[s].local == 'home') {
+          filtered.push({ id: s, nickname: data[s].nickname })
+        }
+        return filtered
+      }, [])
+    },
+    playersAway() {
+      let data = !isEmpty(this.match) ? this.match.players : {}
+      return Object.keys(data).reduce((filtered, s) => {
+        if (data[s].local == 'away') {
+          filtered.push({ id: s, nickname: data[s].nickname })
+        }
+        return filtered
+      }, [])
+    },
+    result() {
+      return !isEmpty(this.match) &&
+        !isEmpty(this.userPlayer) &&
+        !isEmpty(this.match.players[this.userPlayer.id])
+        ? this.match.players[this.userPlayer.id].local == 'home'
+          ? this.match.counter.goals.home - this.match.counter.goals.away
+          : this.match.counter.goals.away - this.match.counter.goals.home
+        : null
+    }
+  }
 }
 </script>
 

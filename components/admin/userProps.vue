@@ -127,7 +127,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 
 export default {
   name: 'user',
@@ -151,7 +151,7 @@ export default {
       ).format('YYYY/MM/DD HH:mm:ss')
     },
     name() {
-      return !_.isEmpty(this.user.player) ? this.user.player.name : ''
+      return !isEmpty(this.user.player) ? this.user.player.name : ''
     }
   }
 }

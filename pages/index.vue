@@ -7,7 +7,7 @@
         :match="match"
         :key="match.id"
       ></match-card>
-      <b-col v-if="mode.edition" cols="12" class="mt-2 py-0 px-1" style="display: inline-block;">
+      <b-col v-if="canAddMatch" cols="12" class="mt-2 py-0 px-1" style="display: inline-block;">
         <nuxt-link :to="{ name: 'addTeamMatch'}">
           <b-btn variant="outline-primary" size="sm" squared>Adicionar Jogo</b-btn>
         </nuxt-link>
@@ -25,9 +25,12 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'home',
   layout: 'home',
+  data() {
+    return {}
+  },
   computed: {
     ...mapState(['mode', 'navbar', 'userPlayer']),
-    ...mapGetters(['yearLow', 'yearHigh']),
+    ...mapGetters(['yearLow', 'yearHigh', 'canAddMatch']),
     ...mapGetters('matches', ['matchesPlayed'])
   },
   components: {

@@ -128,7 +128,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 
 export default {
   name: 'addTeam',
@@ -137,13 +137,13 @@ export default {
     ...mapState('teams', ['teams']),
     ...mapState('players', ['players']),
     playersSelected() {
-      let players = !_.isEmpty(this.players) ? this.players : []
+      let players = !isEmpty(this.players) ? this.players : []
       return players.filter(function(s) {
         return s.selected
       })
     },
     playersUnselected() {
-      let players = !_.isEmpty(this.players) ? this.players : []
+      let players = !isEmpty(this.players) ? this.players : []
       return players.filter(function(s) {
         return !s.selected
       })

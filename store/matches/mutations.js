@@ -1,10 +1,10 @@
 import moment from 'moment'
-import lodash from "lodash";
+import { isEmpty } from "lodash";
 
 export default {
 	setMatch(state, data) {
 		state.match = data;
-		state.matchEdit = !_.isEmpty(state.match)
+		state.matchEdit = !isEmpty(state.match)
 			?
 			{
 				id: state.match.id,

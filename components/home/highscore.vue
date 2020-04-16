@@ -84,7 +84,7 @@ export default {
         },
         {
           key: 'matches',
-          label: 'Jogos',
+          label: 'J',
           sortDirection: 'desc',
           sortable: true
         },

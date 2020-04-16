@@ -32,7 +32,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import profile from '../components/choosePlayer/profile'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 import Noty from 'noty'
 
 export default {
@@ -47,7 +47,7 @@ export default {
   methods: {
     ...mapActions(['checkUser', 'setPlayerUser']),
     async choosePlayer(player) {
-      let text = !_.isEmpty(player)
+      let text = !isEmpty(player)
         ? `Tens a certeza que te queres associar ao jogador ${player.name}?`
         : 'Tens a certeza que não te queres associar a um jogador?'
       let n = new Noty({

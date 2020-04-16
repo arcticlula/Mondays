@@ -1,25 +1,73 @@
 import moment from 'moment'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 export default {
-  admin(state) {
-    return !_.isEmpty(state.userDB) ? state.userDB.admin : 0
-  },
-  canEdit(state) {
+  editionMode(state) {
     // return true
     return state.mode.edition
   },
+  admin(state) {
+    return !isEmpty(state.userDB) ? state.userDB.admin.admin : false
+  },
+  adminPlayers(state) {
+    return !isEmpty(state.userDB) ? state.userDB.admin.players : {}
+  },
+  adminMatches(state) {
+    return !isEmpty(state.userDB) ? state.userDB.admin.matches : {}
+  },
+  adminGoals(state) {
+    return !isEmpty(state.userDB) ? state.userDB.admin.goals : {}
+  },
+  adminUsers(state) {
+    return !isEmpty(state.userDB) ? state.userDB.admin.users : {}
+  },
+  adminProfile(state) {
+    return !isEmpty(state.userDB) ? state.userDB.admin.profile : {}
+  },
+  canAddMatch(state, getters) {
+    return getters.editionMode ? getters.adminMatches.canAdd : false;
+  },
+  canEditMatch(state, getters) {
+    return getters.editionMode ? getters.adminMatches.canEdit : false;
+  },
+  canDeleteMatch(state, getters) {
+    return getters.editionMode ? getters.adminMatches.canDelete : false;
+  },
+  canAddGoals(state, getters) {
+    return getters.editionMode ? getters.adminGoals.canAdd : false;
+  },
+  canEditGoals(state, getters) {
+    return getters.editionMode ? getters.adminGoals.canEdit : false;
+  },
+  canDeleteGoals(state, getters) {
+    return getters.editionMode ? getters.adminGoals.canDelete : false;
+  },
+  canAddPlayer(state, getters) {
+    return getters.editionMode ? getters.adminPlayers.canAdd : false;
+  },
+  canEditPlayer(state, getters) {
+    return getters.editionMode ? getters.adminPlayers.canEdit : false;
+  },
+  canEditUser(state, getters) {
+    return getters.editionMode ? getters.adminUsers.canEdit : false;
+  },
+  canDeleteUser(state, getters) {
+    return getters.editionMode ? getters.adminUsers.canDelete : false;
+  },
+  canEditProfile(state, getters) {
+    return getters.editionMode ? getters.adminProfile.canEdit : false;
+  },
   userDB(state) {
-    return !_.isEmpty(state.userDB) ? state.userDB : {}
+    return !isEmpty(state.userDB) ? state.userDB : {}
   },
   isVisitor(state) {
-    return !_.isEmpty(state.userDB) ? state.userDB.isVisitor : true
+    return !isEmpty(state.userDB) ? state.userDB.isVisitor : true
   },
   dob(state) {
-    return !_.isEmpty(state.userPlayer) ? moment(state.userPlayer.dob, 'DD/MM/YYYY') : moment()
+    return !isEmpty(state.userPlayer) ? moment(state.userPlayer.dob, 'DD/MM/YYYY') : moment()
   },
   userPlayer(state) {
     // console.log(state)
-    return !_.isEmpty(state.userPlayer) ? state.userPlayer : {}
+    return !isEmpty(state.userPlayer) ? state.userPlayer : {}
   },
   yearHigh(state) {
     let date = state.navbar;

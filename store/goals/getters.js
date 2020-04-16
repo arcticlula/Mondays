@@ -1,6 +1,7 @@
 import moment from 'moment'
+import { isEmpty } from 'lodash'
 export default {
 	hasGoals(state) {
-		return _.isEmpty(state.goals) ? false : true
+		return isEmpty(state.goals) ? false : true
 	}
 }

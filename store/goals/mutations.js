@@ -1,5 +1,5 @@
 import moment from 'moment'
-import lodash from "lodash";
+import { isEmpty } from "lodash";
 
 export default {
 	setGoal(state, data) {

@@ -68,19 +68,15 @@
                   <b-col cols="12">
                     <match-goals v-for="goal in goals" :goal="goal" :key="goal.id"></match-goals>
                   </b-col>
-                  <b-col
-                    v-if="canEdit"
-                    cols="12"
-                    class="mt-2 py-0 px-2"
-                    style="display: inline-block;"
-                  >
+                  <b-col cols="12" class="mt-2 py-0 px-2" style="display: inline-block;">
                     <b-btn
+                      v-if="canEditMatch"
                       @click="modal.showMatch=true"
                       variant="outline-primary"
                       size="sm"
                       squared
                     >Editar Jogo</b-btn>
-                    <nuxt-link :to="{ name: 'addGoal',query: routerQuery}">
+                    <nuxt-link v-if="canAddGoals" :to="{ name: 'addGoal',query: routerQuery}">
                       <b-btn variant="outline-primary" size="sm" squared>Adicionar Golos</b-btn>
                     </nuxt-link>
                   </b-col>
@@ -154,7 +150,7 @@ import modalEditMatch from '../components/modalEditMatch'
 import modalEditGoal from '../components/modalEditGoal'
 
 import moment from 'moment'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 import Noty from 'noty'
 export default {
   name: 'match',
@@ -170,7 +166,7 @@ export default {
     ...mapState(['modal']),
     ...mapState('matches', ['match']),
     ...mapState('goals', ['goals']),
-    ...mapGetters(['canEdit']),
+    ...mapGetters(['canEditMatch', 'canAddGoals']),
     ...mapGetters('matches', [
       'goalsHome',
       'goalsAway',

@@ -1,15 +1,15 @@
 import moment from 'moment'
-import lodash from "lodash";
+import { isEmpty } from "lodash";
 
 export default {
     goalsHome(state) {
-        return !_.isEmpty(state.match) ? state.match.counter.goals.home : 0;
+        return !isEmpty(state.match) ? state.match.counter.goals.home : 0;
     },
     goalsAway(state) {
-        return !_.isEmpty(state.match) ? state.match.counter.goals.away : 0;
+        return !isEmpty(state.match) ? state.match.counter.goals.away : 0;
     },
     playersHome(state) {
-        let data = !_.isEmpty(state.match) ? state.match.players : {}
+        let data = !isEmpty(state.match) ? state.match.players : {}
         return Object.keys(data).reduce((filtered, s) => {
             if (data[s].local == 'home') {
                 filtered.push({ id: s, name: data[s].name, nickname: data[s].nickname })
@@ -18,7 +18,7 @@ export default {
         }, [])
     },
     playersAway(state) {
-        let data = !_.isEmpty(state.match) ? state.match.players : {}
+        let data = !isEmpty(state.match) ? state.match.players : {}
         return Object.keys(data).reduce((filtered, s) => {
             if (data[s].local == 'away') {
                 filtered.push({ id: s, name: data[s].name, nickname: data[s].nickname })
@@ -27,7 +27,7 @@ export default {
         }, [])
     },
     matchDate(state) {
-        return !_.isEmpty(state.match)
+        return !isEmpty(state.match)
             ? moment(
                 state.match.beginTime
                     .toDate()
@@ -38,10 +38,10 @@ export default {
     },
     highscorePlayed(state, getters, rootState) {
         let matches = rootState.mode.playedMatchesOnly
-            ? !_.isEmpty(state.matches) && !_.isEmpty(rootState.userPlayer)
+            ? !isEmpty(state.matches) && !isEmpty(rootState.userPlayer)
                 ? state.matches.filter((s) => s.players[rootState.userPlayer.id])
                 : []
-            : !_.isEmpty(state.matches) ? state.matches : []
+            : !isEmpty(state.matches) ? state.matches : []
         let res = matches.reduce((hash, data) => {
             const players = data.players;
             Object.keys(players).map(key => {
@@ -64,17 +64,17 @@ export default {
         return Object.keys(res).map(s => ({ id: s, matches: res[s].matches, wins: res[s].wins, draws: res[s].draws, losses: res[s].losses, name: res[s].name, goals: res[s].goals, assists: res[s].assists })).sort((a, b) => (b.wins - a.wins) || (b.goals - a.goals) || (b.assists - a.assists));
     },
     highscoreMatch(state) {
-        let data = !_.isEmpty(state.match) ? state.match.players : {}
+        let data = !isEmpty(state.match) ? state.match.players : {}
         return Object.keys(data).map(s => ({ id: s, name: data[s].name, goals: data[s].goals, assists: data[s].assists })).sort((a, b) => (b.goals - a.goals) || (b.assists - a.assists));
     },
     matchesPlayed(state, getters, rootState) {
         return rootState.mode.playedMatchesOnly
-            ? !_.isEmpty(state.matches) && !_.isEmpty(rootState.userPlayer)
+            ? !isEmpty(state.matches) && !isEmpty(rootState.userPlayer)
                 ? state.matches.filter((s) => s.players[rootState.userPlayer.id])
                 : []
             : state.matches
     },
     hasMatches(state) {
-        return _.isEmpty(state.matches) ? false : true
+        return isEmpty(state.matches) ? false : true
     }
 }

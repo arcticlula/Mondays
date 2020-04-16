@@ -103,7 +103,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 
 export default {
   name: 'addMatch',
@@ -112,7 +112,7 @@ export default {
     ...mapState('teams', ['teams']),
     ...mapState('matches', ['matches']),
     teamsUnselected() {
-      return !_.isEmpty(this.teams)
+      return !isEmpty(this.teams)
         ? this.teams.filter((s) => {
             return !s.match
           })

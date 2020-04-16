@@ -71,6 +71,7 @@
 				</b-card>
         </b-col>-->
       </b-row>
+      <upload v-if="canEditProfile" :player="userPlayer" />
       <b-row>
         <b-col cols="12" class="mt-2">
           <b-card border-variant="primary" no-body style="height: 100%;">
@@ -113,7 +114,6 @@
 				</b-card>
         </b-col>-->
       </b-row>
-      <upload v-if="canEdit" :player="userPlayer" />
     </b-col>
   </div>
 </template>
@@ -123,56 +123,56 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import matchStats from '../components/profile/matchStats'
 import upload from '../components/upload'
 import moment from 'moment'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 // import chartHeatmap from "./chartHeatmap.vue";
 
 export default {
-	name: 'profile',
-	layout: 'home',
-	// components: {
-	// 	heatmap: chartHeatmap
-	// },
-	data() {
-		return {}
-	},
-	computed: {
-		...mapState('matches', ['matches']),
-		...mapState('goals', ['goals']),
-		...mapGetters(['userDB', 'userPlayer', 'dob', 'canEdit']),
-		age() {
-			return moment().diff(this.dob, 'years', false) + ' anos'
-		},
-		matchesFiltered() {
-			return !_.isEmpty(this.matches) && !_.isEmpty(this.userPlayer)
-				? this.matches.filter((s) => s.players[this.userPlayer.id])
-				: []
-		},
-		getPic() {
-			return this.userPlayer.picture
-				? this.userPlayer.picture
-				: this.userDB.picture
-		}
-	},
-	async fetch({ store, route }) {
-		try {
-			// await store.dispatch(
-			// 	'goals/getGoalsFromPlayer'
-			// )
-			// console.log(store.state)
-		} catch (e) {
-			console.error(e)
-		}
-	},
-	components: {
-		matchStats,
-		upload
-	},
-	methods: {
-		openMatch(id) {
-			console.log(id)
-			this.$router.push({ name: 'match', query: { match: id } })
-		}
-	}
+  name: 'profile',
+  layout: 'home',
+  // components: {
+  // 	heatmap: chartHeatmap
+  // },
+  data() {
+    return {}
+  },
+  computed: {
+    ...mapState('matches', ['matches']),
+    ...mapState('goals', ['goals']),
+    ...mapGetters(['userDB', 'userPlayer', 'dob', 'canEditProfile']),
+    age() {
+      return moment().diff(this.dob, 'years', false) + ' anos'
+    },
+    matchesFiltered() {
+      return !isEmpty(this.matches) && !isEmpty(this.userPlayer)
+        ? this.matches.filter((s) => s.players[this.userPlayer.id])
+        : []
+    },
+    getPic() {
+      return this.userPlayer.picture
+        ? this.userPlayer.picture
+        : this.userDB.picture
+    }
+  },
+  async fetch({ store, route }) {
+    try {
+      // await store.dispatch(
+      // 	'goals/getGoalsFromPlayer'
+      // )
+      // console.log(store.state)
+    } catch (e) {
+      console.error(e)
+    }
+  },
+  components: {
+    matchStats,
+    upload
+  },
+  methods: {
+    openMatch(id) {
+      console.log(id)
+      this.$router.push({ name: 'match', query: { match: id } })
+    }
+  }
 }
 </script>
 

@@ -2,7 +2,7 @@ import { firestore, auth, google, Timestamp } from '../plugins/firebase'
 import hydrate from "../utils/hydrate"
 import loginParser from "../utils/loginParser"
 import getCircularReplacer from "../utils/getCircularReplacer"
-import lodash from "lodash";
+import { isEmpty } from "lodash";
 
 export default {
 	async signOut({ commit }) {
@@ -15,7 +15,7 @@ export default {
 	async googleSignIn({ dispatch }) {
 		let loginInfo = await auth.signInWithPopup(google);
 		let res = await dispatch('loginUser', loginInfo)
-		if (_.isEmpty(res.player) && !res.isVisitor) this.$router.push({ name: 'choosePlayer' })
+		if (isEmpty(res.player) && !res.isVisitor) this.$router.push({ name: 'choosePlayer' })
 		else this.$router.push({ name: 'index' })
 	},
 	async loginUser({ rootState, commit }, loginInfo) {
@@ -26,7 +26,7 @@ export default {
 			let data = docSnapshot.data();
 			// console.log(data)
 			await hydrate(data, ['player'])
-			data.player.dob = data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' })
+			if (!isEmpty(data.player)) data.player.dob = data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' })
 			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
 			commit('setUserDB', data)
 			commit('setUserPlayer', data.player)
@@ -35,7 +35,16 @@ export default {
 		else {
 			let profile = loginParser(loginInfo).profile
 			let props = { dateCreated: timeModified, dateModified: timeModified, userCreated: User, userModified: User, lastOperation: "Add User" }
-			let data = { ...profile, player: null, admin: 0, props: props, isVisitor: false, isVerified: false }
+			let admin = {
+				admin: false,
+				players: { canAdd: false, canEdit: false },
+				profile: { canEdit: false },
+				users: { canEdit: false, canDelete: false },
+				matches: { canAdd: false, canEdit: false, canDelete: false },
+				players: { canAdd: false, canEdit: false },
+				goals: { canAdd: false, canEdit: false, canDelete: false },
+			}
+			let data = { ...profile, player: null, admin: admin, props: props, isVisitor: false, isVerified: false }
 			User.set(data)
 			return data;
 		}
@@ -47,7 +56,7 @@ export default {
 			let data = docSnapshot.data();
 			// console.log(data)
 			await hydrate(data, ['player'])
-			data.player.dob = data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' })
+			if (!isEmpty(data.player)) data.player.dob = data.player.dob.toDate().toLocaleDateString('pt-PT', { timeZone: 'UTC' })
 			data = JSON.parse(JSON.stringify(data, getCircularReplacer()))
 			commit('setUserDB', data)
 			commit('setUserPlayer', data.player)
@@ -61,7 +70,7 @@ export default {
 			"props.dateModified": timeModified, "props.userModified": User, "props.lastOperation": "Edit User"
 		};
 		let batch = firestore.batch();
-		if (!_.isEmpty(player)) {
+		if (!isEmpty(player)) {
 			let PlayerDB = Players.doc(player.id);
 			batch.update(User, {
 				...props, player: PlayerDB, isVisitor: false

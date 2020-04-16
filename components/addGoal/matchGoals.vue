@@ -62,41 +62,39 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import moment from 'moment'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 import Noty from 'noty'
 
 export default {
-	name: 'matchGoals',
-	props: { goal: Object },
-	computed: {
-		...mapState(['modal']),
-		getNameGoal() {
-			return !_.isEmpty(this.goal.players)
-				? this.goal.players.goal.nickname
-				: ''
-		},
-		getNameAssist() {
-			return !_.isEmpty(this.goal.players.assist)
-				? this.goal.players.assist.nickname
-				: ''
-		},
-		hasUrl() {
-			return _.isEmpty(this.goal.url)
-				? false
-				: _.isEmpty(this.goal.url.link)
-				? false
-				: true
-		}
-	},
-	methods: {
-		...mapMutations('goals', ['setGoal']),
-		...mapActions('goals', ['setTimeMin']),
-		editGoal() {
-			this.setGoal(this.goal)
-			this.setTimeMin()
-			this.modal.showGoal = true
-		}
-	}
+  name: 'matchGoals',
+  props: { goal: Object },
+  computed: {
+    ...mapState(['modal']),
+    getNameGoal() {
+      return !isEmpty(this.goal.players) ? this.goal.players.goal.nickname : ''
+    },
+    getNameAssist() {
+      return !isEmpty(this.goal.players.assist)
+        ? this.goal.players.assist.nickname
+        : ''
+    },
+    hasUrl() {
+      return isEmpty(this.goal.url)
+        ? false
+        : isEmpty(this.goal.url.link)
+        ? false
+        : true
+    }
+  },
+  methods: {
+    ...mapMutations('goals', ['setGoal']),
+    ...mapActions('goals', ['setTimeMin']),
+    editGoal() {
+      this.setGoal(this.goal)
+      this.setTimeMin()
+      this.modal.showGoal = true
+    }
+  }
 }
 </script>
 

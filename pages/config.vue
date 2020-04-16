@@ -38,14 +38,9 @@
                 </b-col>
               </b-row>
               <b-row>
-                <b-col cols="12">
+                <b-col cols="12" v-if="admin">
                   <b-form-group class="mb-3" id="input-group-1" label="Admin:" label-for="input-1">
-                    <b-form-checkbox
-                      id="input-1"
-                      :disabled="admin==0"
-                      v-model="mode.edition"
-                      switch
-                    ></b-form-checkbox>
+                    <b-form-checkbox id="input-1" v-model="mode.edition" switch></b-form-checkbox>
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -76,31 +71,31 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-	name: 'config',
-	layout: 'home',
-	computed: {
-		...mapState(['mode']),
-		...mapGetters(['admin']),
-		nightModeVar: {
-			get: function() {
-				return this.mode.night
-			},
-			set: function(data) {
-				return this.setNightMode(data)
-			}
-		}
-	},
-	methods: {
-		...mapMutations(['setNightMode']),
-		...mapActions(['signOut'])
-	},
-	async fetch({ store }) {
-		try {
-			await store.dispatch('checkUser')
-		} catch (e) {
-			console.error(e)
-		}
-	}
+  name: 'config',
+  layout: 'home',
+  computed: {
+    ...mapState(['mode']),
+    ...mapGetters(['admin']),
+    nightModeVar: {
+      get() {
+        return this.mode.night
+      },
+      set(data) {
+        return this.setNightMode(data)
+      }
+    }
+  },
+  methods: {
+    ...mapMutations(['setNightMode']),
+    ...mapActions(['signOut'])
+  },
+  async fetch({ store }) {
+    try {
+      await store.dispatch('checkUser')
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>
 

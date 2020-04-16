@@ -161,147 +161,145 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 
 export default {
-	name: 'addMatch',
-	layout: 'simple',
-	computed: {
-		...mapState('teams', ['teams']),
-		...mapState('players', ['players']),
-		playersSelected() {
-			let players = !_.isEmpty(this.players) ? this.players : []
-			return players.filter(function(s) {
-				return s.selected
-			})
-		},
-		playersUnselected() {
-			let players = !_.isEmpty(this.players) ? this.players : []
-			return players.filter(function(s) {
-				return !s.selected
-			})
-		}
-	},
-	data() {
-		return {
-			teamLetter: 'A',
-			formTeamA: {
-				goals: {},
-				match: null,
-				players: [],
-				local: 'home',
-				props: {},
-				counter: {
-					goals: {
-						total: 0,
-						penalties: 0,
-						penaltiesFailed: 0,
-						ownGoals: 0
-					},
-					assists: { total: 0 }
-				}
-			},
-			formTeamB: {
-				goals: {},
-				match: null,
-				players: [],
-				local: 'away',
-				props: {},
-				counter: {
-					goals: {
-						total: 0,
-						penalties: 0,
-						penaltiesFailed: 0,
-						ownGoals: 0
-					},
-					assists: { total: 0 }
-				}
-			},
-			formMatch: {
-				date: null,
-				beginTime: '22:00:00',
-				endTime: '23:00:00',
-				teamA: null,
-				teamB: null,
-				goals: {},
-				players: {},
-				props: {},
-				counter: {
-					goals: {
-						home: 0,
-						away: 0,
-						total: 0,
-						penalties: 0,
-						ownGoals: 0
-					},
-					assists: { home: 0, away: 0, total: 0 }
-				}
-			},
-			show: true
-			// createMatch: false
-		}
-	},
-	methods: {
-		...mapActions('matches', ['addMatch']),
-		addPlayerToTeam(player) {
-			this['formTeam' + this.teamLetter].players.push({
-				id: player.id,
-				name: player.name,
-				nickname: player.nickname
-			})
-			player.selected = true
-		},
-		delPlayerFromTeam(player) {
-			let i = this['formTeam' + this.teamLetter].players.indexOf(player) // find index of your object
-			this['formTeam' + this.teamLetter].players.splice(i, 1)
-			this.players.find(
-				(element) => element.id == player.id
-			).selected = false
-		},
-		async onSubmit(evt) {
-			evt.preventDefault()
-			await this.addMatch({
-				formTeamA: this.formTeamA,
-				formTeamB: this.formTeamB,
-				formMatch: this.formMatch
-			})
-			this.$noty.success('Jogo Adicionado!')
-			this.$router.push({ name: 'index' })
-			// if (createMatch) await this.setMatch()
-		},
-		async onReset(evt) {
-			evt.preventDefault()
-			// Reset our form values
-			this.formTeamA.goals = {}
-			this.formTeamA.match = null
-			this.formTeamA.players = []
-			this.formTeamA.props = {}
+  name: 'addMatch',
+  layout: 'simple',
+  computed: {
+    ...mapState('teams', ['teams']),
+    ...mapState('players', ['players']),
+    playersSelected() {
+      let players = !isEmpty(this.players) ? this.players : []
+      return players.filter(function(s) {
+        return s.selected
+      })
+    },
+    playersUnselected() {
+      let players = !isEmpty(this.players) ? this.players : []
+      return players.filter(function(s) {
+        return !s.selected
+      })
+    }
+  },
+  data() {
+    return {
+      teamLetter: 'A',
+      formTeamA: {
+        goals: {},
+        match: null,
+        players: [],
+        local: 'home',
+        props: {},
+        counter: {
+          goals: {
+            total: 0,
+            penalties: 0,
+            penaltiesFailed: 0,
+            ownGoals: 0
+          },
+          assists: { total: 0 }
+        }
+      },
+      formTeamB: {
+        goals: {},
+        match: null,
+        players: [],
+        local: 'away',
+        props: {},
+        counter: {
+          goals: {
+            total: 0,
+            penalties: 0,
+            penaltiesFailed: 0,
+            ownGoals: 0
+          },
+          assists: { total: 0 }
+        }
+      },
+      formMatch: {
+        date: null,
+        beginTime: '22:00:00',
+        endTime: '23:00:00',
+        teamA: null,
+        teamB: null,
+        goals: {},
+        players: {},
+        props: {},
+        counter: {
+          goals: {
+            home: 0,
+            away: 0,
+            total: 0,
+            penalties: 0,
+            ownGoals: 0
+          },
+          assists: { home: 0, away: 0, total: 0 }
+        }
+      },
+      show: true
+      // createMatch: false
+    }
+  },
+  methods: {
+    ...mapActions('matches', ['addMatch']),
+    addPlayerToTeam(player) {
+      this['formTeam' + this.teamLetter].players.push({
+        id: player.id,
+        name: player.name,
+        nickname: player.nickname
+      })
+      player.selected = true
+    },
+    delPlayerFromTeam(player) {
+      let i = this['formTeam' + this.teamLetter].players.indexOf(player) // find index of your object
+      this['formTeam' + this.teamLetter].players.splice(i, 1)
+      this.players.find((element) => element.id == player.id).selected = false
+    },
+    async onSubmit(evt) {
+      evt.preventDefault()
+      await this.addMatch({
+        formTeamA: this.formTeamA,
+        formTeamB: this.formTeamB,
+        formMatch: this.formMatch
+      })
+      this.$noty.success('Jogo Adicionado!')
+      this.$router.push({ name: 'index' })
+      // if (createMatch) await this.setMatch()
+    },
+    async onReset(evt) {
+      evt.preventDefault()
+      // Reset our form values
+      this.formTeamA.goals = {}
+      this.formTeamA.match = null
+      this.formTeamA.players = []
+      this.formTeamA.props = {}
 
-			this.formTeamB.goals = {}
-			this.formTeamB.match = null
-			this.formTeamB.players = []
-			this.formTeamB.props = {}
+      this.formTeamB.goals = {}
+      this.formTeamB.match = null
+      this.formTeamB.players = []
+      this.formTeamB.props = {}
 
-			this.formMatch.date = null
-			this.formMatch.beginTime = '22:00:00'
-			this.formMatch.endTime = '23:00:00'
-			this.formMatch.goals = {}
-			this.formMatch.teamA = null
-			this.formMatch.teamB = null
-			this.formMatch.props = {}
+      this.formMatch.date = null
+      this.formMatch.beginTime = '22:00:00'
+      this.formMatch.endTime = '23:00:00'
+      this.formMatch.goals = {}
+      this.formMatch.teamA = null
+      this.formMatch.teamB = null
+      this.formMatch.props = {}
 
-			// Trick to reset/clear native browser form validation state
-			this.show = false
-			await this.$nextTick()
-			this.show = true
-		}
-	},
-	async fetch({ store }) {
-		try {
-			await store.dispatch('players/getPlayers')
-		} catch (e) {
-			console.error(e)
-		}
-	}
+      // Trick to reset/clear native browser form validation state
+      this.show = false
+      await this.$nextTick()
+      this.show = true
+    }
+  },
+  async fetch({ store }) {
+    try {
+      await store.dispatch('players/getPlayers')
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>

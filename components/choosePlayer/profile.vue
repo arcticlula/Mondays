@@ -40,34 +40,34 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 
 export default {
-	name: 'profile',
-	props: { player: Object },
-	methods: {},
-	computed: {
-		userDob() {
-			return !_.isEmpty(this.player)
-				? moment(
-						this.player.dob
-							.toDate()
-							.toLocaleDateString('pt-PT', { timeZone: 'UTC' }),
-						'DD/MM/YYYY',
-						'DD/MM/YYYY'
-				  )
-				: moment()
-		},
-		age() {
-			return moment().diff(this.userDob, 'years', false) + ' anos'
-		},
-		getPic() {
-			return this.player.picture ? this.player.picture : this.getDefault
-		},
-		getDefault() {
-			return require(`@/assets/players/playernull.jpg`)
-		}
-	}
+  name: 'profile',
+  props: { player: Object },
+  methods: {},
+  computed: {
+    userDob() {
+      return !isEmpty(this.player)
+        ? moment(
+            this.player.dob
+              .toDate()
+              .toLocaleDateString('pt-PT', { timeZone: 'UTC' }),
+            'DD/MM/YYYY',
+            'DD/MM/YYYY'
+          )
+        : moment()
+    },
+    age() {
+      return moment().diff(this.userDob, 'years', false) + ' anos'
+    },
+    getPic() {
+      return this.player.picture ? this.player.picture : this.getDefault
+    },
+    getDefault() {
+      return require(`@/assets/players/playernull.jpg`)
+    }
+  }
 }
 </script>
 

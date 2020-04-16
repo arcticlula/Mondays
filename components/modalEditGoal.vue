@@ -71,7 +71,12 @@
 
     <template v-slot:modal-footer>
       <div class="w-100">
-        <b-button variant="outline-primary" size="sm" @click="deleteGoal">Apagar Golo</b-button>
+        <b-button
+          v-if="canDeleteGoals"
+          variant="outline-primary"
+          size="sm"
+          @click="deleteGoal"
+        >Apagar Golo</b-button>
         <b-button
           variant="outline-primary"
           size="sm"
@@ -95,7 +100,7 @@ import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { secondsToTime, timeToSeconds } from '../utils/time'
 import { getQueryParams, updateURLParameter } from '../utils/url'
 import moment from 'moment'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 import Noty from 'noty'
 
 export default {
@@ -108,7 +113,7 @@ export default {
   computed: {
     ...mapState(['modal']),
     ...mapState('goals', ['goal', 'goalEdit']),
-    ...mapGetters(['canEdit']),
+    ...mapGetters(['canDeleteGoals']),
     ...mapGetters('goals', ['hasGoals'])
   },
   methods: {

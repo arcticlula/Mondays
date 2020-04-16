@@ -23,50 +23,48 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
-import lodash from 'lodash'
+import { isEmpty } from 'lodash'
 
 export default {
-	name: 'matchStats',
-	props: { match: Object },
-	methods: {},
-	computed: {
-		...mapState('players', ['player']),
-		matchDate() {
-			return !_.isEmpty(this.match)
-				? moment(
-						this.match.beginTime
-							.toDate()
-							.toLocaleDateString('pt-PT', { timeZone: 'UTC' }),
-						'DD/MM/YYYY'
-				  )
-				: moment()
-		},
-		goalsHome() {
-			return !_.isEmpty(this.match) ? this.match.counter.goals.home : 0
-		},
-		goalsAway() {
-			return !_.isEmpty(this.match) ? this.match.counter.goals.away : 0
-		},
-		playerGoals() {
-			return !_.isEmpty(this.match) && !_.isEmpty(this.player)
-				? this.match.players[this.player.id].goals
-				: 0
-		},
-		playerAssists() {
-			return !_.isEmpty(this.match) && !_.isEmpty(this.player)
-				? this.match.players[this.player.id].assists
-				: 0
-		},
-		result() {
-			return !_.isEmpty(this.match) && !_.isEmpty(this.player)
-				? this.match.players[this.player.id].local == 'home'
-					? this.match.counter.goals.home -
-					  this.match.counter.goals.away
-					: this.match.counter.goals.away -
-					  this.match.counter.goals.home
-				: null
-		}
-	}
+  name: 'matchStats',
+  props: { match: Object },
+  methods: {},
+  computed: {
+    ...mapState('players', ['player']),
+    matchDate() {
+      return !isEmpty(this.match)
+        ? moment(
+            this.match.beginTime
+              .toDate()
+              .toLocaleDateString('pt-PT', { timeZone: 'UTC' }),
+            'DD/MM/YYYY'
+          )
+        : moment()
+    },
+    goalsHome() {
+      return !isEmpty(this.match) ? this.match.counter.goals.home : 0
+    },
+    goalsAway() {
+      return !isEmpty(this.match) ? this.match.counter.goals.away : 0
+    },
+    playerGoals() {
+      return !isEmpty(this.match) && !isEmpty(this.player)
+        ? this.match.players[this.player.id].goals
+        : 0
+    },
+    playerAssists() {
+      return !isEmpty(this.match) && !isEmpty(this.player)
+        ? this.match.players[this.player.id].assists
+        : 0
+    },
+    result() {
+      return !isEmpty(this.match) && !isEmpty(this.player)
+        ? this.match.players[this.player.id].local == 'home'
+          ? this.match.counter.goals.home - this.match.counter.goals.away
+          : this.match.counter.goals.away - this.match.counter.goals.home
+        : null
+    }
+  }
 }
 </script>
 
