@@ -28,7 +28,7 @@
           <b-row>
             <b-col cols="12">
               <b>Idade:</b>
-              {{age}} ({{userDob | moment("DD/MM/YYYY")}})
+              {{age}} ({{dob | moment("DD/MM/YYYY")}})
             </b-col>
           </b-row>
         </div>
@@ -47,7 +47,7 @@ export default {
   props: { player: Object },
   methods: {},
   computed: {
-    userDob() {
+    dob() {
       return !isEmpty(this.player)
         ? moment(
             this.player.dob
@@ -59,7 +59,7 @@ export default {
         : moment()
     },
     age() {
-      return moment().diff(this.userDob, 'years', false) + ' anos'
+      return moment().diff(this.dob, 'years', false) + ' anos'
     },
     getPic() {
       return this.player.picture ? this.player.picture : this.getDefault
