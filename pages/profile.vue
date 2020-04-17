@@ -22,36 +22,31 @@
               <!-- {{playerUser}} -->
               <b-col cols="12">
                 <b-row>
-                  <b-col cols="3" sm="2" class="px-0">
+                  <div class="mr-2" style="display: grid;">
                     <span class="playerProfile text-center">
-                      <img :src="getPic" onerror="this.src='userDB.picture'" />
+                      <img class="badge-xl" :src="getPic" onerror="this.src='getDefault'" />
                     </span>
-                  </b-col>
-                  <b-col cols="9" sm="10">
+                  </div>
+                  <div style="display: grid;">
                     <b-row>
                       <b-col cols="12">
                         <b>Nome:</b>
-                        {{userDB.name}}
+                        {{userPlayer.name}}
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col cols="12">
+                        <b>Alcunha:</b>
+                        {{userPlayer.nickname}}
                       </b-col>
                     </b-row>
                     <b-row>
                       <b-col cols="12">
                         <b>Idade:</b>
-                        {{age}}
+                        {{age}} ({{dob | moment("DD/MM/YYYY")}})
                       </b-col>
                     </b-row>
-                    <b-row>
-                      <b-col cols="12">
-                        <span
-                          class="d-none d-sm-none d-md-inline d-lg-inline d-xl-inline font-weight-bold"
-                        >Data Nascimento:</span>
-                        <span
-                          class="d-inline d-sm-inline d-md-none d-lg-none d-xl-none font-weight-bold"
-                        >Nasc.:</span>
-                        {{dob | moment("DD/MM/YYYY")}}
-                      </b-col>
-                    </b-row>
-                  </b-col>
+                  </div>
                 </b-row>
               </b-col>
             </b-card-body>
@@ -127,52 +122,52 @@ import { isEmpty } from 'lodash'
 // import chartHeatmap from "./chartHeatmap.vue";
 
 export default {
-  name: 'profile',
-  layout: 'home',
-  // components: {
-  // 	heatmap: chartHeatmap
-  // },
-  data() {
-    return {}
-  },
-  computed: {
-    ...mapState('matches', ['matches']),
-    ...mapState('goals', ['goals']),
-    ...mapGetters(['userDB', 'userPlayer', 'dob', 'canEditProfile']),
-    age() {
-      return moment().diff(this.dob, 'years', false) + ' anos'
-    },
-    matchesFiltered() {
-      return !isEmpty(this.matches) && !isEmpty(this.userPlayer)
-        ? this.matches.filter((s) => s.players[this.userPlayer.id])
-        : []
-    },
-    getPic() {
-      return this.userPlayer.picture
-        ? this.userPlayer.picture
-        : this.userDB.picture
-    }
-  },
-  async fetch({ store, route }) {
-    try {
-      // await store.dispatch(
-      // 	'goals/getGoalsFromPlayer'
-      // )
-      // console.log(store.state)
-    } catch (e) {
-      console.error(e)
-    }
-  },
-  components: {
-    matchStats,
-    upload
-  },
-  methods: {
-    openMatch(id) {
-      console.log(id)
-      this.$router.push({ name: 'match', query: { match: id } })
-    }
-  }
+	name: 'profile',
+	layout: 'home',
+	// components: {
+	// 	heatmap: chartHeatmap
+	// },
+	data() {
+		return {}
+	},
+	computed: {
+		...mapState('matches', ['matches']),
+		...mapState('goals', ['goals']),
+		...mapGetters(['userDB', 'userPlayer', 'dob', 'canEditProfile']),
+		age() {
+			return moment().diff(this.dob, 'years', false) + ' anos'
+		},
+		matchesFiltered() {
+			return !isEmpty(this.matches) && !isEmpty(this.userPlayer)
+				? this.matches.filter((s) => s.players[this.userPlayer.id])
+				: []
+		},
+		getPic() {
+			return this.userPlayer.picture
+				? this.userPlayer.picture
+				: this.userDB.picture
+		}
+	},
+	async fetch({ store, route }) {
+		try {
+			// await store.dispatch(
+			// 	'goals/getGoalsFromPlayer'
+			// )
+			// console.log(store.state)
+		} catch (e) {
+			console.error(e)
+		}
+	},
+	components: {
+		matchStats,
+		upload
+	},
+	methods: {
+		openMatch(id) {
+			console.log(id)
+			this.$router.push({ name: 'match', query: { match: id } })
+		}
+	}
 }
 </script>
 
