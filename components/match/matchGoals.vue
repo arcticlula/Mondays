@@ -97,25 +97,6 @@ export default {
       this.setGoal(this.goal)
       this.setTimeMin()
       this.modal.showGoal = true
-    },
-    async deleteGoal() {
-      let n = new Noty({
-        text: 'Tens a certeza que queres apagar este golo?',
-        theme: 'metroui',
-        type: 'error',
-        layout: 'center',
-        modal: true,
-        buttons: [
-          Noty.button('Sim', 'btn btn-outline-light btn-sm', async () => {
-            await this.delGoal(this.goal)
-            this.$noty.warning('Golo Removido!')
-            n.close()
-          }),
-          Noty.button('Não', 'btn btn-outline-light btn-sm ml-1', () => {
-            n.close()
-          })
-        ]
-      }).show()
     }
   }
 }

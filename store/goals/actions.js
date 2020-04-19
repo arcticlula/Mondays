@@ -147,7 +147,7 @@ export default {
 			}
 			/** 					Goals					**/
 			batch.set(Goal, obj);
-			return await batch.commit();
+			await batch.commit();
 		}
 		catch (e) {
 			console.log(e);
@@ -189,6 +189,10 @@ export default {
 		let otherTeam = (obj.team.id == obj.match.teamA.id) ? Teams.doc(obj.match.teamB.id) : Teams.doc(obj.match.teamA.id)
 		let Match = Matches.doc(obj.match.id);
 		let Goal = Goals.doc(obj.id);
+		let docSnapshot = await Goal.get();
+		if (!docSnapshot.exists) {
+			return
+		}
 		let timeModified = Timestamp.fromDate(new Date());
 		let userModified = Users.doc(context.rootState.user.uid);
 		let batch = firestore.batch();

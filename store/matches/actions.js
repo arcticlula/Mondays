@@ -5,12 +5,20 @@ import hydrate from "../../utils/hydrate"
 export default {
 	async getMatchById(context, id) {
 		return await firestore.collection('Matches').doc(id).onSnapshot(documentSnapshot => {
-			context.commit('setMatch', { id: id, ...documentSnapshot.data() })
+			if (documentSnapshot.exists)
+				context.commit('setMatch', { id: id, ...documentSnapshot.data() })
+			else {
+				context.commit('setMatch', null)
+			}
 		});
 	},
 	async getMatchByIdOnce(context, id) {
 		return await firestore.collection('Matches').doc(id).get().then(documentSnapshot => {
-			context.commit('setMatch', { id: id, ...documentSnapshot.data() })
+			if (documentSnapshot.exists)
+				context.commit('setMatch', { id: id, ...documentSnapshot.data() })
+			else {
+				context.commit('setMatch', null)
+			}
 		});
 	},
 	// async getMatchByIdStatic(context, id) {
@@ -160,12 +168,12 @@ export default {
 				batch.update(objTeamB.players[i], { ...props, "counter.matches.total": increment, ['matches.' + [Match.id]]: true })
 			}
 			batch.set(Match, { ...objMatch, players: { ...highscores } });
+			await batch.commit();
 		}
 		catch (e) {
 			console.log(e);
 		}
 		/** 					Match					**/
-		await batch.commit();
 	},
 	async editMatch({ state, rootState }) {
 		let objMatch = JSON.parse(JSON.stringify(state.matchEdit))
@@ -199,6 +207,10 @@ export default {
 		let TeamB = { id: match.teamB.id, ...(await (Teams.doc(match.teamB.id).get())).data() }
 		console.log(TeamA, TeamB)
 		let Match = Matches.doc(match.id)
+		let docSnapshot = await Match.get();
+		if (!docSnapshot.exists) {
+			return
+		}
 		let timeModified = Timestamp.fromDate(new Date());
 		let userModified = Users.doc(rootState.user.uid);
 		let batch = firestore.batch();
@@ -218,10 +230,10 @@ export default {
 			batch.delete(match.teamB);
 			/** 						Match						**/
 			batch.delete(Match);
+			await batch.commit();
 		}
 		catch (e) {
 			console.log(e);
 		}
-		await batch.commit();
 	}
 }

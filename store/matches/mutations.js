@@ -4,6 +4,7 @@ import { isEmpty } from "lodash";
 export default {
 	setMatch(state, data) {
 		state.match = data;
+		console.log(data)
 		state.matchEdit = !isEmpty(state.match)
 			?
 			{

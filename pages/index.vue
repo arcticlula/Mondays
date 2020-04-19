@@ -7,11 +7,16 @@
         :match="match"
         :key="match.id"
       ></match-card>
-      <b-col v-if="canAddMatch" cols="12" class="mt-2 py-0 px-1" style="display: inline-block;">
-        <nuxt-link :to="{ name: 'addTeamMatch'}">
-          <b-btn variant="outline-primary" size="sm" squared>Adicionar Jogo</b-btn>
-        </nuxt-link>
-      </b-col>
+      <b-row>
+        <b-col class="mt-2 ml-3 py-0 px-1">
+          <nuxt-link :to="{ name: 'addTeamMatch'}">
+            <b-btn v-if="canAddMatch" variant="outline-primary" size="sm" squared>Adicionar Jogo</b-btn>
+          </nuxt-link>
+          <nuxt-link :to="{ name: 'addPlayer'}">
+            <b-btn v-if="canAddPlayer" variant="outline-primary" size="sm" squared>Adicionar Jogador</b-btn>
+          </nuxt-link>
+        </b-col>
+      </b-row>
       <highscore />
     </div>
   </div>
@@ -30,7 +35,7 @@ export default {
   },
   computed: {
     ...mapState(['mode', 'navbar', 'userPlayer']),
-    ...mapGetters(['yearLow', 'yearHigh', 'canAddMatch']),
+    ...mapGetters(['yearLow', 'yearHigh', 'canAddPlayer', 'canAddMatch']),
     ...mapGetters('matches', ['matchesPlayed'])
   },
   components: {

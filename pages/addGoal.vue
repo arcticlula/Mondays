@@ -242,7 +242,6 @@
     <!-- </b-col>
     </b-row>-->
     <modal-edit-goal />
-    {{canAdd}}
   </div>
 </template>
 
@@ -266,7 +265,6 @@ export default {
   computed: {
     ...mapState('matches', ['match', 'matches']),
     ...mapState('goals', ['goals']),
-    ...mapGetters('goals', ['canAdd']),
     routerQuery() {
       return this.$nuxt.$route.query
     },
@@ -299,7 +297,9 @@ export default {
       }, [])
     },
     getMinute() {
-      let dateMatch = moment(this.match.beginTime.toDate())
+      let dateMatch = !isEmpty(this.match)
+        ? moment(this.match.beginTime.toDate())
+        : moment()
       let dateGoal = new Date(this.form.date + 'T' + this.form.time + 'Z')
       return moment(dateGoal).diff(dateMatch, 'minute')
     }
