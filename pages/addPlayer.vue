@@ -128,6 +128,7 @@ export default {
       // Timestamp.fromDate(new Date()),
       await this.addPlayer(this.form)
       this.$noty.success('Jogador Adicionado!')
+      this.$router.push({ name: 'index' })
     },
     async onReset(evt) {
       evt.preventDefault()
