@@ -22,40 +22,31 @@
               <!-- {{playerUser}} -->
               <b-col cols="12">
                 <b-row>
-                  <b-col cols="3" sm="2" class="px-0">
+                  <div class="mr-2" style="display: grid;">
                     <span class="playerProfile text-center">
-                      <img :src="getPic" onerror="this.src='getDefault'" />
+                      <img class="badge-xl" :src="getPic" onerror="this.src='getDefault'" />
                     </span>
-                  </b-col>
-                  <b-col cols="9" sm="10">
+                  </div>
+                  <div style="display: grid;">
                     <b-row>
-                      <b-col cols="6">
+                      <b-col cols="12">
                         <b>Nome:</b>
                         {{player.name}}
                       </b-col>
-                      <!-- <b-col cols="6">
-                        <b>Golos:</b>
-                        {{player.counter.goals.total}}
-                      </b-col>-->
+                    </b-row>
+                    <b-row>
+                      <b-col cols="12">
+                        <b>Alcunha:</b>
+                        {{player.nickname}}
+                      </b-col>
                     </b-row>
                     <b-row>
                       <b-col cols="12">
                         <b>Idade:</b>
-                        {{age}}
+                        {{age}} ({{dob | moment("DD/MM/YYYY")}})
                       </b-col>
                     </b-row>
-                    <b-row>
-                      <b-col cols="12">
-                        <span
-                          class="d-none d-sm-none d-md-inline d-lg-inline d-xl-inline font-weight-bold"
-                        >Data Nascimento:</span>
-                        <span
-                          class="d-inline d-sm-inline d-md-none d-lg-none d-xl-none font-weight-bold"
-                        >Nasc.:</span>
-                        {{dob | moment("DD/MM/YYYY")}}
-                      </b-col>
-                    </b-row>
-                  </b-col>
+                  </div>
                 </b-row>
               </b-col>
             </b-card-body>
@@ -131,52 +122,52 @@ import { isEmpty } from 'lodash'
 // import chartHeatmap from "./chartHeatmap.vue";
 
 export default {
-  name: 'player',
-  layout: 'home',
-  components: {
-    matchStats,
-    upload
-  },
-  computed: {
-    ...mapState('matches', ['matches']),
-    ...mapState('players', ['player']),
-    ...mapGetters(['canEditPlayer']),
-    ...mapGetters('players', ['dob']),
-    age() {
-      return moment().diff(this.dob, 'years', false) + ' anos'
-    },
-    matchesFiltered() {
-      return !isEmpty(this.matches) && !isEmpty(this.player)
-        ? this.matches.filter((s) => s.players[this.player.id])
-        : []
-    },
-    routerPath() {
-      return this.$nuxt.$route.name
-    },
-    routerQuery() {
-      return this.$nuxt.$route.query
-    },
-    getPic() {
-      return this.player.picture ? this.player.picture : this.getDefault
-    },
-    getDefault() {
-      return require(`@/assets/players/playernull.jpg`)
-    }
-  },
-  methods: {
-    openMatch(id) {
-      console.log(id)
-      this.$router.push({ name: 'match', query: { match: id } })
-    }
-  },
-  async fetch({ store, route }) {
-    try {
-      await store.dispatch('players/getPlayerById', route.query.player)
-      // console.log(store.state)
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'player',
+	layout: 'home',
+	components: {
+		matchStats,
+		upload
+	},
+	computed: {
+		...mapState('matches', ['matches']),
+		...mapState('players', ['player']),
+		...mapGetters(['canEditPlayer']),
+		...mapGetters('players', ['dob']),
+		age() {
+			return moment().diff(this.dob, 'years', false) + ' anos'
+		},
+		matchesFiltered() {
+			return !isEmpty(this.matches) && !isEmpty(this.player)
+				? this.matches.filter((s) => s.players[this.player.id])
+				: []
+		},
+		routerPath() {
+			return this.$nuxt.$route.name
+		},
+		routerQuery() {
+			return this.$nuxt.$route.query
+		},
+		getPic() {
+			return this.player.picture ? this.player.picture : this.getDefault
+		},
+		getDefault() {
+			return require(`@/assets/players/playernull.jpg`)
+		}
+	},
+	methods: {
+		openMatch(id) {
+			console.log(id)
+			this.$router.push({ name: 'match', query: { match: id } })
+		}
+	},
+	async fetch({ store, route }) {
+		try {
+			await store.dispatch('players/getPlayerById', route.query.player)
+			// console.log(store.state)
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
 
