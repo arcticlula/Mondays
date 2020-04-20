@@ -7,9 +7,9 @@
             <b-col cols="12">
               <b-row>
                 <b-col class="p-0">Classificação Geral</b-col>
-                <b-form-checkbox class="mr-3" v-model="highscore.showOG">Auto-Golos</b-form-checkbox>
-                <b-form-checkbox class="mr-3" v-model="highscore.showP">Penaltis</b-form-checkbox>
-                <b-form-checkbox class="mr-1" v-model="highscore.showPF">Pen. Falhados</b-form-checkbox>
+                <b-form-checkbox size="sm" class="mr-3" v-model="highscore.showOG">Auto-Golos</b-form-checkbox>
+                <b-form-checkbox size="sm" class="mr-3" v-model="highscore.showP">Pen.</b-form-checkbox>
+                <b-form-checkbox size="sm" class="mr-1" v-model="highscore.showPF">Pen. F.</b-form-checkbox>
               </b-row>
             </b-col>
           </div>
@@ -24,12 +24,6 @@
                   @row-clicked="goToProfile"
                   ref="table"
                 >
-                  <!-- <template slot="actions" slot-scope="row">
-										<b-btn
-											size="sm"
-											@click="row.toggleDetails"
-										>{{ row.detailsShowing ? 'Hide' : 'Show' }} Details</b-btn>
-                  </template>-->
                   <!-- <template slot="row-details" slot-scope="row">
 										<b-card>
 											<b-row class="mb-2">
@@ -75,11 +69,6 @@ export default {
   data() {
     return {
       fields: [
-        // {
-        //   key: 'row',
-        //   label: '#',
-        //   sortable: true
-        // },
         {
           key: 'name',
           label: 'Nome',
@@ -124,7 +113,6 @@ export default {
           sortDirection: 'desc',
           sortable: true
         }
-        // { key: "actions", label: "Actions" }
       ],
       ownGoals: {
         key: 'ownGoals',
@@ -170,4 +158,8 @@ export default {
 </script>
 
 <style scoped>
+.overflowTable {
+  background-color: '#3eef33';
+  overflow-x: hidden;
+}
 </style>
