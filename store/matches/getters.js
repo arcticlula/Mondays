@@ -61,7 +61,7 @@ export default {
             })
             return hash
         }, {});
-        return Object.keys(res).map(s => ({ id: s, matches: res[s].matches, wins: res[s].wins, draws: res[s].draws, losses: res[s].losses, name: res[s].name, goals: res[s].goals, assists: res[s].assists })).sort((a, b) => (b.wins - a.wins) || (b.goals - a.goals) || (b.assists - a.assists));
+        return Object.keys(res).map(s => ({ id: s, matches: res[s].matches, wins: res[s].wins, draws: res[s].draws, losses: res[s].losses, name: res[s].name, goals: res[s].goals, assists: res[s].assists, ownGoals: res[s].ownGoals, penalties: res[s].penalties, penaltiesFailed: res[s].penaltiesFailed })).sort((a, b) => (b.wins - a.wins) || (b.goals - a.goals) || (b.assists - a.assists));
     },
     highscoreMatch(state) {
         let data = !isEmpty(state.match) ? state.match.players : {}

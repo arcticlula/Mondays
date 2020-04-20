@@ -105,6 +105,7 @@ export default {
         buttons: [
           Noty.button('Sim', 'btn btn-outline-light btn-sm', async () => {
             await this.delMatch(this.match)
+            this.modal.showMatch = false
             this.$router.push({ name: 'index' })
             this.$noty.warning('Jogo Removido!')
             n.close()

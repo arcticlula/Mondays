@@ -1,7 +1,7 @@
 <template>
   <b-col cols="12" md="12" lg="6" xl="6" class="mt-2 py-0 px-1" style="display: inline-block;">
     <b-row class="row-eq-height">
-      <b-col cols="9" sm="9" md="10" lg="8" xl="10" class="pr-0 matchCard clicker">
+      <b-col cols="9" sm="9" md="10" lg="9" xl="10" class="pr-0 matchCard clicker">
         <b-card border-variant="primary" no-body style="height: 100%;">
           <div class="card-header bg-white">
             <b-col cols="12">
@@ -36,7 +36,7 @@
           </b-card-body>
         </b-card>
       </b-col>
-      <b-col cols="3" sm="3" md="2" lg="4" xl="2" class="pl-1 matchCard clicker">
+      <b-col cols="3" sm="3" md="2" lg="3" xl="2" class="pl-1 matchCard clicker">
         <b-card
           v-if="result>0"
           border-variant="success"

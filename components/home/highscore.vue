@@ -1,13 +1,16 @@
 <template>
-  <b-col cols="12" md="6" lg="6" xl="6" class="mt-2 py-0 px-1" style="display: inline-block;">
+  <b-col cols="12" md="12" lg="6" xl="6" class="mt-2 py-0 px-1" style="display: inline-block;">
     <b-row class="row-eq-height">
       <b-col cols="12">
         <b-card border-variant="primary" no-body style="height: 100%;">
           <div class="card-header bg-white">
             <b-col cols="12">
-              <div class="row">
-                <b-col cols="12" class="p-0">Classificação Geral</b-col>
-              </div>
+              <b-row>
+                <b-col class="p-0">Classificação Geral</b-col>
+                <b-form-checkbox class="mr-3" v-model="highscore.showOG">Auto-Golos</b-form-checkbox>
+                <b-form-checkbox class="mr-3" v-model="highscore.showP">Penaltis</b-form-checkbox>
+                <b-form-checkbox class="mr-1" v-model="highscore.showPF">Pen. Falhados</b-form-checkbox>
+              </b-row>
             </b-col>
           </div>
           <b-card-body class="p-2">
@@ -17,7 +20,7 @@
                   striped
                   hover
                   :items="highscorePlayed"
-                  :fields="fields"
+                  :fields="allFields"
                   @row-clicked="goToProfile"
                   ref="table"
                 >
@@ -122,7 +125,25 @@ export default {
           sortable: true
         }
         // { key: "actions", label: "Actions" }
-      ]
+      ],
+      ownGoals: {
+        key: 'ownGoals',
+        label: 'AG',
+        sortDirection: 'desc',
+        sortable: true
+      },
+      penalties: {
+        key: 'penalties',
+        label: 'P',
+        sortDirection: 'desc',
+        sortable: true
+      },
+      penaltiesFailed: {
+        key: 'penaltiesFailed',
+        label: 'PF',
+        sortDirection: 'desc',
+        sortable: true
+      }
     }
   },
   methods: {
@@ -134,8 +155,16 @@ export default {
     }
   },
   computed: {
+    ...mapState(['highscore']),
     ...mapState('players', ['players']),
-    ...mapGetters('matches', ['highscorePlayed'])
+    ...mapGetters('matches', ['highscorePlayed']),
+    allFields() {
+      let fields = [...this.fields]
+      if (this.highscore.showOG) fields.push(this.ownGoals)
+      if (this.highscore.showP) fields.push(this.penalties)
+      if (this.highscore.showPF) fields.push(this.penaltiesFailed)
+      return fields
+    }
   }
 }
 </script>
