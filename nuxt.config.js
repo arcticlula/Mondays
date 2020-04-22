@@ -38,6 +38,7 @@ export default {
    
    */
   modules: [
+    '@nuxtjs/color-mode',
     '@nuxtjs/pwa',
     '@nuxtjs/svg',
     'bootstrap-vue/nuxt',

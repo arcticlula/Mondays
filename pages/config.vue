@@ -21,6 +21,7 @@
             <b-card-body>
               <b-row>
                 <b-col cols="12">
+                  <ColorModePicker />
                   <b-form-group class="mb-3" id="input-group-0" label="Modo:" label-for="input-0">
                     <b-form-checkbox
                       style="display: inline-flex;"
@@ -70,32 +71,36 @@
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import ColorModePicker from '@/components/config/ColorModePicker'
 export default {
-  name: 'config',
-  layout: 'home',
-  computed: {
-    ...mapState(['mode']),
-    ...mapGetters(['admin']),
-    nightModeVar: {
-      get() {
-        return this.mode.night
-      },
-      set(data) {
-        return this.setNightMode(data)
-      }
-    }
-  },
-  methods: {
-    ...mapMutations(['setNightMode']),
-    ...mapActions(['signOut'])
-  },
-  async fetch({ store }) {
-    try {
-      await store.dispatch('checkUser')
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'config',
+	layout: 'home',
+	components: {
+		ColorModePicker
+	},
+	computed: {
+		...mapState(['mode']),
+		...mapGetters(['admin']),
+		nightModeVar: {
+			get() {
+				return this.mode.night
+			},
+			set(data) {
+				return this.setNightMode(data)
+			}
+		}
+	},
+	methods: {
+		...mapMutations(['setNightMode']),
+		...mapActions(['signOut'])
+	},
+	async fetch({ store }) {
+		try {
+			await store.dispatch('checkUser')
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
 
