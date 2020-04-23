@@ -23,7 +23,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['./styles/segundas.css', './styles/DL_Icons.css'],
+  css: ['./assets/mondays.scss', './assets/segundas.css', './assets/DL_Icons.css',],
   /*
    ** Plugins to load before mounting the App
    */
@@ -41,9 +41,13 @@ export default {
     '@nuxtjs/color-mode',
     '@nuxtjs/pwa',
     '@nuxtjs/svg',
-    'bootstrap-vue/nuxt',
     '@nuxtjs/dotenv',
+    'bootstrap-vue/nuxt'
   ],
+  bootstrapVue: {
+    bootstrapCSS: false, // Or `css: false`
+    bootstrapVueCSS: false // Or `bvCSS: false`
+  },
   dotenv: {
     filename: '.env.' + process.env.NODE_ENV
   },

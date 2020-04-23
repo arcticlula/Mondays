@@ -915,24 +915,3 @@
 	overflow: visible;
 	clip: auto;
 }
-
-/* EDITABLE DATATABLE CSS | dotLOGIC */
-	#datatable-editable .dl.dl-eliminar, #datatable-editable .dl.dl-remove {
-		color: #f7531f;
-	}
-
-	table.dataTable thead th.sorting_asc:after {
-		font: normal normal normal 16px DL_Icons;
-		content: "\f025";
-	}
-
-	table.dataTable thead th.sorting_desc:after {
-		font: normal normal normal 16px DL_Icons;
-		content: "\f024";
-	}
-
-	table.dataTable thead th.sorting:after {
-		font: normal normal normal 16px DL_Icons;
-		content: "\f026";
-	}
-/* EDITABLE DATATABLE CSS | dotLOGIC */

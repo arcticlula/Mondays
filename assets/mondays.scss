@@ -7,37 +7,37 @@
 
 :root {
   --color: #243746;
-  --color-primary: #158876;
+  --color-primary: rgb(21, 136, 118);
   --color-secondary: #0e2233;
   --bg: #f3f5f4;
   --bg-secondary: #fff;
   --border-color: #ddd;
+  --border-color-primary: rgb(0, 123, 255);
+  --border-color-light: rgba(0, 0, 0, 0.125);
 }
 
 .dark-mode {
   --color: #ebf4f1;
-  --color-primary: #41b38a;
+  --color-primary: rgb(65, 179, 138);
   --color-secondary: #fdf9f3;
   --bg: #091a28;
   --bg-secondary: #071521;
   --border-color: #0d2538;
-}
-.sepia-mode {
-  --color: #433422;
-  --color-secondary: #504231;
-  --bg: #f1e7d0;
-  --bg-secondary: #eae0c9;
-  --border-color: #ded0bf;
+  --border-color-primary: rgb(0, 123, 255);
+  --border-color-light: rgba(255, 255, 255, 0.125);
 }
 
 $body-bg: var(--bg);
 $body-color: var(--color);
 
-$card-border-color:                 var(--border-color);
-$card-height:                       null ;
-$card-color:                        var(--color-primary) ;
+$card-border-color:                 var(--border-color-primary);
+$card-height:                       null;
+$card-color:                        var(--color) ;
 $card-bg:                           var(--bg-secondary) ;
+// $card-cap-bg:                       var(--bg-secondary); //header bg
+// $card-cap-color:                    null;
+// $card-spacer-y:                     4px;
+// $card-spacer-x:                     7px;
 
-@import '../../node_modules/bootstrap/scss/bootstrap';
-// BootstrapVue and its default variables
-@import '../../node_modules/bootstrap-vue/src/index.scss';
+@import 'bootstrap/scss/bootstrap.scss';
+@import 'bootstrap-vue/src/index.scss';

@@ -1,9 +1,6 @@
 <template>
   <div>
-    <nav
-      class="navbar navbar-expand-lg bg-white fixed-top"
-      v-bind:class="[{ 'navbar-dark':mode.night }, 'navbar-light']"
-    >
+    <nav class="navbar navbar-expand-lg bg-white fixed-top navbar-light">
       <a class="d-none d-sm-none d-md-none d-lg-block navbar-brand">
         <img width="35px" src="../assets/icon.png" />
       </a>

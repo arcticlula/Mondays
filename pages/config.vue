@@ -10,32 +10,18 @@
     >
       <b-row>
         <b-col cols="12">
-          <b-card border-variant="primary" no-body style="height: 100%;">
-            <div class="card-header bg-white">
+          <b-card no-body style="height: 100%;" header="Configurações">
+            <!-- <div class="card-header bg-white">
               <b-col cols="12">
                 <div class="row">
-                  <b-col cols="12" class="px-0">Configurações</b-col>
+                  <b-col cols="12" class="px-0"></b-col>
                 </div>
               </b-col>
-            </div>
+            </div>-->
             <b-card-body>
               <b-row>
                 <b-col cols="12">
                   <ColorModePicker />
-                  <b-form-group class="mb-3" id="input-group-0" label="Modo:" label-for="input-0">
-                    <b-form-checkbox
-                      style="display: inline-flex;"
-                      id="input-0"
-                      v-model="nightModeVar"
-                      switch
-                    ></b-form-checkbox>
-                    <span
-                      v-if="nightModeVar"
-                      style="vertical-align: super; display: inline-flex;"
-                      class="dl dl-moon"
-                    ></span>
-                    <span v-else style="vertical-align: super;" class="dl dl-sun"></span>
-                  </b-form-group>
                 </b-col>
               </b-row>
               <b-row>
@@ -73,34 +59,25 @@
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import ColorModePicker from '@/components/config/ColorModePicker'
 export default {
-	name: 'config',
-	layout: 'home',
-	components: {
-		ColorModePicker
-	},
-	computed: {
-		...mapState(['mode']),
-		...mapGetters(['admin']),
-		nightModeVar: {
-			get() {
-				return this.mode.night
-			},
-			set(data) {
-				return this.setNightMode(data)
-			}
-		}
-	},
-	methods: {
-		...mapMutations(['setNightMode']),
-		...mapActions(['signOut'])
-	},
-	async fetch({ store }) {
-		try {
-			await store.dispatch('checkUser')
-		} catch (e) {
-			console.error(e)
-		}
-	}
+  name: 'config',
+  layout: 'home',
+  components: {
+    ColorModePicker
+  },
+  computed: {
+    ...mapState(['mode']),
+    ...mapGetters(['admin'])
+  },
+  methods: {
+    ...mapActions(['signOut'])
+  },
+  async fetch({ store }) {
+    try {
+      await store.dispatch('checkUser')
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>
 
