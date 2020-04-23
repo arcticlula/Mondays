@@ -2,8 +2,8 @@
   <b-col cols="12" md="12" lg="6" xl="6" class="mt-2 py-0 px-1" style="display: inline-block;">
     <b-row class="row-eq-height">
       <b-col cols="9" sm="9" md="10" lg="9" xl="10" class="pr-0 matchCard clicker">
-        <b-card border-variant="primary" no-body style="height: 100%;">
-          <div class="card-header bg-white">
+        <b-card no-body style="height: 100%;">
+          <div class="card-header">
             <b-col cols="12">
               <div class="row">
                 <b-col class="px-0">Carolina Michaelis</b-col>
@@ -97,55 +97,57 @@ import moment from 'moment'
 import { isEmpty } from 'lodash'
 
 export default {
-  name: 'matchCard',
-  props: { match: Object },
-  methods: {},
-  computed: {
-    ...mapGetters(['userPlayer']),
-    matchDate() {
-      return !isEmpty(this.match)
-        ? moment(
-            this.match.beginTime
-              .toDate()
-              .toLocaleString('pt-PT', { timeZone: 'UTC' }),
-            'DD/MM/YYYY, HH:mm:ss'
-          )
-        : moment()
-    },
-    goalsHome() {
-      return !isEmpty(this.match) ? this.match.counter.goals.home : 0
-    },
-    goalsAway() {
-      return !isEmpty(this.match) ? this.match.counter.goals.away : 0
-    },
-    playersHome() {
-      let data = !isEmpty(this.match) ? this.match.players : {}
-      return Object.keys(data).reduce((filtered, s) => {
-        if (data[s].local == 'home') {
-          filtered.push({ id: s, nickname: data[s].nickname })
-        }
-        return filtered
-      }, [])
-    },
-    playersAway() {
-      let data = !isEmpty(this.match) ? this.match.players : {}
-      return Object.keys(data).reduce((filtered, s) => {
-        if (data[s].local == 'away') {
-          filtered.push({ id: s, nickname: data[s].nickname })
-        }
-        return filtered
-      }, [])
-    },
-    result() {
-      return !isEmpty(this.match) &&
-        !isEmpty(this.userPlayer) &&
-        !isEmpty(this.match.players[this.userPlayer.id])
-        ? this.match.players[this.userPlayer.id].local == 'home'
-          ? this.match.counter.goals.home - this.match.counter.goals.away
-          : this.match.counter.goals.away - this.match.counter.goals.home
-        : null
-    }
-  }
+	name: 'matchCard',
+	props: { match: Object },
+	methods: {},
+	computed: {
+		...mapGetters(['userPlayer']),
+		matchDate() {
+			return !isEmpty(this.match)
+				? moment(
+						this.match.beginTime
+							.toDate()
+							.toLocaleString('pt-PT', { timeZone: 'UTC' }),
+						'DD/MM/YYYY, HH:mm:ss'
+				  )
+				: moment()
+		},
+		goalsHome() {
+			return !isEmpty(this.match) ? this.match.counter.goals.home : 0
+		},
+		goalsAway() {
+			return !isEmpty(this.match) ? this.match.counter.goals.away : 0
+		},
+		playersHome() {
+			let data = !isEmpty(this.match) ? this.match.players : {}
+			return Object.keys(data).reduce((filtered, s) => {
+				if (data[s].local == 'home') {
+					filtered.push({ id: s, nickname: data[s].nickname })
+				}
+				return filtered
+			}, [])
+		},
+		playersAway() {
+			let data = !isEmpty(this.match) ? this.match.players : {}
+			return Object.keys(data).reduce((filtered, s) => {
+				if (data[s].local == 'away') {
+					filtered.push({ id: s, nickname: data[s].nickname })
+				}
+				return filtered
+			}, [])
+		},
+		result() {
+			return !isEmpty(this.match) &&
+				!isEmpty(this.userPlayer) &&
+				!isEmpty(this.match.players[this.userPlayer.id])
+				? this.match.players[this.userPlayer.id].local == 'home'
+					? this.match.counter.goals.home -
+					  this.match.counter.goals.away
+					: this.match.counter.goals.away -
+					  this.match.counter.goals.home
+				: null
+		}
+	}
 }
 </script>
 

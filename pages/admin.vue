@@ -10,8 +10,8 @@
     >
       <b-row>
         <b-col cols="12">
-          <b-card border-variant="primary" no-body style="height: 100%;">
-            <div class="card-header bg-white">
+          <b-card no-body style="height: 100%;">
+            <div class="card-header">
               <b-col cols="12">
                 <div class="row">
                   <b-col cols="12" class="px-0">Administrador</b-col>
@@ -35,24 +35,24 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import userProps from '../components/admin/userProps'
 
 export default {
-  name: 'config',
-  layout: 'home',
-  computed: {
-    ...mapState('users', ['users'])
-  },
-  components: {
-    userProps
-  },
-  methods: {
-    // ...mapActions(['signOut'])
-  },
-  async fetch({ store }) {
-    try {
-      await store.dispatch('users/getUsers')
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'config',
+	layout: 'home',
+	computed: {
+		...mapState('users', ['users'])
+	},
+	components: {
+		userProps
+	},
+	methods: {
+		// ...mapActions(['signOut'])
+	},
+	async fetch({ store }) {
+		try {
+			await store.dispatch('users/getUsers')
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
 

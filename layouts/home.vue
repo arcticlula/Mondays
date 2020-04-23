@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-lg bg-white fixed-top navbar-light">
+    <b-navbar class="navbarTop fixed-top">
       <a class="d-none d-sm-none d-md-none d-lg-block navbar-brand">
         <img width="35px" src="../assets/icon.png" />
       </a>
@@ -86,16 +86,15 @@
             </li>
           </ul>
       </div>-->
-    </nav>
+    </b-navbar>
     <nuxt />
     <!-- Menu Horizonal -->
     <b-row>
-      <b-col cols="12" class="footerDl px-0">
+      <b-col cols="12" class="navbarBottom px-0">
         <nuxt-link :to="{ name: 'config'}">
           <b-btn
             size="sm"
             class="mondaysIcon icon1"
-            variant="outline-primary"
             v-bind:class="{ active: routerPath == 'config' }"
           >
             <span class="dl dl dl-config"></span>
@@ -105,7 +104,6 @@
           <b-btn
             size="sm"
             class="mondaysIcon icon2"
-            variant="outline-primary"
             v-bind:class="{ active: routerPath == 'index' }"
           >
             <span class="dl dl-req"></span>
@@ -115,7 +113,6 @@
           <b-btn
             size="sm"
             class="mondaysIcon icon3"
-            variant="outline-primary"
             v-bind:class="{ active: routerPath == 'profile' }"
           >
             <span class="dl dl-player"></span>
@@ -131,71 +128,72 @@
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import moment from 'moment'
 export default {
-  name: 'home',
-  data() {
-    return {
-      monthDisabled: false,
-      monthArray: [
-        { value: '0', text: 'Todos' },
-        { value: '9', text: 'Setembro' },
-        { value: '10', text: 'Outubro' },
-        { value: '11', text: 'Novembro' },
-        { value: '12', text: 'Dezembro' },
-        { value: '13', text: 'Janeiro' },
-        { value: '14', text: 'Fevereiro' },
-        { value: '15', text: 'Março' },
-        { value: '16', text: 'Abril' },
-        { value: '17', text: 'Maio' },
-        { value: '18', text: 'Junho' },
-        { value: '19', text: 'Julho' },
-        { value: '20', text: 'Agosto' }
-      ],
-      yearArray: []
-    }
-  },
-  computed: {
-    ...mapState(['navbar', 'firstYear', 'mode']),
-    ...mapGetters(['userDB', 'isVisitor', 'yearHigh', 'yearLow']),
-    routerPath() {
-      return this.$nuxt.$route.name
-    }
-  },
-  methods: {
-    ...mapMutations(['setMonth']),
-    ...mapActions(['signOut']),
-    ...mapActions('matches', ['getMatchesByDate']),
-    async getMatches() {
-      await this.$nextTick()
-      if (this.yearHigh == moment().format('YYYY-MM-DD')) {
-        this.setMonth()
-        this.monthDisabled = true
-      } else this.monthDisabled = false
-      this.getMatchesByDate()
-    }
-  },
-  beforeMount() {
-    let firstYear = moment(this.firstYear)
-    let yearArray = []
-    let years = Math.ceil(moment().diff(firstYear, 'years', true)) + 1
-    for (let i = years; i > 0; i--) {
-      if (i == years) {
-        yearArray.push({
-          text: 'Todos',
-          value: moment().format('YYYY-MM-DD')
-        })
-      } else {
-        let currYear = firstYear.clone().add(i, 'years')
-        let lastYear = currYear.clone().subtract(1, 'years')
-        // console.log(lastYear.format("YYYY-MM-DD"));
-        yearArray.push({
-          text: lastYear.format('YYYY') + '/' + currYear.format('YYYY'),
-          value: lastYear.format('YYYY-MM-DD')
-        })
-      }
-    }
-    this.yearArray = yearArray
-    this.getMatches()
-  }
+	name: 'home',
+	data() {
+		return {
+			monthDisabled: false,
+			monthArray: [
+				{ value: '0', text: 'Todos' },
+				{ value: '9', text: 'Setembro' },
+				{ value: '10', text: 'Outubro' },
+				{ value: '11', text: 'Novembro' },
+				{ value: '12', text: 'Dezembro' },
+				{ value: '13', text: 'Janeiro' },
+				{ value: '14', text: 'Fevereiro' },
+				{ value: '15', text: 'Março' },
+				{ value: '16', text: 'Abril' },
+				{ value: '17', text: 'Maio' },
+				{ value: '18', text: 'Junho' },
+				{ value: '19', text: 'Julho' },
+				{ value: '20', text: 'Agosto' }
+			],
+			yearArray: []
+		}
+	},
+	computed: {
+		...mapState(['navbar', 'firstYear', 'mode']),
+		...mapGetters(['userDB', 'isVisitor', 'yearHigh', 'yearLow']),
+		routerPath() {
+			return this.$nuxt.$route.name
+		}
+	},
+	methods: {
+		...mapMutations(['setMonth']),
+		...mapActions(['signOut']),
+		...mapActions('matches', ['getMatchesByDate']),
+		async getMatches() {
+			await this.$nextTick()
+			if (this.yearHigh == moment().format('YYYY-MM-DD')) {
+				this.setMonth()
+				this.monthDisabled = true
+			} else this.monthDisabled = false
+			this.getMatchesByDate()
+		}
+	},
+	beforeMount() {
+		let firstYear = moment(this.firstYear)
+		let yearArray = []
+		let years = Math.ceil(moment().diff(firstYear, 'years', true)) + 1
+		for (let i = years; i > 0; i--) {
+			if (i == years) {
+				yearArray.push({
+					text: 'Todos',
+					value: moment().format('YYYY-MM-DD')
+				})
+			} else {
+				let currYear = firstYear.clone().add(i, 'years')
+				let lastYear = currYear.clone().subtract(1, 'years')
+				// console.log(lastYear.format("YYYY-MM-DD"));
+				yearArray.push({
+					text:
+						lastYear.format('YYYY') + '/' + currYear.format('YYYY'),
+					value: lastYear.format('YYYY-MM-DD')
+				})
+			}
+		}
+		this.yearArray = yearArray
+		this.getMatches()
+	}
 }
 </script>
 

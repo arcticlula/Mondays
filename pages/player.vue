@@ -11,7 +11,7 @@
       <b-row class="row-eq-height">
         <b-col cols="12" class="py-0">
           <b-card border-variant="primary" no-body style="height: 100%;">
-            <!-- <div class="card-header bg-white"> -->
+            <!-- <div class="card-header"> -->
             <!-- <b-col cols="12">
               <div class="row">
                 <b-col cols="12" class="px-0">{{playerUser.name}}</b-col>
@@ -70,7 +70,7 @@
       <b-row>
         <b-col cols="12" class="mt-2">
           <b-card border-variant="primary" no-body style="height: 100%;">
-            <div class="card-header bg-white">
+            <div class="card-header">
               <b-col cols="12" class="p-0">
                 <b-row>
                   <b-col cols="4">
@@ -101,13 +101,6 @@
             </b-card-body>
           </b-card>
         </b-col>
-        <!-- <b-col cols="12" class="mt-2">
-				<b-card border-variant="primary" no-body style="height: 100%;">
-					<div class="card-header bg-white">
-						<heatmap />
-					</div>
-				</b-card>
-        </b-col>-->
       </b-row>
     </b-col>
   </div>

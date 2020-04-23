@@ -1,8 +1,8 @@
 <template>
   <b-row>
     <b-col cols="12" class="mt-2">
-      <b-card border-variant="primary" no-body style="height: 100%;">
-        <div class="card-header bg-white">
+      <b-card no-body style="height: 100%;">
+        <div class="card-header">
           <b-col cols="12" class="p-0">
             <!-- <b-row>
                   <b-col cols="4">
@@ -53,7 +53,7 @@
     </b-col>
     <!-- <b-col cols="12" class="mt-2">
 				<b-card border-variant="primary" no-body style="height: 100%;">
-					<div class="card-header bg-white">
+					<div class="card-header">
 						<heatmap />
 					</div>
 				</b-card>

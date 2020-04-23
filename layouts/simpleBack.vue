@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-lg bg-white fixed-top navbar-light">
+    <b-navbar class="navbarTop fixed-top">
       <a class="d-none d-sm-none d-md-none d-lg-block navbar-brand">
         <img width="35px" src="../assets/icon.png" />
       </a>
@@ -37,7 +37,7 @@
           </li>
         </ul>
       </div>
-    </nav>
+    </b-navbar>
     <nuxt />
   </div>
 </template>
@@ -46,14 +46,14 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 export default {
-  name: 'simpleBack',
-  computed: {
-    ...mapState(['mode']),
-    ...mapGetters(['userDB']),
-    routerPath() {
-      return this.$nuxt.$route.name
-    }
-  }
+	name: 'simpleBack',
+	computed: {
+		...mapState(['mode']),
+		...mapGetters(['userDB']),
+		routerPath() {
+			return this.$nuxt.$route.name
+		}
+	}
 }
 </script>
 

@@ -23,7 +23,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['./assets/mondays.scss', './assets/segundas.css', './assets/DL_Icons.css',],
+  css: ['./assets/mondays.scss', './assets/DL_Icons.css',],
   /*
    ** Plugins to load before mounting the App
    */

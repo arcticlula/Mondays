@@ -11,7 +11,7 @@
       <b-row>
         <b-col cols="12">
           <b-card no-body style="height: 100%;" header="Configurações">
-            <!-- <div class="card-header bg-white">
+            <!-- <div class="card-header">
               <b-col cols="12">
                 <div class="row">
                   <b-col cols="12" class="px-0"></b-col>
@@ -59,25 +59,25 @@
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import ColorModePicker from '@/components/config/ColorModePicker'
 export default {
-  name: 'config',
-  layout: 'home',
-  components: {
-    ColorModePicker
-  },
-  computed: {
-    ...mapState(['mode']),
-    ...mapGetters(['admin'])
-  },
-  methods: {
-    ...mapActions(['signOut'])
-  },
-  async fetch({ store }) {
-    try {
-      await store.dispatch('checkUser')
-    } catch (e) {
-      console.error(e)
-    }
-  }
+	name: 'config',
+	layout: 'home',
+	components: {
+		ColorModePicker
+	},
+	computed: {
+		...mapState(['mode']),
+		...mapGetters(['admin'])
+	},
+	methods: {
+		...mapActions(['signOut'])
+	},
+	async fetch({ store }) {
+		try {
+			await store.dispatch('checkUser')
+		} catch (e) {
+			console.error(e)
+		}
+	}
 }
 </script>
 
