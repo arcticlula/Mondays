@@ -61,7 +61,7 @@
       </b-row>
       <b-row>
         <b-col cols="12" class="mt-2 reset-p">
-          <b-card border-variant="primary" style="height: 100%;" no-body class="gameInfo">
+          <b-card style="height: 100%;" no-body class="gameInfo">
             <b-tabs card>
               <b-tab title="Resumo" active>
                 <b-card-text>
@@ -153,42 +153,42 @@ import moment from 'moment'
 import { isEmpty } from 'lodash'
 import Noty from 'noty'
 export default {
-	name: 'match',
-	layout: 'simple',
-	components: {
-		matchGoals,
-		court,
-		highscore,
-		modalEditMatch,
-		modalEditGoal
-	},
-	computed: {
-		...mapState(['modal']),
-		...mapState('matches', ['match']),
-		...mapState('goals', ['goals']),
-		...mapGetters(['canEditMatch', 'canAddGoals']),
-		...mapGetters('matches', [
-			'goalsHome',
-			'goalsAway',
-			'playersHome',
-			'playersAway',
-			'matchDate'
-		]),
-		routerPath() {
-			return this.$nuxt.$route.name
-		},
-		routerQuery() {
-			return this.$nuxt.$route.query
-		}
-	},
-	async fetch({ store, route }) {
-		try {
-			await store.dispatch('matches/getMatchById', route.query.match)
-			store.dispatch('goals/getGoalsFromMatch', route.query.match) //takes too long, better to let it load freely
-		} catch (e) {
-			console.error(e)
-		}
-	}
+  name: 'match',
+  layout: 'simple',
+  components: {
+    matchGoals,
+    court,
+    highscore,
+    modalEditMatch,
+    modalEditGoal
+  },
+  computed: {
+    ...mapState(['modal']),
+    ...mapState('matches', ['match']),
+    ...mapState('goals', ['goals']),
+    ...mapGetters(['canEditMatch', 'canAddGoals']),
+    ...mapGetters('matches', [
+      'goalsHome',
+      'goalsAway',
+      'playersHome',
+      'playersAway',
+      'matchDate'
+    ]),
+    routerPath() {
+      return this.$nuxt.$route.name
+    },
+    routerQuery() {
+      return this.$nuxt.$route.query
+    }
+  },
+  async fetch({ store, route }) {
+    try {
+      await store.dispatch('matches/getMatchById', route.query.match)
+      store.dispatch('goals/getGoalsFromMatch', route.query.match) //takes too long, better to let it load freely
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>
 

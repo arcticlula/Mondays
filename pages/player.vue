@@ -10,7 +10,7 @@
     >
       <b-row class="row-eq-height">
         <b-col cols="12" class="py-0">
-          <b-card border-variant="primary" no-body style="height: 100%;">
+          <b-card no-body style="height: 100%;">
             <!-- <div class="card-header"> -->
             <!-- <b-col cols="12">
               <div class="row">
@@ -52,24 +52,11 @@
             </b-card-body>
           </b-card>
         </b-col>
-        <!-- <b-col cols="3" sm="3" md="2" lg="4" xl="2" class="pl-1">
-				<b-card
-					border-variant="primary"
-					header="Posição"
-					header-bg-variant="primary"
-					header-text-variant="white"
-					align="center"
-				>
-					<b-card-body class="classificacao my-auto">
-						<label>#8</label>
-					</b-card-body>
-				</b-card>
-        </b-col>-->
       </b-row>
       <upload v-if="canEditPlayer" :player="player" />
       <b-row>
         <b-col cols="12" class="mt-2">
-          <b-card border-variant="primary" no-body style="height: 100%;">
+          <b-card no-body style="height: 100%;">
             <div class="card-header">
               <b-col cols="12" class="p-0">
                 <b-row>
@@ -115,52 +102,52 @@ import { isEmpty } from 'lodash'
 // import chartHeatmap from "./chartHeatmap.vue";
 
 export default {
-	name: 'player',
-	layout: 'home',
-	components: {
-		matchStats,
-		upload
-	},
-	computed: {
-		...mapState('matches', ['matches']),
-		...mapState('players', ['player']),
-		...mapGetters(['canEditPlayer']),
-		...mapGetters('players', ['dob']),
-		age() {
-			return moment().diff(this.dob, 'years', false) + ' anos'
-		},
-		matchesFiltered() {
-			return !isEmpty(this.matches) && !isEmpty(this.player)
-				? this.matches.filter((s) => s.players[this.player.id])
-				: []
-		},
-		routerPath() {
-			return this.$nuxt.$route.name
-		},
-		routerQuery() {
-			return this.$nuxt.$route.query
-		},
-		getPic() {
-			return this.player.picture ? this.player.picture : this.getDefault
-		},
-		getDefault() {
-			return require(`@/assets/players/playernull.jpg`)
-		}
-	},
-	methods: {
-		openMatch(id) {
-			console.log(id)
-			this.$router.push({ name: 'match', query: { match: id } })
-		}
-	},
-	async fetch({ store, route }) {
-		try {
-			await store.dispatch('players/getPlayerById', route.query.player)
-			// console.log(store.state)
-		} catch (e) {
-			console.error(e)
-		}
-	}
+  name: 'player',
+  layout: 'home',
+  components: {
+    matchStats,
+    upload
+  },
+  computed: {
+    ...mapState('matches', ['matches']),
+    ...mapState('players', ['player']),
+    ...mapGetters(['canEditPlayer']),
+    ...mapGetters('players', ['dob']),
+    age() {
+      return moment().diff(this.dob, 'years', false) + ' anos'
+    },
+    matchesFiltered() {
+      return !isEmpty(this.matches) && !isEmpty(this.player)
+        ? this.matches.filter((s) => s.players[this.player.id])
+        : []
+    },
+    routerPath() {
+      return this.$nuxt.$route.name
+    },
+    routerQuery() {
+      return this.$nuxt.$route.query
+    },
+    getPic() {
+      return this.player.picture ? this.player.picture : this.getDefault
+    },
+    getDefault() {
+      return require(`@/assets/players/playernull.jpg`)
+    }
+  },
+  methods: {
+    openMatch(id) {
+      console.log(id)
+      this.$router.push({ name: 'match', query: { match: id } })
+    }
+  },
+  async fetch({ store, route }) {
+    try {
+      await store.dispatch('players/getPlayerById', route.query.player)
+      // console.log(store.state)
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>
 

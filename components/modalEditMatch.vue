@@ -1,14 +1,6 @@
 
 <template>
-  <b-modal
-    v-model="modal.showMatch"
-    title="Editar Jogo"
-    header-bg-variant="dark"
-    header-text-variant="light"
-    body-bg-variant="light"
-    body-text-variant="dark"
-    footer-bg-variant="light"
-  >
+  <b-modal v-model="modal.showMatch" title="Editar Jogo" centered>
     <b-container fluid>
       <b-row class="mb-1">
         <b-col>

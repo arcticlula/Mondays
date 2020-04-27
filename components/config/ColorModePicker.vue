@@ -30,67 +30,67 @@ import IconDark from '@/assets/icons/dark.svg?inline'
 // import IconSepia from '@/assets/icons/sepia.svg?inline'
 
 export default {
-	components: {
-		IconSystem,
-		IconLight,
-		IconDark
-		// IconSepia
-	},
-	data() {
-		return {
-			colors: ['system', 'light', 'dark'],
-			cores: { system: 'Sistema', light: 'Dia', dark: 'Noite' }
-		}
-	},
-	methods: {
-		getClasses(color) {
-			// Does not set classes on ssr preference is system (because we know them on client-side)
-			if (this.$colorMode.unknown) {
-				return {}
-			}
-			return {
-				prefered: color === this.$colorMode.preference,
-				selected: color === this.$colorMode.value
-			}
-		}
-	}
+  components: {
+    IconSystem,
+    IconLight,
+    IconDark
+    // IconSepia
+  },
+  data() {
+    return {
+      colors: ['system', 'light', 'dark'],
+      cores: { system: 'Sistema', light: 'Dia', dark: 'Noite' }
+    }
+  },
+  methods: {
+    getClasses(color) {
+      // Does not set classes on ssr preference is system (because we know them on client-side)
+      if (this.$colorMode.unknown) {
+        return {}
+      }
+      return {
+        prefered: color === this.$colorMode.preference,
+        selected: color === this.$colorMode.value
+      }
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 ul {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
-ul li {
-	display: inline-block;
-	padding: 5px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  li {
+    display: inline-block;
+    padding: 5px;
+  }
 }
 p {
-	margin: 0;
-	padding-top: 5px;
-	padding-bottom: 20px;
+  margin: 0;
+  padding-top: 5px;
+  padding-bottom: 20px;
 }
 .feather {
-	position: relative;
-	top: 0px;
-	cursor: pointer;
-	padding: 7px;
-	background-color: var(--bg-secondary);
-	border: 2px solid var(--border-color);
-	margin: 0;
-	border-radius: 5px;
-	transition: all 0.1s ease;
-}
-.feather:hover {
-	top: -3px;
-}
-.feather.prefered {
-	border-color: var(--color-primary);
-	top: -3px;
-}
-.feather.selected {
-	color: var(--color-primary);
+  position: relative;
+  top: 0px;
+  cursor: pointer;
+  padding: 7px;
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-color-icon);
+  margin: 0;
+  border-radius: 5px;
+  transition: all 0.1s ease;
+  &:hover {
+    top: -3px;
+  }
+  &.prefered {
+    border-color: var(--color-icon);
+    top: -3px;
+  }
+  &.selected {
+    color: var(--color-icon);
+  }
 }
 </style>

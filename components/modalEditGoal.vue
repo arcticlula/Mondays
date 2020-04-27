@@ -1,14 +1,6 @@
 
 <template>
-  <b-modal
-    v-model="modal.showGoal"
-    title="Editar Golo"
-    header-bg-variant="dark"
-    header-text-variant="light"
-    body-bg-variant="light"
-    body-text-variant="dark"
-    footer-bg-variant="light"
-  >
+  <b-modal centered v-model="modal.showGoal" title="Editar Golo">
     <b-container fluid>
       <b-row class="mb-2">
         <b-col>

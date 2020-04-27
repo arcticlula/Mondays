@@ -51,13 +51,6 @@
         </b-card-body>
       </b-card>
     </b-col>
-    <!-- <b-col cols="12" class="mt-2">
-				<b-card border-variant="primary" no-body style="height: 100%;">
-					<div class="card-header">
-						<heatmap />
-					</div>
-				</b-card>
-    </b-col>-->
   </b-row>
 </template>
 <script>
@@ -66,64 +59,59 @@ import { mapState, mapActions } from 'vuex'
 import { isEmpty } from 'lodash'
 
 export default {
-	name: 'Upload',
-	props: { player: Object },
-	data() {
-		return {
-			file: null,
-			uploadValue: 0
-		}
-	},
-	computed: {},
-	methods: {
-		...mapActions(['checkUser']),
-		...mapActions('players', ['setPlayerPicture']),
-		// previewImage(event) {
-		// 	this.uploadValue = 0
-		// 	this.imageData = event.target.files[0]
-		// 	console.log(this.imageData)
-		// },
-		onUpload() {
-			console.log(this.file, Boolean(this.file))
-			if (Boolean(this.file)) {
-				const storageRef = storage
-					.ref(`players/${this.player.id}`)
-					.put(this.file)
-				storageRef.on(
-					`state_changed`,
-					(snapshot) => {
-						this.uploadValue =
-							(snapshot.bytesTransferred / snapshot.totalBytes) *
-							100
-					},
-					(error) => {
-						console.log(error.message)
-					},
-					() => {
-						this.uploadValue = 100
-						storageRef.snapshot.ref
-							.getDownloadURL()
-							.then(async (url) => {
-								await this.setPlayerPicture({
-									id: this.player.id,
-									url: url
-								})
-								this.$noty.success(
-									'Upload da imagem feito com sucesso!'
-								)
-								await this.checkUser()
-							})
-					}
-				)
-			} else {
-				this.$noty.error('Escolher ficheiro primeiro!')
-			}
-		}
-	}
+  name: 'Upload',
+  props: { player: Object },
+  data() {
+    return {
+      file: null,
+      uploadValue: 0
+    }
+  },
+  computed: {},
+  methods: {
+    ...mapActions(['checkUser']),
+    ...mapActions('players', ['setPlayerPicture']),
+    // previewImage(event) {
+    // 	this.uploadValue = 0
+    // 	this.imageData = event.target.files[0]
+    // 	console.log(this.imageData)
+    // },
+    onUpload() {
+      console.log(this.file, Boolean(this.file))
+      if (Boolean(this.file)) {
+        const storageRef = storage
+          .ref(`players/${this.player.id}`)
+          .put(this.file)
+        storageRef.on(
+          `state_changed`,
+          (snapshot) => {
+            this.uploadValue =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          },
+          (error) => {
+            console.log(error.message)
+          },
+          () => {
+            this.uploadValue = 100
+            storageRef.snapshot.ref.getDownloadURL().then(async (url) => {
+              await this.setPlayerPicture({
+                id: this.player.id,
+                url: url
+              })
+              this.$noty.success('Upload da imagem feito com sucesso!')
+              await this.checkUser()
+            })
+          }
+        )
+      } else {
+        this.$noty.error('Escolher ficheiro primeiro!')
+      }
+    }
+  }
 }
 </script>
 <style scoped="">
 img.preview {
-	width: 200px;
+  width: 200px;
 }
 </style>
