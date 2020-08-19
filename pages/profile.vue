@@ -79,6 +79,33 @@
               </b-col>
             </div>
             <b-card-body class="p-2">
+              <b-col cols="12" class="p-0">
+                <b-row class="mt-1 mb-2">
+                  <b-col cols="4" class="pr-0">
+                    <label>
+                      <b>Total</b>
+                    </label>
+                  </b-col>
+                  <b-col cols="4" class="text-center p-0">
+                    <i class="dl dl-bola"></i>
+                    <label class="pr-1">
+                      <b>{{ matchesTotal.goals}}</b>
+                    </label>
+                    <i class="dl dl-ass"></i>
+                    <label>
+                      <b>{{matchesTotal.assists}}</b>
+                    </label>
+                  </b-col>
+                  <b-col cols="4" class="text-right pl-0">
+                    <label>{{matchesTotal.vitorias}}</label>
+                    <label class="vitoria"></label>
+                    <label class="ml-1">{{matchesTotal.derrotas}}</label>
+                    <label class="derrota"></label>
+                    <label class="ml-1">{{matchesTotal.empates}}</label>
+                    <label class="empate"></label>
+                  </b-col>
+                </b-row>
+              </b-col>
               <match-stats
                 v-on:click.native="openMatch(match.id)"
                 v-for="match in matchesFiltered"
@@ -102,52 +129,77 @@ import { isEmpty } from 'lodash'
 // import chartHeatmap from "./chartHeatmap.vue";
 
 export default {
-  name: 'profile',
-  layout: 'home',
-  // components: {
-  // 	heatmap: chartHeatmap
-  // },
-  data() {
-    return {}
-  },
-  computed: {
-    ...mapState('matches', ['matches']),
-    ...mapState('goals', ['goals']),
-    ...mapGetters(['userDB', 'userPlayer', 'dob', 'canEditProfile']),
-    age() {
-      return moment().diff(this.dob, 'years', false) + ' anos'
-    },
-    matchesFiltered() {
-      return !isEmpty(this.matches) && !isEmpty(this.userPlayer)
-        ? this.matches.filter((s) => s.players[this.userPlayer.id])
-        : []
-    },
-    getPic() {
-      return this.userPlayer.picture
-        ? this.userPlayer.picture
-        : this.userDB.picture
-    }
-  },
-  async fetch({ store, route }) {
-    try {
-      // await store.dispatch(
-      // 	'goals/getGoalsFromPlayer'
-      // )
-      // console.log(store.state)
-    } catch (e) {
-      console.error(e)
-    }
-  },
-  components: {
-    matchStats,
-    upload
-  },
-  methods: {
-    openMatch(id) {
-      console.log(id)
-      this.$router.push({ name: 'match', query: { match: id } })
-    }
-  }
+	name: 'profile',
+	layout: 'home',
+	// components: {
+	// 	heatmap: chartHeatmap
+	// },
+	data() {
+		return {}
+	},
+	computed: {
+		...mapState('matches', ['matches']),
+		...mapState('goals', ['goals']),
+		...mapGetters(['userDB', 'userPlayer', 'dob', 'canEditProfile']),
+		age() {
+			return moment().diff(this.dob, 'years', false) + ' anos'
+		},
+		matchesFiltered() {
+			return !isEmpty(this.matches) && !isEmpty(this.userPlayer)
+				? this.matches.filter((s) => s.players[this.userPlayer.id])
+				: []
+		},
+		matchesTotal() {
+			let res = this.matchesFiltered.reduce((hash, data) => {
+				let player = data.players[this.userPlayer.id]
+				let result =
+					player.local == 'home'
+						? data.counter.goals.home - data.counter.goals.away
+						: data.counter.goals.away - data.counter.goals.home
+				if (isEmpty(hash))
+					hash = {
+						id: 0,
+						goals: 0,
+						assists: 0,
+						vitorias: 0,
+						derrotas: 0,
+						empates: 0
+					}
+				hash.goals += player.goals
+				hash.assists += player.assists
+				if (result > 0) hash.vitorias += 1
+				else if (result < 0) hash.derrotas += 1
+				else hash.empates += 1
+				return hash
+			}, {})
+			return res
+		},
+		getPic() {
+			return this.userPlayer.picture
+				? this.userPlayer.picture
+				: this.userDB.picture
+		}
+	},
+	async fetch({ store, route }) {
+		try {
+			// await store.dispatch(
+			// 	'goals/getGoalsFromPlayer'
+			// )
+			// console.log(store.state)
+		} catch (e) {
+			console.error(e)
+		}
+	},
+	components: {
+		matchStats,
+		upload
+	},
+	methods: {
+		openMatch(id) {
+			console.log(id)
+			this.$router.push({ name: 'match', query: { match: id } })
+		}
+	}
 }
 </script>
 
